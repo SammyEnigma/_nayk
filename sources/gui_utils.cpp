@@ -168,7 +168,7 @@ void showAboutDialog(const QString &developer,
 
     if(QFile::exists(imageMainIcon)) {
 
-        QHBoxLayout *titleLayout = new QHBoxLayout();
+        QHBoxLayout *titleLayout = new QHBoxLayout;
         QLabel *labelIcon = new QLabel(dialogAbout);
         labelIcon->setPixmap( QPixmap(imageMainIcon) );
         labelIcon->setMinimumHeight( labelIcon->pixmap()->height() );
@@ -190,7 +190,7 @@ void showAboutDialog(const QString &developer,
     }
 
     vBoxLayout->addStretch(20);
-    QGridLayout *gridLayout = new QGridLayout();
+    QGridLayout *gridLayout = new QGridLayout;
     int row = 0;
 
     const QString labelStyle = "font-size: 11pt;";
@@ -234,7 +234,7 @@ void showAboutDialog(const QString &developer,
         row++;
     }
 
-    QHBoxLayout *infoLayout = new QHBoxLayout();
+    QHBoxLayout *infoLayout = new QHBoxLayout;
     infoLayout->addStretch();
     infoLayout->addLayout(gridLayout);
     infoLayout->addStretch();
@@ -248,7 +248,7 @@ void showAboutDialog(const QString &developer,
         plainText->sizePolicy().setVerticalPolicy( QSizePolicy::Expanding );
         plainText->setWordWrapMode( QTextOption::WordWrap );
 
-        QHBoxLayout *layout = new QHBoxLayout();
+        QHBoxLayout *layout = new QHBoxLayout;
         layout->addSpacerItem( new QSpacerItem(20, 20) );
         layout->addWidget(plainText);
         layout->addSpacerItem( new QSpacerItem(20, 20) );
