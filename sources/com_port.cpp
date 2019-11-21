@@ -142,6 +142,11 @@ ComPort::ComPort(QObject *parent) : QObject(parent)
             this, &ComPort::serialPort_readyRead);
 }
 //==============================================================================
+ComPort::~ComPort()
+{
+    close();
+}
+//==============================================================================
 QString ComPort::lastError() const
 {
     return m_lastError;

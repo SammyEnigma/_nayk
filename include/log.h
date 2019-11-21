@@ -60,7 +60,7 @@ public:
                  QObject *parent = nullptr);
     explicit Log(const QString &logDir, const QString &fileName,
                  QDateTime startTime = QDateTime::currentDateTime(), QObject *parent = nullptr);
-    ~Log();
+    virtual ~Log();
     void setDebugSave(bool enable = true);
     bool debugSave() const;
     QString logDir() const;

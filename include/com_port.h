@@ -63,6 +63,7 @@ public:
     Q_ENUM(PortProperty)
 #endif
     explicit ComPort(QObject *parent = nullptr);
+    virtual ~ComPort();
     QString lastError() const;
     void setPortName(const QString &portName);
     bool setBaudRate(QSerialPort::BaudRate baudRate);
