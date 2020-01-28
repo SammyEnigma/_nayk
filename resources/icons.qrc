@@ -1,4 +1,4 @@
-<RCC>
+<!DOCTYPE RCC><RCC>
     <qresource prefix="/">
         <file>icons/broom_48px.png</file>
         <file>icons/cancel_48px.png</file>
@@ -11,14 +11,9 @@
         <file>icons/settings_48px.png</file>
         <file>icons/start_48px.png</file>
         <file>icons/stop_48px.png</file>
-        <file>led/led-blue.png</file>
-        <file>led/led-brown.png</file>
-        <file>led/led-green.png</file>
-        <file>led/led-grey.png</file>
-        <file>led/led-orange.png</file>
-        <file>led/led-red.png</file>
-        <file>led/led-violet.png</file>
-        <file>led/led-white.png</file>
-        <file>led/led-yellow.png</file>
+        <file>icons/printer_48px.png</file>
+        <file>icons/printer_ok_48px.png</file>
+        <file>icons/next_48px.png</file>
+        <file>icons/prev_48px.png</file>
     </qresource>
 </RCC>

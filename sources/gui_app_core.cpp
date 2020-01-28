@@ -60,6 +60,7 @@ bool initializeApplication(const QString &applicationName,
     f.setStyleStrategy(QFont::PreferAntialias);
     application->setFont(f);
     application->setQuitOnLastWindowClosed(true);
+
     return true;
 }
 

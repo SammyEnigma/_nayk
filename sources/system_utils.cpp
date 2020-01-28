@@ -22,16 +22,19 @@
 ** WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 **
 ****************************************************************************/
+#include <QtGlobal>
 #include <QTimer>
 #include <QEventLoop>
 #include <QProcess>
 
 #if defined (Q_OS_WIN32)
-#include <windows.h>
-#include <versionhelpers.h>
+#   include <windows.h>
+#   if (QT_VERSION >= QT_VERSION_CHECK(5, 10, 0))
+#       include <versionhelpers.h>
+#   endif
 #elif defined (Q_OS_LINUX)
-#include <unistd.h>
-#include <sys/utsname.h>
+#   include <unistd.h>
+#   include <sys/utsname.h>
 #endif
 
 #include "system_utils.h"
@@ -72,27 +75,36 @@ int dayOfWeek(int year, int month, int day)
     return dow;
 }
 //==============================================================================
-bool osCmd(const QString &cmd, QString &out, int timeout)
+bool osCmd(const QString &cmd, QByteArray &out, int timeout)
 {
     QProcess process;
 
 #if defined (Q_OS_WIN32)
-    process.start(QString("cmd -c \"%1\"").arg(cmd));
+    process.start(QString("%1").arg(cmd));
+    //process.start(QString("cmd -c \"%1\"").arg(cmd));
 #else
     process.start(QString("bash -c \"%1\"").arg(cmd));
 #endif
 
     timeout = qBound(300, timeout, 300000);
     if (!process.waitForStarted(timeout)) {
-        out = QObject::tr("Process start timeout");
+        out = QByteArray("Таймаут запуска процесса");
         return false;
     }
     if (!process.waitForFinished(timeout)) {
-        out = QObject::tr("Timeout waiting for process to complete");
+        out = QByteArray("Таймаут ожидания завершения процесса");
         return false;
     }
-    out = QString(process.readAllStandardOutput()).trimmed();
+    out = process.readAllStandardOutput();
     return true;
+}
+//==============================================================================
+bool osCmd(const QString &cmd, QString &out, int timeout)
+{
+    QByteArray buf;
+    bool result = osCmd(cmd, buf, timeout);
+    out = QString(buf);
+    return result;
 }
 //==============================================================================
 QString osName()
@@ -117,6 +129,8 @@ QString osVersion()
     QString res = "";
 
 #if defined (Q_OS_WIN32)
+
+#   if (QT_VERSION >= QT_VERSION_CHECK(5, 10, 0))
     if (IsWindowsServer()) return "Server";
     if (IsWindows10OrGreater()) return "10";
     if (IsWindows8Point1OrGreater()) return "8.1";
@@ -125,6 +139,8 @@ QString osVersion()
     if (IsWindows7OrGreater()) return "7";
     if (IsWindowsVistaOrGreater()) return "Vista";
     if (IsWindowsXPOrGreater()) return "XP";
+#   endif
+
 #elif defined (Q_OS_LINUX)
     utsname kernelInfo;
     uname(&kernelInfo);

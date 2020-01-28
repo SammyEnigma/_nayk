@@ -68,7 +68,7 @@ bool initializeApplication(const QString &applicationName,
     makePath(profilePath);
     application->setProperty("profilePath", profilePath);
 
-    installTranslations();
+    installTranslations(applicationRootPath() + "translations", "ru");
     return true;
 }
 //==============================================================================
@@ -82,7 +82,7 @@ void installTranslations(const QString &translationsDir, const QString &language
     QStringList filesList = dir.entryList(QStringList("*_" + lang + ".qm"),
                                           QDir::Files);
 
-    for(QString fileName: filesList) {
+    for(const QString &fileName: filesList) {
 
         QTranslator *translator = new QTranslator(application);
         if(!translator->load(fileName)) {
@@ -116,13 +116,13 @@ QString applicationFullPath()
 //==============================================================================
 QString applicationProfilePath()
 {
-    QString appFullPath = applicationFullPath();
+    QString path = applicationRootPath();
     QString profileDir;
 
-    if((fileExists( appFullPath + "portable" ) || parameterExists("portable"))
-            && makePath(appFullPath + "profile")) {
+    if((fileExists( path + "portable" ) || parameterExists("portable"))
+            && makePath(path + "profile")) {
 
-        profileDir = appFullPath + "profile" + directorySeparator;
+        profileDir = path + "profile" + directorySeparator;
     }
     else {
 
@@ -199,5 +199,17 @@ bool checkVersionQuery()
     QCoreApplication::quit();
     return true;
 }
+//==============================================================================
+QString applicationRootPath()
+{
+    QString path = applicationFullPath();
+
+    if(path.right(5) == QString("%1bin%1").arg(directorySeparator)) {
+        path.remove( path.length()-4, 4 );
+    }
+
+    return path;
+}
+//==============================================================================
 
 } // namespace app_core //======================================================

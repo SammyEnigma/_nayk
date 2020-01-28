@@ -36,28 +36,7 @@
 
 namespace nayk { //=============================================================
 
-const QString clDark           = "#111416";
-const QString clLight          = "#fdfdfd";
-const QString clLogDateDark    = "#929292";
-const QString clLogDateLight   = "#333333";
-const QString clLogPrefixDark  = "#c88dee";
-const QString clLogPrefixLight = "#562873";
-const QString clLogInfDark     = "#ffffff";
-const QString clLogInfLight    = "#000000";
-const QString clLogWrnDark     = "#ff9c54";
-const QString clLogWrnLight    = "#8d3c00";
-const QString clLogErrDark     = "#ff4040";
-const QString clLogErrLight    = "#a50000";
-const QString clLogInDark      = "#55d864";
-const QString clLogInLight     = "#003706";
-const QString clLogOutDark     = "#dd69bb";
-const QString clLogOutLight    = "#53003b";
-const QString clLogTxtDark     = "#d8d8d8";
-const QString clLogTxtLight    = "#1f1f1f";
-const QString clLogDbgDark     = "#00ddc6";
-const QString clLogDbgLight    = "#006766";
-const QString clLogOtherDark   = "#8f8f8f";
-const QString clLogOtherLight  = "#888888";
+const QString logOutString = "<font color=\"%1\">[%2]</font><font color=\"%3\">%4</font> <font color=\"%5\">%6</font>";
 
 //==============================================================================
 DialogLog::DialogLog(QWidget *parent) : QDialog(parent)
@@ -107,14 +86,14 @@ void DialogLog::setOpenLogDirButtonVisible(bool openLogDirButtonVisible)
 void DialogLog::initializeDialog()
 {
     setAttribute(Qt::WA_DeleteOnClose, false);
-    setWindowFlag( Qt::WindowMaximizeButtonHint );
-    setWindowTitle(tr("Log"));
+    setWindowFlags( windowFlags() | Qt::WindowMaximizeButtonHint );
+    setWindowTitle(tr("Лог"));
 
     if(QFile::exists(iconConsole)) {
         setWindowIcon( QIcon(iconConsole) );
     }
 
-    this->setMinimumSize( 800, 600 );
+    this->setMinimumSize( 500, 300 );
 
     QVBoxLayout *layout = new QVBoxLayout(this);
     layout->setMargin(10);
@@ -132,7 +111,7 @@ void DialogLog::initializeDialog()
 
     QHBoxLayout *bottomLayout = new QHBoxLayout();
 
-    QLabel *label = new QLabel(tr("Filter:"), this);
+    QLabel *label = new QLabel(tr("Фильтр:"), this);
     bottomLayout->addWidget(label);
 
     lineEditFilter = new QLineEdit(this);
@@ -141,13 +120,13 @@ void DialogLog::initializeDialog()
     bottomLayout->addWidget(lineEditFilter);
     bottomLayout->addSpacerItem( new QSpacerItem(10, 10) );
 
-    QCheckBox *checkBox = new QCheckBox( tr("Dark theme"), this );
+    QCheckBox *checkBox = new QCheckBox( tr("Темный фон"), this );
     checkBox->setChecked(m_dark);
     connect(checkBox, &QCheckBox::toggled, this, &DialogLog::checkBoxDark_toggled);
     bottomLayout->addWidget(checkBox);
     bottomLayout->addStretch();
 
-    pushButtonOpenLogDir = new QPushButton(tr("Log folder..."), this);
+    pushButtonOpenLogDir = new QPushButton(tr("Каталог лог файлов..."), this);
     pushButtonOpenLogDir->setMinimumSize(120, 32);
     pushButtonOpenLogDir->setIconSize( QSize(28, 28) );
 
@@ -158,7 +137,7 @@ void DialogLog::initializeDialog()
     connect(pushButtonOpenLogDir, &QPushButton::clicked, this, &DialogLog::openLogDirButtonClicked);
     bottomLayout->addWidget(pushButtonOpenLogDir);
 
-    QPushButton *button = new QPushButton(tr("Clear"), this);
+    QPushButton *button = new QPushButton(tr("Очистить"), this);
     button->setMinimumSize( pushButtonOpenLogDir->minimumSize() );
     button->setIconSize( pushButtonOpenLogDir->iconSize() );
 
@@ -169,7 +148,7 @@ void DialogLog::initializeDialog()
     connect(button, &QPushButton::clicked, this, &DialogLog::pushButtonClear_clicked);
     bottomLayout->addWidget(button);
 
-    button = new QPushButton(tr("Close"), this);
+    button = new QPushButton(tr("Закрыть"), this);
     button->setMinimumSize( pushButtonOpenLogDir->minimumSize() );
     button->setIconSize( pushButtonOpenLogDir->iconSize() );
 
@@ -224,17 +203,19 @@ void DialogLog::applyFilter()
 //==============================================================================
 QString DialogLog::highlight(const QString &text, bool dark)
 {
+    int index = dark ? 0 : 1;
+
     QString suffix = "</font>";
-    QString preDate = "<font color=\"" + (dark ? clLogDateDark : clLogDateLight) + "\">";
-    QString prePrefix = "<font color=\"" + (dark ? clLogPrefixDark : clLogPrefixLight) + "\">";
-    QString preInf = "<font color=\"" + (dark ? clLogInfDark : clLogInfLight) + "\">";
-    QString preWrn = "<font color=\"" + (dark ? clLogWrnDark : clLogWrnLight) + "\">";
-    QString preErr = "<font color=\"" + (dark ? clLogErrDark : clLogErrLight) + "\">";
-    QString preIn = "<font color=\"" + (dark ? clLogInDark : clLogInLight) + "\">";
-    QString preOut = "<font color=\"" + (dark ? clLogOutDark : clLogOutLight) + "\">";
-    QString preTxt = "<font color=\"" + (dark ? clLogTxtDark : clLogTxtLight) + "\">";
-    QString preDbg = "<font color=\"" + (dark ? clLogDbgDark : clLogDbgLight) + "\">";
-    QString preOther = "<font color=\"" + (dark ? clLogOtherDark : clLogOtherLight) + "\">";
+    QString preDate = "<font color=\"" + clLogDate[index] + "\">";
+    QString prePrefix = "<font color=\"" + clLogPrefix[index] + "\">";
+    QString preInf = "<font color=\"" + clLogInf[index] + "\">";
+    QString preWrn = "<font color=\"" + clLogWrn[index] + "\">";
+    QString preErr = "<font color=\"" + clLogErr[index] + "\">";
+    QString preIn = "<font color=\"" + clLogIn[index] + "\">";
+    QString preOut = "<font color=\"" + clLogOut[index] + "\">";
+    QString preTxt = "<font color=\"" + clLogTxt[index] + "\">";
+    QString preDbg = "<font color=\"" + clLogDbg[index] + "\">";
+    QString preOther = "<font color=\"" + clLogOther[index] + "\">";
     QString str = text;
     QString dtStr = "";
     QString typeStr = "";
@@ -269,6 +250,51 @@ QString DialogLog::highlight(const QString &text, bool dark)
     case Log::LogDbg:     return line + preDbg + str + suffix;
     default:              return line + preOther + str + suffix;
     }
+}
+//==============================================================================
+QString DialogLog::highlight(const QString &text, Log::LogType logType, bool dark)
+{
+    int index = dark ? 0 : 1;
+    QString timeStr = QDateTime::currentDateTime().toString("HH:mm:ss.zzz");
+    QString str = text.isEmpty() ? "&nbsp;" : text.toHtmlEscaped();
+    QString colorStr = clDefault[index];
+
+    switch (logType) {
+    case Log::LogInfo:
+        colorStr = clLogInf[index];
+        break;
+    case Log::LogWarning:
+        colorStr = clLogWrn[index];
+        str = "<i>" + str + "</i>";
+        break;
+    case Log::LogError:
+        colorStr = clLogErr[index];
+        str = "<b><i>" + str + "</i></b>";
+        break;
+    case Log::LogIn:
+        colorStr = clLogIn[index];
+        break;
+    case Log::LogOut:
+        colorStr = clLogOut[index];
+        break;
+    case Log::LogText:
+        colorStr = clLogTxt[index];
+        break;
+    case Log::LogDbg:
+        colorStr = clLogDbg[index];
+        break;
+    default:
+        colorStr = clLogOther[index];
+        break;
+    }
+
+    return logOutString
+            .arg(clLogDate[index])
+            .arg(timeStr)
+            .arg(clLogPrefix[index])
+            .arg(Log::getLogTypeStr(logType).toHtmlEscaped())
+            .arg(colorStr)
+            .arg(str);
 }
 //==============================================================================
 void DialogLog::saveToLog(const QString &text, Log::LogType logType)
@@ -327,8 +353,8 @@ void DialogLog::checkBoxDark_toggled(bool checked)
                                            "font-family: Courier New, Lucida Console, Monospace; "
                                            "font-size: 11pt; "
                                            "}")
-                                   .arg(m_dark ? clLight : clDark)
-                                   .arg(m_dark ? clDark : clLight)
+                                   .arg( clDefault[ m_dark ? 1 : 0 ] )
+                                   .arg( clDefault[ m_dark ? 0 : 1 ] )
                                    );
     }
 

@@ -36,26 +36,39 @@
 
 namespace nayk { //=============================================================
 
+const QString clDefault[2]   { "#111416", "#fdfdfd" };
+const QString clLogDate[2]   { "#929292", "#333333" };
+const QString clLogPrefix[2] { "#c88dee", "#562873" };
+const QString clLogInf[2]    { "#ffffff", "#000000" };
+const QString clLogWrn[2]    { "#ff9c54", "#8d3c00" };
+const QString clLogErr[2]    { "#ff4040", "#a50000" };
+const QString clLogIn[2]     { "#55d864", "#003706" };
+const QString clLogOut[2]    { "#dd69bb", "#53003b" };
+const QString clLogTxt[2]    { "#d8d8d8", "#1f1f1f" };
+const QString clLogDbg[2]    { "#00ddc6", "#006766" };
+const QString clLogOther[2]  { "#8f8f8f", "#888888" };
+
 //==============================================================================
 class DialogLog: public QDialog
 {
     Q_OBJECT
+    static const int defaultMaximumBlockCount {5000};
 
 public:
     explicit DialogLog(QWidget *parent = nullptr);
-    explicit DialogLog(int maximumBlockCount = 10000, QWidget *parent = nullptr);
+    explicit DialogLog(int maximumBlockCount = defaultMaximumBlockCount, QWidget *parent = nullptr);
     ~DialogLog();
     int maximumBlockCount() const;
     void setMaximumBlockCount(int maximumBlockCount);
     bool openLogDirButtonVisible() const;
     void setOpenLogDirButtonVisible(bool openLogDirButtonVisible);
     static QString highlight(const QString &text, bool dark = false);
+    static QString highlight(const QString &text, Log::LogType logType, bool dark = false);
 
 signals:
     void openLogDirButtonClicked();
 
 private:
-    const int defaultMaximumBlockCount {10000};
     int m_maximumBlockCount {defaultMaximumBlockCount};
     bool m_openLogDirButtonVisible {false};
     bool m_actionEnable {false};

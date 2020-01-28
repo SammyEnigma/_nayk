@@ -113,28 +113,20 @@ QString extractFilePath(const QString &fileName)
 //==============================================================================
 bool readJsonFromFile(const QString &fileName, QJsonDocument &json, QString &errorString)
 {
-    errorString = "";
-    QFile file( fileName );
+    QByteArray data;
 
-    if(!file.exists()) {
-        errorString =  QObject::tr("File \"%1\" does not exist")
-                .arg(extractFileName( fileName ));
-        return false;
+    if(readFile(fileName, data, errorString)) {
+
+        QJsonParseError parseError;
+        json = QJsonDocument::fromJson( data, &parseError );
+
+        if(parseError.error != QJsonParseError::NoError) {
+            errorString = QObject::tr("Ошибка рабора файла \"%1\":")
+                    .arg( extractFileName( fileName ) ) + "\n" + parseError.errorString();
+            return false;
+        }
     }
-
-    if(!file.open(QFile::ReadOnly)) {
-        errorString = QObject::tr("Failed to open file \"%1\" for reading")
-                .arg( extractFileName( fileName ) );
-        return false;
-    }
-
-    QJsonParseError parseError;
-    json = QJsonDocument::fromJson( file.readAll(), &parseError );
-    file.close();
-
-    if(parseError.error != QJsonParseError::NoError) {
-        errorString = QObject::tr("File \"%1\" parsing error:")
-                .arg( extractFileName( fileName ) ) + "\n" + parseError.errorString();
+    else {
         return false;
     }
 
@@ -147,7 +139,7 @@ bool readJsonFromFile(const QString &fileName, QJsonArray &json, QString &errorS
     if(!readJsonFromFile(fileName, doc, errorString)) return false;
 
     if(!doc.isArray()) {
-        errorString = QObject::tr("File \"%1\" is not JSON array")
+        errorString = QObject::tr("Файл \"%1\" не является массивом JSON")
                 .arg( extractFileName( fileName ) );
         return false;
     }
@@ -162,7 +154,7 @@ bool readJsonFromFile(const QString &fileName, QJsonObject &json, QString &error
     if(!readJsonFromFile(fileName, doc, errorString)) return false;
 
     if(!doc.isObject()) {
-        errorString = QObject::tr("File \"%1\" is not JSON object")
+        errorString = QObject::tr("Файл \"%1\" не является объектом JSON")
                 .arg( extractFileName( fileName ) );
         return false;
     }
@@ -173,34 +165,7 @@ bool readJsonFromFile(const QString &fileName, QJsonObject &json, QString &error
 //==============================================================================
 bool writeJsonToFile(const QString &fileName, const QJsonDocument &json, QString &errorString)
 {
-    errorString = "";
-
-    QFile file( fileName );
-
-    if(!file.open(QFile::WriteOnly)) {
-        errorString = QObject::tr("Failed to open file \"%1\" for writing")
-                .arg( extractFileName( fileName ) );
-        return false;
-    }
-
-    QByteArray buf = json.toJson();
-    int n = static_cast<int>(file.write( buf ));
-    bool res = file.flush();
-    file.close();
-
-    if(n != buf.size()) {
-        errorString = QObject::tr("Failed to write all data to file \"%1\"")
-                .arg( extractFileName( fileName ) );
-        return false;
-    }
-
-    if(!res) {
-        errorString = QObject::tr("Failed to save data to file \"%1\"")
-                .arg( extractFileName( fileName ) );
-        return false;
-    }
-
-    return true;
+    return writeFile(fileName, json.toJson(), errorString);
 }
 //==============================================================================
 bool writeJsonToFile(const QString &fileName, const QJsonArray &json, QString &errorString)
@@ -212,6 +177,60 @@ bool writeJsonToFile(const QString &fileName, const QJsonObject &json, QString &
 {
     return writeJsonToFile(fileName, QJsonDocument(json), errorString);
 }
+//==============================================================================
+bool readFile(const QString &fileName, QByteArray &data, QString &errorString)
+{
+    errorString = "";
+    QFile file( fileName );
+
+    if(!file.exists()) {
+        errorString =  QObject::tr("Файл \"%1\" не существует")
+                .arg(extractFileName( fileName ));
+        return false;
+    }
+
+    if(!file.open(QFile::ReadOnly)) {
+        errorString = QObject::tr("Не удалось открыть файл \"%1\" для чтения")
+                .arg( extractFileName( fileName ) );
+        return false;
+    }
+
+    data = file.readAll();
+    file.close();
+    return true;
+}
+//==============================================================================
+bool writeFile(const QString &fileName, const QByteArray &data, QString &errorString)
+{
+    errorString = "";
+
+    QFile file( fileName );
+
+    if(!file.open(QFile::WriteOnly)) {
+        errorString = QObject::tr("Не удалось открыть файл \"%1\" для записи")
+                .arg( extractFileName( fileName ) );
+        return false;
+    }
+
+    int n = static_cast<int>(file.write( data ));
+    bool res = file.flush();
+    file.close();
+
+    if(res && (n < data.size())) {
+        errorString = QObject::tr("Не удалось записать все данные в файл \"%1\"")
+                .arg( extractFileName( fileName ) );
+        return false;
+    }
+
+    if(!res) {
+        errorString = QObject::tr("Не удалось сохранить данные в файл \"%1\"")
+                .arg( extractFileName( fileName ) );
+        return false;
+    }
+
+    return true;
+}
+//==============================================================================
 
 } // namespace file_sys //======================================================
 

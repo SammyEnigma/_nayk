@@ -46,6 +46,10 @@ const QString iconReload                = ":/icons/reload_48px.png";
 const QString iconSettings              = ":/icons/settings_48px.png";
 const QString iconStart                 = ":/icons/start_48px.png";
 const QString iconStop                  = ":/icons/stop_48px.png";
+const QString iconPrev                  = ":/icons/prev_48px.png";
+const QString iconNext                  = ":/icons/next_48px.png";
+const QString iconPrinter               = ":/icons/printer_48px.png";
+const QString iconPrinterOk             = ":/icons/printer_ok_48px.png";
 
 // led images:
 const QString ledBlue                   = ":/led/led-blue.png";

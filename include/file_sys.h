@@ -49,6 +49,8 @@ bool readJsonFromFile(const QString &fileName, QJsonObject &json, QString &error
 bool writeJsonToFile(const QString &fileName, const QJsonDocument &json, QString &errorString);
 bool writeJsonToFile(const QString &fileName, const QJsonArray &json, QString &errorString);
 bool writeJsonToFile(const QString &fileName, const QJsonObject &json, QString &errorString);
+bool readFile(const QString &fileName, QByteArray &data, QString &errorString);
+bool writeFile(const QString &fileName, const QByteArray &data, QString &errorString);
 
 } // namespace file_sys //======================================================
 #endif // FILE_SYS_H

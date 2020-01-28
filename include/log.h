@@ -70,6 +70,7 @@ public:
     static QString getLogPrefix(LogType logType,
                                 const QDateTime &date = QDateTime::currentDateTime());
     static LogType strToLogType(const QString &typeStr);
+    void deleteOldLogFiles(const QString &fileMask = QString("*.log"), int maxCount = 10);
 
 private:
     const QString defaultLogDirName {"log"};

@@ -37,6 +37,7 @@ void installTranslations(const QString &translationsDir = QString("translations"
 QString applicationVersion();
 QString applicationBuildDate();
 QString applicationFullPath();
+QString applicationRootPath();
 QString applicationProfilePath();
 bool parameterExists(const QString &name, const QString &shortName = QString(),
                      QString *value = nullptr);

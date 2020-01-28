@@ -29,7 +29,7 @@
 
 namespace gui_utils { //========================================================
 
-void moveToCenterScreen(QWidget *widget, int screenNumber = 0);
+void moveToCenterScreen(QWidget *widget, int screenNumber = -1);
 void messageError(QWidget *parent, const QString &text);
 void messageWarning(QWidget *parent, const QString &text);
 void messageInfo(QWidget *parent, const QString &text);
@@ -41,9 +41,11 @@ void messageInfo(const QString &text);
 bool messageConfirm(const QString &text);
 int messageDialog(const QString &text);
 QWidget *mainWindowWidget();
-void showAboutDialog(const QString &developer = QString(),
+void showAboutDialog(const QString &title = QString(),
+                     const QString &developer = QString(),
                      const QString &description = QString(),
                      bool showOrganization = false);
+void updateApplicationStyle();
 
 } // namespace gui_utils =======================================================
 #endif // GUI_UTILS_H

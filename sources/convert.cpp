@@ -157,10 +157,7 @@ quint64 bcdDecodeUnsigned(quint64 bcdValue, bool *ok)
 QString intToHex(quint8 val, int len, bool withPrefix)
 {
     QString prefix = withPrefix ? "0x" : "";
-    QString res = QString::number(val, 16);
-
-    while(res.length() < len)
-        res = "0" + res;
+    QString res = QString::number(val, 16).rightJustified(len, '0');
 
     return prefix + res.toUpper().right(len);
 }
@@ -173,10 +170,7 @@ QString intToHex(qint8 val, int len, bool withPrefix)
 QString intToHex(quint16 val, int len, bool withPrefix)
 {
     QString prefix = withPrefix ? "0x" : "";
-    QString res = QString::number(val, 16);
-
-    while(res.length() < len)
-        res = "0" + res;
+    QString res = QString::number(val, 16).rightJustified(len, '0');
 
     return prefix + res.toUpper().right(len);
 }
@@ -189,10 +183,7 @@ QString intToHex(qint16 val, int len, bool withPrefix)
 QString intToHex(quint32 val, int len, bool withPrefix)
 {
     QString prefix = withPrefix ? "0x" : "";
-    QString res = QString::number(val, 16);
-
-    while(res.length() < len)
-        res = "0" + res;
+    QString res = QString::number(val, 16).rightJustified(len, '0');
 
     return prefix + res.toUpper().right(len);
 }
@@ -205,10 +196,7 @@ QString intToHex(qint32 val, int len, bool withPrefix)
 QString intToHex(quint64 val, int len, bool withPrefix)
 {
     QString prefix = withPrefix ? "0x" : "";
-    QString res = QString::number(val, 16);
-
-    while(res.length() < len)
-        res = "0" + res;
+    QString res = QString::number(val, 16).rightJustified(len, '0');
 
     return prefix + res.toUpper().right(len);
 }
@@ -326,10 +314,7 @@ qint8 strToIntDef(const QString &str, qint8 defaultValue)
 
     int n = val.toInt(&ok, base);
 
-    if (ok)
-        return static_cast<qint8>(n);
-    else
-        return defaultValue;
+    return ok ? static_cast<qint8>(n) : defaultValue;
 }
 //==============================================================================
 quint8 strToIntDef(const QString &str, quint8 defaultValue)
@@ -350,10 +335,7 @@ qint16 strToIntDef(const QString &str, qint16 defaultValue)
 
     qint16 n = val.toShort(&ok, base);
 
-    if (ok)
-        return n;
-    else
-        return defaultValue;
+    return ok ? n : defaultValue;
 }
 //==============================================================================
 quint16 strToIntDef(const QString &str, quint16 defaultValue)
@@ -368,10 +350,8 @@ quint16 strToIntDef(const QString &str, quint16 defaultValue)
     }
 
     quint16 n = val.toUShort(&ok, base);
-    if (ok)
-        return n;
-    else
-        return defaultValue;
+
+    return ok ? n : defaultValue;
 }
 //==============================================================================
 qint32 strToIntDef(const QString &str, qint32 defaultValue)
@@ -387,10 +367,7 @@ qint32 strToIntDef(const QString &str, qint32 defaultValue)
 
     qint32 n = val.toInt(&ok, base);
 
-    if (ok)
-        return n;
-    else
-        return defaultValue;
+    return ok ? n : defaultValue;
 }
 //==============================================================================
 quint32 strToIntDef(const QString &str, quint32 defaultValue)
@@ -406,10 +383,7 @@ quint32 strToIntDef(const QString &str, quint32 defaultValue)
 
     quint32 n = val.toUInt(&ok, base);
 
-    if (ok)
-        return n;
-    else
-        return defaultValue;
+    return ok ? n : defaultValue;
 }
 //==============================================================================
 qint64 strToIntDef(const QString &str, qint64 defaultValue)
@@ -425,10 +399,7 @@ qint64 strToIntDef(const QString &str, qint64 defaultValue)
 
     qint64 n = val.toLongLong(&ok, base);
 
-    if (ok)
-        return n;
-    else
-        return defaultValue;
+    return ok ? n : defaultValue;
 }
 //==============================================================================
 quint64 strToIntDef(const QString &str, quint64 defaultValue)
@@ -444,10 +415,7 @@ quint64 strToIntDef(const QString &str, quint64 defaultValue)
 
     quint64 n = val.toULongLong(&ok, base);
 
-    if (ok)
-        return n;
-    else
-        return defaultValue;
+    return ok ? n : defaultValue;
 }
 //==============================================================================
 QString doubleToStr(qreal val, int precise, QLocale::NumberOption numberOptions)
@@ -462,13 +430,14 @@ QString doubleToStr(qreal val, int precise, QLocale::NumberOption numberOptions)
     c.setNumberOptions( numberOptions );
     QString valStr = qIsFinite(val) ? c.toString( val, 'f', precise) : "";
 
-    if(valStr.isNull())
-        return "";
+    if(!valStr.isEmpty()) {
+        bool ok;
+        double d = strToDouble(valStr, &ok);
+        Q_UNUSED(d)
+        if(!ok) return QString();
+    }
 
-    bool ok;
-    double d=strToDouble(valStr, &ok);
-    Q_UNUSED(d)
-    return  ok ? valStr : "";
+    return  valStr;
 }
 //==============================================================================
 qreal strToDouble(const QString &str, bool *ok)
@@ -530,6 +499,15 @@ QDateTime strToDateTime(const QString &str)
 
     return QDateTime( QDate(y, m, d), QTime(h, n, s) );
 }
+//==============================================================================
+QString bytesToHex(const QByteArray &data, const QString &splitter)
+{
+    QString result {""};
+    for(int i=0; i<data.size(); ++i)
+        result += intToHex(static_cast<quint8>(data.at(i)), 2, false) + splitter;
+    return result.trimmed();
+}
+//==============================================================================
 
 } // namespace convert //=======================================================
 

@@ -35,7 +35,8 @@
 #include <QPlainTextEdit>
 #include <QSpacerItem>
 
-#include "GuiAppCore"
+#include "AppCore"
+#include "FileSys"
 #include "ImagesConst"
 #include "gui_utils.h"
 
@@ -47,9 +48,11 @@ using namespace nayk;
 void moveToCenterScreen(QWidget *widget, int screenNumber)
 {
     if(!widget) return;
-    if(screenNumber < 0 || screenNumber >= QApplication::screens().size() ) return;
+    if(screenNumber >= QApplication::screens().size() ) return;
 
-    QScreen* screen = QApplication::screens().at(screenNumber);
+    QScreen* screen = (screenNumber < 0)
+            ? QApplication::primaryScreen()
+            : QApplication::screens().at(screenNumber);
     widget->move( screen->availableGeometry().left()
                   + (screen->availableGeometry().width() - widget->geometry().width()) / 2,
                   screen->availableGeometry().top()
@@ -125,7 +128,7 @@ QWidget *mainWindowWidget()
     return nullptr;
 }
 //==============================================================================
-void showAboutDialog(const QString &developer,
+void showAboutDialog(const QString &title, const QString &developer,
                      const QString &description, bool showOrganization)
 {
     QWidget *mainWidget = mainWindowWidget();
@@ -141,7 +144,7 @@ void showAboutDialog(const QString &developer,
     dialogAbout = new QDialog(mainWidget);
     dialogAbout->setObjectName("dialogAbout");
     dialogAbout->setAttribute(Qt::WA_DeleteOnClose);
-    dialogAbout->setWindowTitle( dialogAbout->tr("About") );
+    dialogAbout->setWindowTitle( dialogAbout->tr("О программе") );
     dialogAbout->setFixedSize(560, 600);
 
     QVBoxLayout *vBoxLayout = new QVBoxLayout(dialogAbout);
@@ -162,7 +165,10 @@ void showAboutDialog(const QString &developer,
     }
 
     vBoxLayout->addStretch(10);
-    QLabel *titleLabel = new QLabel( QApplication::applicationDisplayName(), dialogAbout );
+    QLabel *titleLabel = new QLabel(
+                title.isEmpty()
+                ? QApplication::applicationDisplayName()
+                : title, dialogAbout );
     titleLabel->setStyleSheet("font-size: 18pt;");
     titleLabel->setAlignment( Qt::AlignCenter );
 
@@ -181,7 +187,7 @@ void showAboutDialog(const QString &developer,
         titleLayout->addWidget(labelIcon);
         titleLayout->addWidget(titleLabel);
         titleLayout->addStretch();
-        vBoxLayout->addLayout( titleLayout );
+        vBoxLayout->addLayout(titleLayout);
     }
     else {
         titleLabel->setMinimumHeight( 40 );
@@ -196,7 +202,7 @@ void showAboutDialog(const QString &developer,
     const QString labelStyle = "font-size: 11pt;";
     const QString valueStyle = "font-size: 11pt; font-weight: bold; padding-left: 10px;";
 
-    QLabel *label = new QLabel( dialogAbout->tr("Version:"), dialogAbout );
+    QLabel *label = new QLabel( dialogAbout->tr("Версия:"), dialogAbout );
     label->setStyleSheet(labelStyle);
     gridLayout->addWidget(label, row, 0);
     label = new QLabel( QApplication::applicationVersion(), dialogAbout );
@@ -205,7 +211,7 @@ void showAboutDialog(const QString &developer,
     row++;
 
 #if defined (APP_BUILD_DATE)
-    label = new QLabel( dialogAbout->tr("Build date:"), dialogAbout );
+    label = new QLabel( dialogAbout->tr("Дата релиза:"), dialogAbout );
     label->setStyleSheet(labelStyle);
     gridLayout->addWidget(label, row, 0);
     label = new QLabel( QString(APP_BUILD_DATE), dialogAbout );
@@ -215,7 +221,7 @@ void showAboutDialog(const QString &developer,
 #endif
 
     if(showOrganization) {
-        label = new QLabel( dialogAbout->tr("Organization:"), dialogAbout );
+        label = new QLabel( dialogAbout->tr("Организация:"), dialogAbout );
         label->setStyleSheet(labelStyle);
         gridLayout->addWidget(label, row, 0);
         label = new QLabel( QApplication::organizationName(), dialogAbout );
@@ -225,7 +231,7 @@ void showAboutDialog(const QString &developer,
     }
 
     if(!developer.isEmpty()) {
-        label = new QLabel( dialogAbout->tr("Developer:"), dialogAbout );
+        label = new QLabel( dialogAbout->tr("Разработчик:"), dialogAbout );
         label->setStyleSheet(labelStyle);
         gridLayout->addWidget(label, row, 0);
         label = new QLabel( developer, dialogAbout );
@@ -266,6 +272,24 @@ void showAboutDialog(const QString &developer,
     vBoxLayout->addSpacerItem( new QSpacerItem(20, 20) );
     dialogAbout->setLayout( vBoxLayout );
     dialogAbout->show();
+}
+//==============================================================================
+void updateApplicationStyle()
+{
+    QWidget *mainWnd = mainWindowWidget();
+    QString qss = mainWnd ? mainWnd->styleSheet() : "";
+    QString qssFileName = app_core::applicationRootPath() + "style.qss";
+    QByteArray data;
+    QString err;
+
+    if(file_sys::fileExists( qssFileName )
+            && file_sys::readFile(qssFileName, data, err)) {
+
+        qss = QString(data);
+    }
+
+    if(mainWnd) mainWnd->setStyleSheet("");
+    qApp->setStyleSheet(qss);
 }
 //==============================================================================
 
