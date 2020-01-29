@@ -192,7 +192,7 @@ bool ComPort::setPortName(const QString &portName)
     return true;
 }
 //==============================================================================
-bool ComPort::setBaudRate(QSerialPort::BaudRate baudRate)
+bool ComPort::setBaudRate(qint32 baudRate)
 {
     if(m_port.baudRate() == baudRate) return true;
 
@@ -300,6 +300,36 @@ bool ComPort::setFlowControl(QSerialPort::FlowControl flowControl)
     emit toLog( m_lastError, Log::LogError);
 #endif
     return false;
+}
+//==============================================================================
+QString ComPort::portName() const
+{
+    return m_port.portName();
+}
+//==============================================================================
+qint32 ComPort::baudRate() const
+{
+    return m_port.baudRate();
+}
+//==============================================================================
+QSerialPort::DataBits ComPort::dataBits() const
+{
+    return m_port.dataBits();
+}
+//==============================================================================
+QSerialPort::StopBits ComPort::stopBits() const
+{
+    return m_port.stopBits();
+}
+//==============================================================================
+QSerialPort::Parity ComPort::parity() const
+{
+    return m_port.parity();
+}
+//==============================================================================
+QSerialPort::FlowControl ComPort::flowControl() const
+{
+    return m_port.flowControl();
 }
 //==============================================================================
 bool ComPort::open(bool readOnly)

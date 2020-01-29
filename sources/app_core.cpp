@@ -85,7 +85,7 @@ void installTranslations(const QString &translationsDir, const QString &language
     for(const QString &fileName: filesList) {
 
         QTranslator *translator = new QTranslator(application);
-        if(!translator->load(fileName)) {
+        if(!translator->load( translationsDir + directorySeparator + fileName )) {
             delete translator;
             continue;
         }
@@ -116,6 +116,9 @@ QString applicationFullPath()
 //==============================================================================
 QString applicationProfilePath()
 {
+    if(!qApp->property("profilePath").isNull())
+        return qApp->property("profilePath").toString();
+
     QString path = applicationRootPath();
     QString profileDir;
 
@@ -138,6 +141,7 @@ QString applicationProfilePath()
         }
     }
 
+    qApp->setProperty("profilePath", profileDir);
     return profileDir;
 }
 //==============================================================================

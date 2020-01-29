@@ -145,7 +145,7 @@ void showAboutDialog(const QString &title, const QString &developer,
     dialogAbout->setObjectName("dialogAbout");
     dialogAbout->setAttribute(Qt::WA_DeleteOnClose);
     dialogAbout->setWindowTitle( dialogAbout->tr("О программе") );
-    dialogAbout->setFixedSize(560, 600);
+    dialogAbout->setFixedSize(560, 560);
 
     QVBoxLayout *vBoxLayout = new QVBoxLayout(dialogAbout);
     vBoxLayout->setAlignment(Qt::AlignCenter);
@@ -171,6 +171,7 @@ void showAboutDialog(const QString &title, const QString &developer,
                 : title, dialogAbout );
     titleLabel->setStyleSheet("font-size: 18pt;");
     titleLabel->setAlignment( Qt::AlignCenter );
+    titleLabel->sizePolicy().setHorizontalPolicy( QSizePolicy::Minimum );
 
     if(QFile::exists(imageMainIcon)) {
 
@@ -262,7 +263,7 @@ void showAboutDialog(const QString &title, const QString &developer,
         vBoxLayout->addLayout(layout);
     }
     else {
-        vBoxLayout->addStretch();
+        vBoxLayout->addStretch(100);
     }
 
     QDialogButtonBox *buttonBox = new QDialogButtonBox( QDialogButtonBox::Ok, Qt::Horizontal, dialogAbout );

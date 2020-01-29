@@ -62,11 +62,17 @@ public:
     virtual ~ComPort();
     QString lastError() const;
     bool setPortName(const QString &portName);
-    bool setBaudRate(QSerialPort::BaudRate baudRate);
+    bool setBaudRate(qint32 baudRate);
     bool setDataBits(QSerialPort::DataBits dataBits);
     bool setStopBits(QSerialPort::StopBits stopBits);
     bool setParity(QSerialPort::Parity parity);
     bool setFlowControl(QSerialPort::FlowControl flowControl);
+    QString portName() const;
+    qint32 baudRate() const;
+    QSerialPort::DataBits dataBits() const;
+    QSerialPort::StopBits stopBits() const;
+    QSerialPort::Parity parity() const;
+    QSerialPort::FlowControl flowControl() const;
     bool open(bool readOnly = false);
     void close();
     bool isOpen() const;
