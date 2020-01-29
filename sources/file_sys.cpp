@@ -231,6 +231,20 @@ bool writeFile(const QString &fileName, const QByteArray &data, QString &errorSt
     return true;
 }
 //==============================================================================
+qint64 fileSize(const QString &fileName)
+{
+    QFile file(fileName);
+    qint64 result = 0;
+
+    if(file.open(QIODevice::ReadOnly)) {
+
+        result = file.size();
+        file.close();
+    }
+
+    return result;
+}
+//==============================================================================
 
 } // namespace file_sys //======================================================
 

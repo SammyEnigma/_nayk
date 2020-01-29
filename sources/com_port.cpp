@@ -746,7 +746,7 @@ qint64 ComPort::bufferSize() const
     return m_port.readBufferSize();
 }
 //==============================================================================
-void ComPort::setBufferSize(const qint64 &bufferSize)
+void ComPort::setBufferSize(qint64 bufferSize)
 {
     m_port.setReadBufferSize(bufferSize);
 

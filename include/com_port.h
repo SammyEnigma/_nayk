@@ -81,7 +81,7 @@ public:
     QByteArray read(qint64 count = -1);
     QByteArray readBuffer() const;
     qint64 bufferSize() const;
-    void setBufferSize(const qint64 &bufferSize);
+    void setBufferSize(qint64 bufferSize);
     bool autoRead() const;
     void setAutoRead(bool autoRead);
     bool isRts();

@@ -51,6 +51,7 @@ bool writeJsonToFile(const QString &fileName, const QJsonArray &json, QString &e
 bool writeJsonToFile(const QString &fileName, const QJsonObject &json, QString &errorString);
 bool readFile(const QString &fileName, QByteArray &data, QString &errorString);
 bool writeFile(const QString &fileName, const QByteArray &data, QString &errorString);
+qint64 fileSize(const QString &fileName);
 
 } // namespace file_sys //======================================================
 #endif // FILE_SYS_H
