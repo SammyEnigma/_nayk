@@ -41,8 +41,6 @@
 #   include "Log"
 #endif
 
-#include "HttpConst"
-
 namespace nayk { //=============================================================
 
 class HttpServer : public QObject

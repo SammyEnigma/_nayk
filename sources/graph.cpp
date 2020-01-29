@@ -154,8 +154,7 @@ bool drawCircle(QPainter* painter, const QPointF &centerPoint, qreal radius,
 bool drawCircle(QPainter* painter, const QPointF &centerPoint, qreal radius,
                 const QColor &bgColor, const QColor &borderColor, qreal borderWidth )
 {
-    if(!painter)
-        return false;
+    if(!painter) return false;
 
     painter->setBrush( QBrush(bgColor) );
     painter->setPen( QPen( QBrush(borderColor), borderWidth ) );
@@ -175,8 +174,7 @@ bool drawText(QPainter* painter, qreal x, qreal y, const QString &text,
               const QString &fontFace, qreal fontSize, qreal fontWeight, const QColor &color,
               Qt::Alignment align, const QColor &shadowColor, int shadow_cx, int shadow_cy)
 {
-    if(!painter)
-        return false;
+    if(!painter) return false;
 
     QFont font = painter->font();
     font.setFamily( fontFace );

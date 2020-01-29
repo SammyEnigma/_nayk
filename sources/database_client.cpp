@@ -27,7 +27,10 @@
 #include <QtSql/QSqlRecord>
 #include <QtSql/QSqlField>
 #include "database_client.h"
+
 namespace nayk { //=============================================================
+
+const QString sqlErrorString = QObject::tr("Ошибка SQL: %1");
 
 //==============================================================================
 DataBaseClient::DataBaseClient(QObject *parent) : QObject(parent)
@@ -123,7 +126,7 @@ bool DataBaseClient::open(bool reconnect)
     QSqlDatabase db = QSqlDatabase::addDatabase(m_sqlDriver, m_connectionName);
 
     if(!db.isValid()) {
-        m_lastError = tr("Failed to create database connection");
+        m_lastError = tr("Не удалось создать подключение к БД");
 #if !defined(WITHOUT_LOG)
         emit toLog(m_lastError, Log::LogError);
 #endif
@@ -138,7 +141,7 @@ bool DataBaseClient::open(bool reconnect)
     db.setPort(m_port);
 
 #if !defined(WITHOUT_LOG)
-    emit toLog(tr("Database connection settings: host=%1; port=%2; base=%3; user=%4")
+    emit toLog(tr("Настройки подключения к БД: host=%1; port=%2; base=%3; user=%4")
                .arg(db.hostName())
                .arg(db.port())
                .arg(db.databaseName())
@@ -150,15 +153,14 @@ bool DataBaseClient::open(bool reconnect)
     if (!db.open()) {
         m_lastError = db.lastError().text();
 #if !defined(WITHOUT_LOG)
-        emit toLog(tr("Database not open: %1").arg( m_lastError ), Log::LogError);
+        emit toLog(tr("Не удалось установить соединение с БД: %1").arg( m_lastError ), Log::LogError);
 #endif
         emit error();
         return false;
     }
 
 #if !defined(WITHOUT_LOG)
-    emit toLog(tr("Database is open"), Log::LogInfo);
-
+    emit toLog(tr("Установлено соединение с БД"), Log::LogInfo);
 #endif
     emit opened();
     return true;
@@ -171,7 +173,7 @@ bool DataBaseClient::close()
 
     db().close();
 #if !defined(WITHOUT_LOG)
-    emit toLog(tr("Close database"), Log::LogInfo);
+    emit toLog(tr("Соединение с БД завершено"), Log::LogInfo);
 #endif
     emit closed();
     return true;
@@ -208,7 +210,7 @@ QSqlDatabase DataBaseClient::db() const
 bool DataBaseClient::execSQL(const QString &sqlText, QSqlQuery *query, bool withTransaction)
 {
     if(!isOpen(true)) {
-        m_lastError = tr("SQL query error: Database not open");
+        m_lastError = sqlErrorString.arg(tr("Соединение с БД не установлено"));
 #if !defined(WITHOUT_LOG)
         emit toLog(m_lastError, Log::LogError);
 #endif
@@ -217,7 +219,7 @@ bool DataBaseClient::execSQL(const QString &sqlText, QSqlQuery *query, bool with
     }
 
     if(!query) {
-        m_lastError = tr("SQL query error: QSqlQuery is null");
+        m_lastError = sqlErrorString.arg(tr("Некорректный экземпляр QSqlQuery"));
 #if !defined(WITHOUT_LOG)
         emit toLog(m_lastError, Log::LogError);
 #endif
@@ -229,7 +231,7 @@ bool DataBaseClient::execSQL(const QString &sqlText, QSqlQuery *query, bool with
     if(withTransaction) dataBase.transaction();
 
     if(!query->exec(sqlText)) {
-        m_lastError = tr("SQL query error: %1").arg(query->lastError().text());
+        m_lastError = sqlErrorString.arg(query->lastError().text());
         if(withTransaction) dataBase.rollback();
 #if !defined(WITHOUT_LOG)
         emit toLog("SQL: " + sqlText, Log::LogDbg);
@@ -253,18 +255,10 @@ bool DataBaseClient::tableExist(const QString &tableName)
     return isOpen() && db().tables().contains( tableName );
 }
 //==============================================================================
-bool DataBaseClient::getTables(QStringList *list)
+bool DataBaseClient::getTables(QStringList &list)
 {
-    if(!list) {
-        m_lastError = tr("QStringList is null");
-#if !defined(WITHOUT_LOG)
-        emit toLog(m_lastError, Log::LogError);
-#endif
-        return false;
-    }
-
     if(!isOpen()) {
-        m_lastError = tr("SQL query error: Database not open");
+        m_lastError = sqlErrorString.arg(tr("Соединение с БД не установлено"));
 #if !defined(WITHOUT_LOG)
         emit toLog(m_lastError, Log::LogError);
 #endif
@@ -272,23 +266,15 @@ bool DataBaseClient::getTables(QStringList *list)
         return false;
     }
 
-    list->clear();
-    list->append( db().tables(QSql::Tables) );
+    list.clear();
+    list.append( db().tables(QSql::Tables) );
     return true;
 }
 //==============================================================================
-bool DataBaseClient::getTableFields(const QString &tableName, QStringList *list)
+bool DataBaseClient::getTableFields(const QString &tableName, QStringList &list)
 {
-    if(!list) {
-        m_lastError = tr("QStringList is null");
-#if !defined(WITHOUT_LOG)
-        emit toLog(m_lastError, Log::LogError);
-#endif
-        return false;
-    }
-
     if(!isOpen()) {
-        m_lastError = tr("SQL query error: Database not open");
+        m_lastError = sqlErrorString.arg(tr("Соединение с БД не установлено"));
 #if !defined(WITHOUT_LOG)
         emit toLog(m_lastError, Log::LogError);
 #endif
@@ -297,24 +283,24 @@ bool DataBaseClient::getTableFields(const QString &tableName, QStringList *list)
     }
 
     if(!tableExist(tableName)) {
-        m_lastError = tr("Table '%1' not found");
+        m_lastError = tr("Таблица '%1' не существует").arg(tableName);
 #if !defined(WITHOUT_LOG)
         emit toLog(m_lastError, Log::LogError);
 #endif
         return false;
     }
 
-    QString sql = QString("select * from \"%1\" limit 1;").arg(tableName);
+    QString sql = QString("SELECT * FROM \"%1\" LIMIT 1;").arg(tableName);
     QSqlQuery query(db());
 
     if(!execSQL(sql, &query)) return false;
 
     QSqlRecord rec = query.record();
 
-    list->clear();
+    list.clear();
 
-    for(auto i = 0; i < rec.count(); i++) {
-        list->append(rec.field(i).name());
+    for(auto i = 0; i < rec.count(); ++i) {
+        list.append(rec.field(i).name());
     }
 
     return true;

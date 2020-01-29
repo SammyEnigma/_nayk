@@ -173,51 +173,55 @@ void resetAttributes()
     out << QString("\033[0m");
 }
 //==============================================================================
-void setColors(int textColor, int bgColor)
+void setColors(Color textColor, Color bgColor)
 {
     QTextStream out(stdout);
     bool bright = false;
+    int textCl = qBound(0, static_cast<int>(textColor), 15);
+    int bgCl = qBound(0, static_cast<int>(bgColor), 15);
 
-    if(textColor > 7) {
+    if(textCl > 7) {
         bright = true;
-        textColor = textColor - 8;
+        textCl = textCl - 8;
     }
 
-    if(bgColor > 7) {
+    if(bgCl > 7) {
         bright = true;
-        bgColor = bgColor - 8;
+        bgCl = bgCl - 8;
     }
 
     out << QString("\033[%1;%2%3m")
-           .arg(40+bgColor)
-           .arg(30+textColor)
+           .arg(40+bgCl)
+           .arg(30+textCl)
            .arg(bright ? ";1" : "");
 }
 //==============================================================================
-void setTextColor(int color)
+void setTextColor(Color color)
 {
     QTextStream out(stdout);
     bool bright = false;
+    int cl = qBound(0, static_cast<int>(color), 15);
 
-    if(color > 7) {
+    if(cl > 7) {
         bright = true;
-        color = color - 8;
+        cl = cl - 8;
     }
 
-    out << QString("\033[%1%2m").arg(30+color).arg(bright ? ";1" : "");
+    out << QString("\033[%1%2m").arg(30+cl).arg(bright ? ";1" : "");
 }
 //==============================================================================
-void setBgColor(int color)
+void setBgColor(Color color)
 {
     QTextStream out(stdout);
     bool bright = false;
+    int cl = qBound(0, static_cast<int>(color), 15);
 
-    if(color > 7) {
+    if(cl > 7) {
         bright = true;
-        color = color - 8;
+        cl = cl - 8;
     }
 
-    out << QString("\033[%1%2m").arg(40+color).arg(bright ? ";1" : "");
+    out << QString("\033[%1%2m").arg(40+cl).arg(bright ? ";1" : "");
 }
 //==============================================================================
 void blink(bool on)
@@ -226,9 +230,9 @@ void blink(bool on)
     out << QString("\033[%1m").arg(on ? 5 : 25);
 }
 //==============================================================================
-void frame(int row, int col, int width, int height, bool doubleBorder, int color)
+void frame(int row, int col, int width, int height, bool doubleBorder, Color color)
 {
-    if(color >= 0) setTextColor(color);
+    if(color != ColorNone) setTextColor(color);
 
     QTextStream out(stdout);
     out << QString("\033[%1;%2H").arg(row).arg(col);
@@ -257,10 +261,9 @@ void frame(int row, int col, int width, int height, bool doubleBorder, int color
     out << QString(doubleBorder ? "╝" : "┘");
 }
 //==============================================================================
-void rectangle(int row, int col, int width, int height, int color)
+void rectangle(int row, int col, int width, int height, Color color)
 {
-    if(color >= 0)
-        setBgColor(color);
+    if(color != ColorNone) setBgColor(color);
 
     QTextStream out(stdout);
 
@@ -273,12 +276,12 @@ void rectangle(int row, int col, int width, int height, int color)
     }
 }
 //==============================================================================
-void frame(const QRect &rect, bool doubleBorder, int color)
+void frame(const QRect &rect, bool doubleBorder, Color color)
 {
     frame(rect.top(), rect.left(), rect.width(), rect.height(), doubleBorder, color);
 }
 //==============================================================================
-void rectangle(const QRect &rect, int color)
+void rectangle(const QRect &rect, Color color)
 {
     rectangle(rect.top(), rect.left(), rect.width(), rect.height(), color);
 }
@@ -316,6 +319,7 @@ int height()
 {
     return getSize().height();
 }
+//==============================================================================
 
 } // namespace console //=======================================================
 

@@ -29,6 +29,7 @@
 #include <QVariant>
 #include <QtSerialPort/QSerialPort>
 #include <QByteArray>
+#include <QTimer>
 
 #if defined (QT_GUI_LIB)
 #    include <QComboBox>
@@ -44,11 +45,6 @@ namespace nayk { //=============================================================
 class ComPort : public QObject
 {
     Q_OBJECT
-    Q_PROPERTY(QString lastError READ lastError CONSTANT)
-
-    const QChar  defaultXOn {17};
-    const QChar  defaultXOff {19};
-    const qint64 defaultBufferSize {1024};
 
 public:
 #if defined (QT_GUI_LIB)
@@ -65,7 +61,7 @@ public:
     explicit ComPort(QObject *parent = nullptr);
     virtual ~ComPort();
     QString lastError() const;
-    void setPortName(const QString &portName);
+    bool setPortName(const QString &portName);
     bool setBaudRate(QSerialPort::BaudRate baudRate);
     bool setDataBits(QSerialPort::DataBits dataBits);
     bool setStopBits(QSerialPort::StopBits stopBits);
@@ -80,12 +76,16 @@ public:
     QByteArray readBuffer() const;
     qint64 bufferSize() const;
     void setBufferSize(const qint64 &bufferSize);
-    QChar charXon() const;
-    void setCharXon(const QChar &charXon);
-    QChar charXoff() const;
-    void setCharXoff(const QChar &charXoff);
     bool autoRead() const;
     void setAutoRead(bool autoRead);
+    bool isRts();
+    bool isDtr();
+    bool isCts();
+    bool isDsr();
+    void clearAllBuffers();
+    void clearReadBuffer();
+    void clearWriteBuffer();
+    QString portSettings();
 
 #if defined (QT_GUI_LIB)
     static void fillComboBoxPortProperty(QComboBox *comboBox, PortProperty portProperty,
@@ -107,33 +107,33 @@ signals:
     void toLog(const QString &text, Log::LogType logType = Log::LogInfo);
 #endif
     void portError();
-    void beforeOpen();
-    void afterOpen();
-    void beforeClose();
-    void afterClose();
+    void portOpen();
+    void portClose();
     void bytesRead(qint64 count);
     void bytesWrite(qint64 count);
-    void readyChange(bool ready);
     void rts(bool on);
     void dtr(bool on);
-    void xon(bool on);
+    void cts(bool on);
+    void dsr(bool on);
     void readyRead();
 
 private:
-    QSerialPort serialPort;
+    bool m_busy {true};
+    bool m_cts {false};
+    bool m_dsr {false};
+    QSerialPort m_port;
     QString m_lastError {""};
     bool m_autoRead {true};
-    bool m_ready {false};
-    qint64 m_bufferSize {defaultBufferSize};
-    QChar m_charXon {defaultXOn};
-    QChar m_charXoff {defaultXOff};
     QByteArray m_buffer;
+    QTimer m_timer;
 
 private slots:
-    void serialPort_errorOccurred(QSerialPort::SerialPortError error);
+    void serialPort_error(QSerialPort::SerialPortError error);
     void serialPort_requestToSendChanged(bool set);
     void serialPort_dataTerminalReadyChanged(bool set);
     void serialPort_readyRead();
+    void serialPort_bytesWriten(qint64 count);
+    void on_timerTimeOut();
 };
 //==============================================================================
 

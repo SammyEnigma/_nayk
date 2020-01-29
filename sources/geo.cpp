@@ -28,6 +28,7 @@
 
 namespace geo { //==============================================================
 
+//==============================================================================
 QPointF coordGeoToMap(qreal latitude, qreal longitude, qreal map_width, qreal cx, qreal cy)
 {
     qreal aa = map_width / earth_equator; // кол-во пикселей в метре
@@ -55,6 +56,7 @@ QPointF coordMapToGeo(qreal x, qreal y, qreal map_width, qreal cx, qreal cy)
      }
      return QPointF( qRadiansToDegrees( x / earth_a ),  qRadiansToDegrees(phi)  );
 }
+//==============================================================================
 
 } // namespace geo //===========================================================
 

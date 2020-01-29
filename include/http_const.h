@@ -27,7 +27,7 @@
 
 #include <QString>
 
-namespace nayk { //=================================================================================
+namespace nayk { //=============================================================
 
 const QString contentTypeImageGIF             = "image/gif";
 const QString contentTypeImageJPEG            = "image/jpeg";
@@ -94,6 +94,5 @@ const QString headerContentLength             = "Content-Length";
 const QString headerContentType               = "Content-Type";
 const QString headerCookie                    = "Set-Cookie";
 
-
-} // namespace nayk //==============================================================================
+} // namespace nayk //==========================================================
 #endif // HTTP_CONST_H

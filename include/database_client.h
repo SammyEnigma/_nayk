@@ -63,8 +63,8 @@ public:
     bool execSQL(const QString &sqlText, QSqlQuery *query, bool withTransaction = false);
     bool execSQL(const QString &sqlText);
     bool tableExist(const QString &tableName);
-    bool getTables(QStringList *list);
-    bool getTableFields(const QString &tableName, QStringList *list);
+    bool getTables(QStringList &list);
+    bool getTableFields(const QString &tableName, QStringList &list);
 
 signals:
 #if !defined(WITHOUT_LOG)

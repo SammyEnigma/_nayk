@@ -32,22 +32,25 @@
 
 namespace console { //==========================================================
 
-const int colorBlack         = 0;
-const int colorRed           = 1;
-const int colorGreen         = 2;
-const int colorYellow        = 3;
-const int colorBlue          = 4;
-const int colorMagenta       = 5;
-const int colorCyan          = 6;
-const int colorWhite         = 7;
-const int colorBrightBlack   = 8;
-const int colorBrightRed     = 9;
-const int colorBrightGreen   = 10;
-const int colorBrightYellow  = 11;
-const int colorBrightBlue    = 12;
-const int colorBrightMagenta = 13;
-const int colorBrightCyan    = 14;
-const int colorBrightWhite   = 15;
+enum Color {
+    ColorNone          = -1,
+    ColorBlack         = 0,
+    ColorRed           = 1,
+    ColorGreen         = 2,
+    ColorYellow        = 3,
+    ColorBlue          = 4,
+    ColorMagenta       = 5,
+    ColorCyan          = 6,
+    ColorWhite         = 7,
+    ColorBrightBlack   = 8,
+    ColorBrightRed     = 9,
+    ColorBrightGreen   = 10,
+    ColorBrightYellow  = 11,
+    ColorBrightBlue    = 12,
+    ColorBrightMagenta = 13,
+    ColorBrightCyan    = 14,
+    ColorBrightWhite   = 15
+};
 
 //==============================================================================
 void clear();
@@ -72,14 +75,14 @@ void write(int row, int col, const QString &text);
 void write(const QString &text);
 QVariant read(const QVariant &defaultValue = QVariant());
 void resetAttributes();
-void setColors(int textColor = colorWhite, int bgColor = colorBlack);
-void setTextColor(int color = colorWhite);
-void setBgColor(int color = colorBlack);
+void setColors(Color textColor = ColorWhite, Color bgColor = ColorBlack);
+void setTextColor(Color color = ColorWhite);
+void setBgColor(Color color = ColorBlack);
 void blink(bool on = true);
-void frame(int row, int col, int width, int height, bool doubleBorder = false, int color = -1);
-void rectangle(int row, int col, int width, int height, int color = -1);
-void frame(const QRect &rect, bool doubleBorder = false, int color = -1);
-void rectangle(const QRect &rect, int color = -1);
+void frame(int row, int col, int width, int height, bool doubleBorder = false, Color color = ColorNone);
+void rectangle(int row, int col, int width, int height, Color color = ColorNone);
+void frame(const QRect &rect, bool doubleBorder = false, Color color = ColorNone);
+void rectangle(const QRect &rect, Color color = ColorNone);
 QSize getSize(const QSize &defaultSize = QSize(80, 25));
 int width();
 int height();
