@@ -121,7 +121,7 @@ bool readJsonFromFile(const QString &fileName, QJsonDocument &json, QString &err
         json = QJsonDocument::fromJson( data, &parseError );
 
         if(parseError.error != QJsonParseError::NoError) {
-            errorString = QObject::tr("Ошибка рабора файла \"%1\":")
+            errorString = QObject::tr("File parsing error \"%1\":")
                     .arg( extractFileName( fileName ) ) + "\n" + parseError.errorString();
             return false;
         }
@@ -139,7 +139,7 @@ bool readJsonFromFile(const QString &fileName, QJsonArray &json, QString &errorS
     if(!readJsonFromFile(fileName, doc, errorString)) return false;
 
     if(!doc.isArray()) {
-        errorString = QObject::tr("Файл \"%1\" не является массивом JSON")
+        errorString = QObject::tr("File \"%1\" is not an JSON array")
                 .arg( extractFileName( fileName ) );
         return false;
     }
@@ -154,7 +154,7 @@ bool readJsonFromFile(const QString &fileName, QJsonObject &json, QString &error
     if(!readJsonFromFile(fileName, doc, errorString)) return false;
 
     if(!doc.isObject()) {
-        errorString = QObject::tr("Файл \"%1\" не является объектом JSON")
+        errorString = QObject::tr("File \"%1\" is not an JSON object")
                 .arg( extractFileName( fileName ) );
         return false;
     }
@@ -184,13 +184,13 @@ bool readFile(const QString &fileName, QByteArray &data, QString &errorString)
     QFile file( fileName );
 
     if(!file.exists()) {
-        errorString =  QObject::tr("Файл \"%1\" не существует")
+        errorString =  QObject::tr("File \"%1\" does not exist")
                 .arg(extractFileName( fileName ));
         return false;
     }
 
     if(!file.open(QFile::ReadOnly)) {
-        errorString = QObject::tr("Не удалось открыть файл \"%1\" для чтения")
+        errorString = QObject::tr("Failed to open file \"%1\" for reading")
                 .arg( extractFileName( fileName ) );
         return false;
     }
@@ -207,23 +207,23 @@ bool writeFile(const QString &fileName, const QByteArray &data, QString &errorSt
     QFile file( fileName );
 
     if(!file.open(QFile::WriteOnly)) {
-        errorString = QObject::tr("Не удалось открыть файл \"%1\" для записи")
+        errorString = QObject::tr("Failed to open file \"%1\" for write")
                 .arg( extractFileName( fileName ) );
         return false;
     }
 
-    int n = static_cast<int>(file.write( data ));
+    qint64 n = file.write( data );
     bool res = file.flush();
     file.close();
 
     if(res && (n < data.size())) {
-        errorString = QObject::tr("Не удалось записать все данные в файл \"%1\"")
+        errorString = QObject::tr("Failed to write all data to file \"%1\"")
                 .arg( extractFileName( fileName ) );
         return false;
     }
 
     if(!res) {
-        errorString = QObject::tr("Не удалось сохранить данные в файл \"%1\"")
+        errorString = QObject::tr("Failed to save data to file \"%1\"")
                 .arg( extractFileName( fileName ) );
         return false;
     }
