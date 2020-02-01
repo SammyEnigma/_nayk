@@ -59,13 +59,13 @@ HttpServer::~HttpServer()
 bool HttpServer::readRequest()
 {
 #if !defined(WITHOUT_LOG)
-    emit toLog(tr("Чтение HTTP запроса"), Log::LogInfo);
+    emit toLog(tr("Read HTTP request"), Log::LogInfo);
 #endif
 
     if(processHeaders()) {
 #if !defined(WITHOUT_LOG)
         if(!m_requestHeaders.isEmpty()) {
-            emit toLog(tr("Заголовки HTTP:"), Log::LogDbg);
+            emit toLog(tr("HTTP headers:"), Log::LogDbg);
             for(auto itr = m_requestHeaders.begin(); itr != m_requestHeaders.end(); ++itr) {
                 if(!itr.value().toString().isNull())
                     emit toLog(tr("%1: %2").arg(itr.key()).arg(itr.value().toString()), Log::LogDbg);
@@ -97,7 +97,7 @@ bool HttpServer::readRequest()
     if(processGet()) {
 #if !defined(WITHOUT_LOG)
         if(!m_getParameters.isEmpty()) {
-            emit toLog(tr("GET параметры:"), Log::LogDbg);
+            emit toLog(tr("GET parameters:"), Log::LogDbg);
             for(auto itr = m_getParameters.begin(); itr != m_getParameters.end(); ++itr) {
                 if(!itr.value().toString().isNull())
                     emit toLog(tr("%1: %2").arg(itr.key()).arg(itr.value().toString()), Log::LogDbg);
@@ -113,7 +113,7 @@ bool HttpServer::readRequest()
     if(processPost()) {
 #if !defined(WITHOUT_LOG)
         if(!m_postParameters.isEmpty()) {
-            emit toLog(tr("POST параметры:"), Log::LogDbg);
+            emit toLog(tr("POST parameters:"), Log::LogDbg);
             for(auto itr = m_postParameters.begin(); itr != m_postParameters.end(); ++itr) {
                 if(!itr.value().toString().isNull())
                     emit toLog(tr("%1: %2").arg(itr.key()).arg(itr.value().toString()), Log::LogDbg);
@@ -137,7 +137,7 @@ bool HttpServer::writeResponse()
 
     QByteArray headers;
 #if !defined(WITHOUT_LOG)
-    emit toLog(tr("Заголовки ответа:"), Log::LogDbg);
+    emit toLog(tr("Response headers:"), Log::LogDbg);
 #endif
 
     for (auto itr = m_responseHeaders.begin(); itr != m_responseHeaders.end(); ++itr) {
@@ -154,13 +154,13 @@ bool HttpServer::writeResponse()
 
     QFile standardOutput;
     if(!standardOutput.open(stdout, QIODevice::WriteOnly)) {
-        m_lastError = tr("Не удалось открыть stdout");
+        m_lastError = tr("Failed to open stdout");
         sendLastError();
         return false;
     }
 
 #if !defined(WITHOUT_LOG)
-    emit toLog(tr("Отправка заголовков ответа"), Log::LogInfo);
+    emit toLog(tr("Send HTTP response headers"), Log::LogInfo);
 #endif
 
     int index = 0;
@@ -174,19 +174,19 @@ bool HttpServer::writeResponse()
     }
 
     if(isTimeOut) {
-        m_lastError = tr("Таймаут отправки заголовков");
+        m_lastError = tr("Response header timeout");
         sendLastError();
         return false;
     }
 
     if(index < headers.size()) {
-        m_lastError = tr("Не удалось отправить заголовки");
+        m_lastError = tr("Failed to send response headers");
         sendLastError();
         return false;
     }
 
 #if !defined(WITHOUT_LOG)
-    emit toLog(tr("Отправка содержимого ответа"), Log::LogInfo);
+    emit toLog(tr("Send HTTP response content"), Log::LogInfo);
 #endif
 
     index = 0;
@@ -198,13 +198,13 @@ bool HttpServer::writeResponse()
     }
 
     if(isTimeOut) {
-        m_lastError = tr("Таймаут отправки содержимого ответа");
+        m_lastError = tr("Response content timeout");
         sendLastError();
         return false;
     }
 
     if(index < m_responseContent.size()) {
-        m_lastError = tr("Не удалось отправить ответ");
+        m_lastError = tr("Failed to send response content");
         sendLastError();
         return false;
     }
@@ -327,14 +327,14 @@ bool HttpServer::processPost()
     int contentLength = m_requestHeaders.value(serverHeaderContentLength).toInt(&ok);
 
     if(!ok || contentLength < 1) {
-        m_lastError = tr("Некорректное значение ContentLength");
+        m_lastError = tr("Incorrect ContentLength value");
         return false;
     }
 
     QString contentType = m_requestHeaders.value(serverHeaderContentType).toString();
 
     if(contentType.isEmpty()) {
-        m_lastError = tr("Некорректное значение ContentType");
+        m_lastError = tr("Incorrect ContentType value");
         return false;
     }
 
@@ -373,7 +373,7 @@ bool HttpServer::processPost()
     }
 
     if(boundary.isEmpty()) {
-        m_lastError = tr("Boundary не найден");
+        m_lastError = tr("Boundary not found");
         return false;
     }
 
@@ -471,7 +471,7 @@ bool HttpServer::processPost()
 
             QJsonDocument doc = QJsonDocument::fromJson(bVal);
             if(doc.isNull() || doc.isEmpty()) {
-                m_lastError = tr("Некорректный формат Json");
+                m_lastError = tr("Incorrect Json format");
                 return false;
             }
             m_postParameters[sName] = doc.toJson();
@@ -490,7 +490,7 @@ bool HttpServer::readContent()
 {
     m_requestContent.clear();
 #if !defined(WITHOUT_LOG)
-    emit toLog( tr("%1 - Начало чтение запроса")
+    emit toLog( tr("%1 - Begin request reading")
                 .arg(QDateTime::currentDateTime().toString("HH:mm:ss.zzz")),
                Log::LogDbg);
 #endif
@@ -500,7 +500,7 @@ bool HttpServer::readContent()
 #endif
     QFile standardInput;
     if(!standardInput.open( stdin, QIODevice::ReadOnly )) {
-        m_lastError = tr("Не удалось открыть stdin");
+        m_lastError = tr("Failed to open stdin");
         return false;
     }
 
@@ -537,7 +537,7 @@ bool HttpServer::readContent()
         sumTime += timeMS;
 #if !defined(WITHOUT_LOG)
         if(!queStr.isEmpty()) queStr += ", ";
-        queStr += tr("%1 = %2 мсек").arg(readBuf.size()).arg(timeMS);
+        queStr += tr("%1 = %2 msec").arg(readBuf.size()).arg(timeMS);
 #endif
         if(readBuf.isEmpty()) {
             system_utils::pause(20);
@@ -555,7 +555,7 @@ bool HttpServer::readContent()
         if(blockCnt < 10) logStr = "0" + logStr;
         ++blockCnt;
 
-        emit toLog( tr("%1 БЛОК %2 [%3 bytes]")
+        emit toLog( tr("%1 BLOCK %2 [%3 bytes]")
                     .arg(QDateTime::currentDateTime().toString("HH:mm:ss.zzz"))
                     .arg(logStr)
                     .arg(readBuf.size())
@@ -574,22 +574,22 @@ bool HttpServer::readContent()
         emit toLog("... QUERY-TIME-OUT ...", Log::LogError);
     }
 
-    emit toLog(tr("%1  - Окончание чтения запроса")
+    emit toLog(tr("%1  - End request reading")
                .arg(QDateTime::currentDateTime().toString("HH:mm:ss.zzz")), Log::LogDbg );
-    emit toLog(tr("Время чтения и кол-во байт: %1").arg(queStr), Log::LogDbg );
-    emit toLog(tr("Всего прочитано байт = %1; Не прочитано: content_length-read_count = %2")
+    emit toLog(tr("Read time and bytes count: %1").arg(queStr), Log::LogDbg );
+    emit toLog(tr("Total bytes read = %1; Unread: content_length-read_count = %2")
                .arg(m_requestContent.size())
                .arg(contentLength - m_requestContent.size()), Log::LogDbg );
-    emit toLog(tr("Общее время чтения: %1 мсек").arg(sumTime), Log::LogDbg );
+    emit toLog(tr("Total time read: %1 msec").arg(sumTime), Log::LogDbg );
 #endif
 
     m_lastError.clear();
 
     if(readTimeOut) {
-        m_lastError = tr("Таймаут чтения");
+        m_lastError = tr("Reading timeout");
     }
     if(queryTimeOut) {
-        m_lastError = tr("Таймаут запроса");
+        m_lastError = tr("Request timeout");
     }
 
     if(!m_lastError.isEmpty()) {
@@ -597,7 +597,7 @@ bool HttpServer::readContent()
     }
 #if !defined(WITHOUT_LOG)
     if(m_requestContent.size() != contentLength) {
-        emit toLog(tr("Content-Length не совпадает с размером: %1")
+        emit toLog(tr("Content-Length does not match size: %1")
                    .arg(m_requestContent.size()), Log::LogWarning );
     }
 #endif

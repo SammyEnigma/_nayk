@@ -50,7 +50,7 @@ typedef struct proc_info_t {
 } proc_info_t;
 
 //==============================================================================
-#ifdef Q_OS_WIN
+#ifdef Q_OS_WIN32
 static double CalculateCPULoad(unsigned long long idleTicks, unsigned long long totalTicks)
 {
    static unsigned long long _previousTotalTicks = 0;
