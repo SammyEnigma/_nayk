@@ -154,6 +154,12 @@ QString osVersion()
     return QSysInfo::kernelVersion();
 #endif
 }
+//==============================================================================
+QString hostName()
+{
+    return QSysInfo::machineHostName();
+}
+//==============================================================================
 
 } // namespace system_utils //==================================================
 

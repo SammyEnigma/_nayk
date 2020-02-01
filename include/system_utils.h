@@ -36,6 +36,7 @@ bool osCmd(const QString &cmd, QString &out, int timeout = 5000);
 bool osCmd(const QString &cmd, QByteArray &out, int timeout = 5000);
 QString osName();
 QString osVersion();
+QString hostName();
 
 } // namespace system_utils //==================================================
 #endif // SYSTEM_UTILS_H
