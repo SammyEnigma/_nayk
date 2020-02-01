@@ -87,7 +87,7 @@ void DialogLog::initializeDialog()
 {
     setAttribute(Qt::WA_DeleteOnClose, false);
     setWindowFlags( windowFlags() | Qt::WindowMaximizeButtonHint );
-    setWindowTitle(tr("Лог"));
+    setWindowTitle(tr("Log"));
 
     if(QFile::exists(iconConsole)) {
         setWindowIcon( QIcon(iconConsole) );
@@ -111,7 +111,7 @@ void DialogLog::initializeDialog()
 
     QHBoxLayout *bottomLayout = new QHBoxLayout();
 
-    QLabel *label = new QLabel(tr("Фильтр:"), this);
+    QLabel *label = new QLabel(tr("Filter") + ":", this);
     bottomLayout->addWidget(label);
 
     lineEditFilter = new QLineEdit(this);
@@ -120,13 +120,13 @@ void DialogLog::initializeDialog()
     bottomLayout->addWidget(lineEditFilter);
     bottomLayout->addSpacerItem( new QSpacerItem(10, 10) );
 
-    QCheckBox *checkBox = new QCheckBox( tr("Темный фон"), this );
+    QCheckBox *checkBox = new QCheckBox( tr("Dark background"), this );
     checkBox->setChecked(m_dark);
     connect(checkBox, &QCheckBox::toggled, this, &DialogLog::checkBoxDark_toggled);
     bottomLayout->addWidget(checkBox);
     bottomLayout->addStretch();
 
-    pushButtonOpenLogDir = new QPushButton(tr("Каталог лог файлов..."), this);
+    pushButtonOpenLogDir = new QPushButton(tr("Log files directory..."), this);
     pushButtonOpenLogDir->setMinimumSize(120, 32);
     pushButtonOpenLogDir->setIconSize( QSize(28, 28) );
 
@@ -137,7 +137,7 @@ void DialogLog::initializeDialog()
     connect(pushButtonOpenLogDir, &QPushButton::clicked, this, &DialogLog::openLogDirButtonClicked);
     bottomLayout->addWidget(pushButtonOpenLogDir);
 
-    QPushButton *button = new QPushButton(tr("Очистить"), this);
+    QPushButton *button = new QPushButton(tr("Clear"), this);
     button->setMinimumSize( pushButtonOpenLogDir->minimumSize() );
     button->setIconSize( pushButtonOpenLogDir->iconSize() );
 
@@ -148,7 +148,7 @@ void DialogLog::initializeDialog()
     connect(button, &QPushButton::clicked, this, &DialogLog::pushButtonClear_clicked);
     bottomLayout->addWidget(button);
 
-    button = new QPushButton(tr("Закрыть"), this);
+    button = new QPushButton(tr("Close"), this);
     button->setMinimumSize( pushButtonOpenLogDir->minimumSize() );
     button->setIconSize( pushButtonOpenLogDir->iconSize() );
 
@@ -363,4 +363,4 @@ void DialogLog::checkBoxDark_toggled(bool checked)
 }
 //==============================================================================
 
-} // namespace nayk //==============================================================================
+} // namespace nayk //==========================================================
