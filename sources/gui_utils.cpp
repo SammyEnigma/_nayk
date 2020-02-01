@@ -62,23 +62,23 @@ void moveToCenterScreen(QWidget *widget, int screenNumber)
 //==============================================================================
 void messageError(QWidget *parent, const QString &text)
 {
-    QMessageBox::critical(parent, QObject::tr("Ошибка"), text, QMessageBox::Ok);
+    QMessageBox::critical(parent, QObject::tr("Error"), text, QMessageBox::Ok);
 }
 //==============================================================================
 void messageWarning(QWidget *parent, const QString &text)
 {
-    QMessageBox::warning(parent, QObject::tr("Внимание"), text, QMessageBox::Ok);
+    QMessageBox::warning(parent, QObject::tr("Warning"), text, QMessageBox::Ok);
 }
 //==============================================================================
 void messageInfo(QWidget *parent, const QString &text)
 {
-    QMessageBox::information(parent, QObject::tr("Информация"), text, QMessageBox::Ok);
+    QMessageBox::information(parent, QObject::tr("Information"), text, QMessageBox::Ok);
 }
 //==============================================================================
 bool messageConfirm(QWidget *parent, const QString &text)
 {
     return QMessageBox::question(parent,
-                                 QObject::tr("Подтверждение"),
+                                 QObject::tr("Confirmation"),
                                  text,
                                  QMessageBox::Yes, QMessageBox::Cancel
                                  )
@@ -88,7 +88,7 @@ bool messageConfirm(QWidget *parent, const QString &text)
 int messageDialog(QWidget *parent, const QString &text)
 {
     return QMessageBox::question(parent,
-                                 QObject::tr("Вопрос"),
+                                 QObject::tr("Question"),
                                  text,
                                  QMessageBox::Yes, QMessageBox::No, QMessageBox::Cancel
                                  );
@@ -144,7 +144,7 @@ void showAboutDialog(const QString &title, const QString &developer,
     dialogAbout = new QDialog(mainWidget);
     dialogAbout->setObjectName("dialogAbout");
     dialogAbout->setAttribute(Qt::WA_DeleteOnClose);
-    dialogAbout->setWindowTitle( dialogAbout->tr("О программе") );
+    dialogAbout->setWindowTitle( dialogAbout->tr("About") );
     dialogAbout->setFixedSize(560, 560);
 
     QVBoxLayout *vBoxLayout = new QVBoxLayout(dialogAbout);
@@ -203,7 +203,7 @@ void showAboutDialog(const QString &title, const QString &developer,
     const QString labelStyle = "font-size: 11pt;";
     const QString valueStyle = "font-size: 11pt; font-weight: bold; padding-left: 10px;";
 
-    QLabel *label = new QLabel( dialogAbout->tr("Версия:"), dialogAbout );
+    QLabel *label = new QLabel( dialogAbout->tr("Version") + ":", dialogAbout );
     label->setStyleSheet(labelStyle);
     gridLayout->addWidget(label, row, 0);
     label = new QLabel( QApplication::applicationVersion(), dialogAbout );
@@ -212,7 +212,7 @@ void showAboutDialog(const QString &title, const QString &developer,
     row++;
 
 #if defined (APP_BUILD_DATE)
-    label = new QLabel( dialogAbout->tr("Дата релиза:"), dialogAbout );
+    label = new QLabel( dialogAbout->tr("Release date") + ":", dialogAbout );
     label->setStyleSheet(labelStyle);
     gridLayout->addWidget(label, row, 0);
     label = new QLabel( QString(APP_BUILD_DATE), dialogAbout );
@@ -222,7 +222,7 @@ void showAboutDialog(const QString &title, const QString &developer,
 #endif
 
     if(showOrganization) {
-        label = new QLabel( dialogAbout->tr("Организация:"), dialogAbout );
+        label = new QLabel( dialogAbout->tr("Company") + ":", dialogAbout );
         label->setStyleSheet(labelStyle);
         gridLayout->addWidget(label, row, 0);
         label = new QLabel( QApplication::organizationName(), dialogAbout );
@@ -232,7 +232,7 @@ void showAboutDialog(const QString &title, const QString &developer,
     }
 
     if(!developer.isEmpty()) {
-        label = new QLabel( dialogAbout->tr("Разработчик:"), dialogAbout );
+        label = new QLabel( dialogAbout->tr("Developer") + ":", dialogAbout );
         label->setStyleSheet(labelStyle);
         gridLayout->addWidget(label, row, 0);
         label = new QLabel( developer, dialogAbout );

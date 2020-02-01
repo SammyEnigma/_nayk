@@ -28,12 +28,14 @@
 #include <QFile>
 
 #include "AppCore"
+#include "FileSys"
 #include "ImagesConst"
 #include "gui_app_core.h"
 
 namespace gui_app_core { //=====================================================
 
 using namespace nayk;
+using namespace file_sys;
 
 //==============================================================================
 bool initializeApplication(const QString &applicationName,
@@ -52,7 +54,7 @@ bool initializeApplication(const QString &applicationName,
         return false;
     }
 
-    if(QFile::exists(imageMainIcon)) {
+    if(fileExists(imageMainIcon)) {
         application->setWindowIcon(QIcon(imageMainIcon));
     }
 
