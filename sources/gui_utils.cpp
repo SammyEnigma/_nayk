@@ -121,11 +121,14 @@ int messageDialog(const QString &text)
 //==============================================================================
 QWidget *mainWindowWidget()
 {
-    for ( QWidget *widget : QApplication::topLevelWidgets() ) {
+    QWidgetList list = QApplication::topLevelWidgets();
+
+    for ( QWidget *widget : list ) {
         if ( QString(widget->metaObject()->className()) == QString("MainWindow"))
             return widget;
     }
-    return nullptr;
+
+    return list.isEmpty() ? nullptr : list.first();
 }
 //==============================================================================
 void showAboutDialog(const QString &title, const QString &developer,
