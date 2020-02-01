@@ -43,26 +43,27 @@ void qtLogMessageOutput(QtMsgType type, const QMessageLogContext &context, const
     switch (type) {
     case QtDebugMsg:
         logType = nayk::Log::LogDbg;
-        text = "Debug: ";
+        text = QObject::tr("Debug");
         break;
     case QtInfoMsg:
         logType = nayk::Log::LogInfo;
-        text = "Info: ";
+        text = QObject::tr("Info");
         break;
     case QtWarningMsg:
         logType = nayk::Log::LogWarning;
-        text = "Warning: ";
+        text = QObject::tr("Warning");
         break;
     case QtCriticalMsg:
         logType = nayk::Log::LogError;
-        text = "Critical: ";
+        text = QObject::tr("Critical");
         break;
     case QtFatalMsg:
         logType = nayk::Log::LogError;
-        text = "Fatal: ";
+        text = QObject::tr("Fatal");
         break;
     }
 
+    if(!text.isEmpty()) text += ": ";
     text += msg.trimmed();
 
     fprintf(stderr, "%s\n", text.toLocal8Bit().constData());
@@ -77,7 +78,7 @@ namespace nayk { //=============================================================
 
 using namespace file_sys;
 
-const QString errorStr_LogFileNotOpen = QObject::tr("Лог файл не открыт для записи");
+const QString errorStr_LogFileNotOpen = QObject::tr("Log file does not open for write");
 
 //==============================================================================
 QString generateLogFileName(const QString &logDir, QDateTime &dateTime)
@@ -139,22 +140,22 @@ Log::LogType Log::strToLogType(const QString &typeStr)
 //==============================================================================
 void Log::deleteOldLogFiles(const QString &fileMask, int maxCount)
 {
-    saveToLog(tr("Удаление старых лог файлов из '%1', маска файлов: '%2', "
-                 "количество сохраняемых логов: %3")
+    saveToLog(tr("Delete old log files from '%1', files mask: '%2', "
+                 "saved files count: %3")
               .arg(m_logDir).arg(fileMask).arg(maxCount), Log::LogDbg);
     QDir dir(m_logDir);
     QStringList list = dir.entryList(QStringList(fileMask),
                                      QDir::Files | QDir::NoSymLinks);
-    saveToLog(tr("Всего найдено файлов: %1").arg(list.size()), LogDbg);
+    saveToLog(tr("Files found: %1").arg(list.size()), LogDbg);
 
     while(list.size() > maxCount) {
 
         QString fileName = list.takeFirst();
         if(QFile::remove( m_logDir + fileName )) {
-            saveToLog(tr("Удаление файла '%1'").arg(fileName), Log::LogDbg);
+            saveToLog(tr("Delete file '%1'").arg(fileName), Log::LogDbg);
         }
         else {
-            saveToLog(tr("Не удалось удалить файл '%1'").arg(fileName), Log::LogDbg);
+            saveToLog(tr("Failed to delete file '%1'").arg(fileName), Log::LogDbg);
         }
     }
 }
@@ -261,7 +262,7 @@ void Log::startLog(const QString &fileName)
     }
 
     if(!makePath(m_logDir)) {
-        m_lastError = tr("Не удалось создать каталог '%1'").arg(m_logDir);
+        m_lastError = tr("Failed to create directory '%1'").arg(m_logDir);
         emit error(m_lastError);
         return;
     }
@@ -269,7 +270,7 @@ void Log::startLog(const QString &fileName)
     m_file.setFileName(m_logDir + m_fileName);
 
     if (!m_file.open(QIODevice::WriteOnly | QIODevice::Text)) {
-        m_lastError = tr("Не удалось создать файл '%1'").arg(m_file.fileName());
+        m_lastError = tr("Failed to create file '%1'").arg(m_file.fileName());
         emit error(m_lastError);
         return;
     }
@@ -293,7 +294,7 @@ bool Log::writeFirstLine()
         return false;
     }
 
-    QString logStr = "----- " + tr("Начало") + " -----";
+    QString logStr = "----- " + tr("Begin") + " -----";
     saveToLog(logStr.leftJustified(100,'-'), LogInfo);
     return true;
 }
@@ -309,7 +310,7 @@ bool Log::writeLastLine()
             ? QDateTime::currentDateTime()
             : QDateTime::currentDateTimeUtc();
     qint64 n = now.toMSecsSinceEpoch() - m_startTime.toMSecsSinceEpoch();
-    QString logStr = "----- " + tr("Окончание. Время работы: %1 мсек.").arg(n)
+    QString logStr = "----- " + tr("End. Total work time: %1 msec.").arg(n)
             + " -----";
 
     saveToLog(logStr.leftJustified(100,'-'), LogInfo);
@@ -345,7 +346,7 @@ void Log::saveToLog(const QString &text, LogType logType)
 
     if (m_stream.status() != QTextStream::Ok) {
         m_file.close();
-        m_lastError = tr("Ошибка при записи в файл '%1'").arg(m_file.fileName());
+        m_lastError = tr("Write file error '%1'").arg(m_file.fileName());
         emit error(m_lastError);
         emit closeFile(m_file.fileName());
     }
