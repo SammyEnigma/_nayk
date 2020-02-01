@@ -120,6 +120,7 @@ contains(QT, widgets) {
 }
 
 contains(QT, quick) {
+
     RESOURCES *= \
         $${PWD}/qml/qml_resources.qrc
 

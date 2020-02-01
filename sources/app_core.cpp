@@ -66,7 +66,6 @@ bool initializeApplication(const QString &applicationName,
 
     QString profilePath = applicationProfilePath();
     makePath(profilePath);
-    application->setProperty("profilePath", profilePath);
 
     installTranslations(applicationRootPath() + "translations", "ru");
     return true;
@@ -79,13 +78,26 @@ void installTranslations(const QString &translationsDir, const QString &language
 
     QString lang = language.isEmpty() ? QLocale::system().name() : language;
     QDir dir(translationsDir);
-    QStringList filesList = dir.entryList(QStringList("*_" + lang + ".qm"),
-                                          QDir::Files);
+    QStringList filterList = QStringList()
+            << QString("*." + lang)
+            << QString("*_" + lang + ".qm")
+            << QString("*." + lang + ".qm")
+            << QString("*_" + lang + "_*.qm")
+            << QString("*." + lang + ".*.qm");
+    QStringList filesList;
+
+    for(const QFileInfo &fileInfo: dir.entryInfoList()) {
+
+        QString fileName = fileInfo.absoluteFilePath();
+
+        if(!filesList.contains(fileName))
+            filesList << fileName;
+    }
 
     for(const QString &fileName: filesList) {
 
         QTranslator *translator = new QTranslator(application);
-        if(!translator->load( translationsDir + directorySeparator + fileName )) {
+        if(!translator->load( fileName )) {
             delete translator;
             continue;
         }
@@ -109,8 +121,13 @@ QString applicationBuildDate()
 //==============================================================================
 QString applicationFullPath()
 {
+    if(!qApp->property("fullPath").isNull())
+        return qApp->property("fullPath").toString();
+
     QString res = QDir::fromNativeSeparators( QCoreApplication::applicationDirPath() );
     if( res.right(1) != directorySeparator ) res += directorySeparator;
+
+    qApp->setProperty("fullPath", res);
     return res;
 }
 //==============================================================================
@@ -206,12 +223,16 @@ bool checkVersionQuery()
 //==============================================================================
 QString applicationRootPath()
 {
+    if(!qApp->property("rootPath").isNull())
+        return qApp->property("rootPath").toString();
+
     QString path = applicationFullPath();
 
     if(path.right(5) == QString("%1bin%1").arg(directorySeparator)) {
         path.remove( path.length()-4, 4 );
     }
 
+    qApp->setProperty("rootPath", path);
     return path;
 }
 //==============================================================================
