@@ -504,7 +504,7 @@ QString bytesToHex(const QByteArray &data, const QString &splitter)
 {
     QString result {""};
     for(int i=0; i<data.size(); ++i)
-        result += intToHex(static_cast<quint8>(data.at(i)), 2, false) + splitter;
+        result += splitter + intToHex(static_cast<quint8>(data.at(i)), 2, false);
     return result.trimmed();
 }
 //==============================================================================
