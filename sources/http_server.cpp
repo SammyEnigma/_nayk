@@ -574,7 +574,7 @@ bool HttpServer::readContent()
         emit toLog("... QUERY-TIME-OUT ...", Log::LogError);
     }
 
-    emit toLog(tr("%1  - End request reading")
+    emit toLog(tr("%1 - End request reading")
                .arg(QDateTime::currentDateTime().toString("HH:mm:ss.zzz")), Log::LogDbg );
     emit toLog(tr("Read time and bytes count: %1").arg(queStr), Log::LogDbg );
     emit toLog(tr("Total bytes read = %1; Unread: content_length-read_count = %2")

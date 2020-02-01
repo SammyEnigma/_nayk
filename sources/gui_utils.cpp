@@ -144,7 +144,7 @@ void showAboutDialog(const QString &title, const QString &developer,
     dialogAbout = new QDialog(mainWidget);
     dialogAbout->setObjectName("dialogAbout");
     dialogAbout->setAttribute(Qt::WA_DeleteOnClose);
-    dialogAbout->setWindowTitle( dialogAbout->tr("About") );
+    dialogAbout->setWindowTitle( QObject::tr("About") );
     dialogAbout->setFixedSize(560, 560);
 
     QVBoxLayout *vBoxLayout = new QVBoxLayout(dialogAbout);
@@ -203,7 +203,7 @@ void showAboutDialog(const QString &title, const QString &developer,
     const QString labelStyle = "font-size: 11pt;";
     const QString valueStyle = "font-size: 11pt; font-weight: bold; padding-left: 10px;";
 
-    QLabel *label = new QLabel( dialogAbout->tr("Version") + ":", dialogAbout );
+    QLabel *label = new QLabel( QObject::tr("Version") + ":", dialogAbout );
     label->setStyleSheet(labelStyle);
     gridLayout->addWidget(label, row, 0);
     label = new QLabel( QApplication::applicationVersion(), dialogAbout );
@@ -212,7 +212,7 @@ void showAboutDialog(const QString &title, const QString &developer,
     row++;
 
 #if defined (APP_BUILD_DATE)
-    label = new QLabel( dialogAbout->tr("Release date") + ":", dialogAbout );
+    label = new QLabel( QObject::tr("Release date") + ":", dialogAbout );
     label->setStyleSheet(labelStyle);
     gridLayout->addWidget(label, row, 0);
     label = new QLabel( QString(APP_BUILD_DATE), dialogAbout );
@@ -222,7 +222,7 @@ void showAboutDialog(const QString &title, const QString &developer,
 #endif
 
     if(showOrganization) {
-        label = new QLabel( dialogAbout->tr("Company") + ":", dialogAbout );
+        label = new QLabel( QObject::tr("Company") + ":", dialogAbout );
         label->setStyleSheet(labelStyle);
         gridLayout->addWidget(label, row, 0);
         label = new QLabel( QApplication::organizationName(), dialogAbout );
@@ -232,7 +232,7 @@ void showAboutDialog(const QString &title, const QString &developer,
     }
 
     if(!developer.isEmpty()) {
-        label = new QLabel( dialogAbout->tr("Developer") + ":", dialogAbout );
+        label = new QLabel( QObject::tr("Developer") + ":", dialogAbout );
         label->setStyleSheet(labelStyle);
         gridLayout->addWidget(label, row, 0);
         label = new QLabel( developer, dialogAbout );

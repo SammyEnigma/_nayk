@@ -115,7 +115,7 @@ QString applicationBuildDate()
 #if defined (APP_BUILD_DATE)
     return QString(APP_BUILD_DATE);
 #else
-    return tr("Unknown");
+    return QObject::tr("Unknown");
 #endif
 }
 //==============================================================================
