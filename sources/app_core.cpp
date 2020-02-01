@@ -67,6 +67,7 @@ bool initializeApplication(const QString &applicationName,
     QString profilePath = applicationProfilePath();
     makePath(profilePath);
 
+    installTranslations(":/translations", "ru");
     installTranslations(applicationRootPath() + "translations", "ru");
     return true;
 }
