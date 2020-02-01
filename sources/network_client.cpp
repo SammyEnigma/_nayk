@@ -31,6 +31,7 @@
 #include <QtNetwork/QNetworkInterface>
 #include <QStringList>
 #include <QTextCodec>
+#include <QtNetwork/QHostInfo>
 #include "Convert"
 #include "SystemUtils"
 #include "network_client.h"
@@ -293,7 +294,7 @@ bool hostSettings(TcpIp4Struct &host, QString &err)
         }
     }
 
-    err = QObject::tr("Интерфейс не найден");
+    err = QObject::tr("Interface not found");
     return false;
 }
 //==============================================================================
@@ -373,6 +374,11 @@ bool setHostSettings(const TcpIp4Struct &host, QString &err)
             .arg(host.ifaceMetric);
 
     return true;
+}
+//==============================================================================
+QString localHostName()
+{
+    return QHostInfo::localHostName();
 }
 //==============================================================================
 

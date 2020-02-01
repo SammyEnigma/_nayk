@@ -52,6 +52,7 @@ bool addressEntry(const QString &ip, QNetworkAddressEntry &addressEntry);
 bool isCorrectIp(const QString &ip);
 bool hostSettings(TcpIp4Struct &host, QString &err);
 bool setHostSettings(const TcpIp4Struct &host, QString &err);
+QString localHostName();
 
 }; // namespace //==============================================================
 #endif // NETWORK_CLIENT_H
