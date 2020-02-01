@@ -22,7 +22,6 @@
 ** WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 **
 ****************************************************************************/
-#include <QtSerialPort/QSerialPortInfo>
 #include <QMetaEnum>
 #include "Convert"
 #include "SystemUtils"
@@ -140,21 +139,21 @@ ComPort::ComPort(QObject *parent) : QObject(parent)
         m_port.setPort(QSerialPortInfo::availablePorts().first());
     }
 
-    m_timer.setSingleShot(false);
-    m_timer.setInterval(100);
+    startInit();
+}
+//==============================================================================
+ComPort::ComPort(const QString &portName, QObject *parent) : QObject(parent)
+{
+    m_port.setPortName(portName);
 
-    connect(&m_port, static_cast<void(QSerialPort::*)(QSerialPort::SerialPortError)>(&QSerialPort::error),
-            this, static_cast<void(ComPort::*)(QSerialPort::SerialPortError)>(&ComPort::serialPort_error));
-    connect(&m_port, &QSerialPort::requestToSendChanged,
-            this, &ComPort::serialPort_requestToSendChanged);
-    connect(&m_port, &QSerialPort::dataTerminalReadyChanged,
-            this, &ComPort::serialPort_dataTerminalReadyChanged);
-    connect(&m_port, &QSerialPort::readyRead,
-            this, &ComPort::serialPort_readyRead);
-    connect(&m_port, &QSerialPort::bytesWritten,
-            this, &ComPort::serialPort_bytesWriten);
-    connect(&m_timer, &QTimer::timeout,
-            this, &ComPort::on_timerTimeOut);
+    startInit();
+}
+//==============================================================================
+ComPort::ComPort(const QSerialPortInfo &portInfo, QObject *parent) : QObject(parent)
+{
+    m_port.setPort(portInfo);
+
+    startInit();
 }
 //==============================================================================
 ComPort::~ComPort()
@@ -176,7 +175,7 @@ bool ComPort::setPortName(const QString &portName)
 
     if(m_port.portName() == oldName) {
 
-        m_lastError = tr("%1: Не удалось установить имя порта: %2")
+        m_lastError = tr("%1: Failed to set port name: %2")
                     .arg(oldName)
                     .arg(portName);
 #if !defined (WITHOUT_LOG)
@@ -185,7 +184,7 @@ bool ComPort::setPortName(const QString &portName)
     }
 
 #if !defined (WITHOUT_LOG)
-        emit toLog( tr("%1: Установлено имя порта: %2")
+        emit toLog( tr("%1: Port name set: %2")
                     .arg(oldName)
                     .arg(portName), Log::LogDbg );
 #endif
@@ -198,14 +197,14 @@ bool ComPort::setBaudRate(qint32 baudRate)
 
     if (m_port.setBaudRate(baudRate)) {
 #if !defined (WITHOUT_LOG)
-        emit toLog( tr("%1: Установлена скорость: %2")
+        emit toLog( tr("%1: Baudrate set: %2")
                     .arg(m_port.portName())
                     .arg(m_port.baudRate()), Log::LogDbg );
 #endif
         return true;
     }
 
-    m_lastError = tr("%1: Не удалось установить скорость: %2")
+    m_lastError = tr("%1: Failed to set baudrate: %2")
             .arg(m_port.portName())
             .arg(baudRate);
 #if !defined (WITHOUT_LOG)
@@ -220,14 +219,14 @@ bool ComPort::setDataBits(QSerialPort::DataBits dataBits)
 
     if (m_port.setDataBits(dataBits)) {
 #if !defined (WITHOUT_LOG)
-        emit toLog( tr("%1: Установлены биты данных: %2")
+        emit toLog( tr("%1: Databits set: %2")
                     .arg(m_port.portName())
                     .arg(dataBitsToStr(m_port.dataBits())), Log::LogDbg );
 #endif
         return true;
     }
 
-    m_lastError = tr("%1: Не удалось установить биты данных: %2")
+    m_lastError = tr("%1: Failed to set databits: %2")
             .arg(m_port.portName())
             .arg(dataBitsToStr(dataBits));
 #if !defined (WITHOUT_LOG)
@@ -242,14 +241,14 @@ bool ComPort::setStopBits(QSerialPort::StopBits stopBits)
 
     if (m_port.setStopBits(stopBits)) {
 #if !defined (WITHOUT_LOG)
-        emit toLog( tr("%1: Установлены стоповые биты: %2")
+        emit toLog( tr("%1: Stopbits set: %2")
                     .arg(m_port.portName())
                     .arg(stopBitsToStr(m_port.stopBits())), Log::LogDbg );
 #endif
         return true;
     }
 
-    m_lastError = tr("%1: Не удалось установить стоповые биты: %2")
+    m_lastError = tr("%1: Failed to set stopbits: %2")
             .arg(m_port.portName())
             .arg(stopBitsToStr(stopBits));
 #if !defined (WITHOUT_LOG)
@@ -264,14 +263,14 @@ bool ComPort::setParity(QSerialPort::Parity parity)
 
     if (m_port.setParity(parity)) {
 #if !defined (WITHOUT_LOG)
-        emit toLog( tr("%1: Установлена четность: %2")
+        emit toLog( tr("%1: Parity set: %2")
                     .arg(m_port.portName())
                     .arg(parityToStr(m_port.parity())), Log::LogDbg );
 #endif
         return true;
     }
 
-    m_lastError = tr("%1: Не удалось установить четность: %2")
+    m_lastError = tr("%1: Failed to set parity: %2")
             .arg(m_port.portName())
             .arg(parityToStr(parity));
 #if !defined (WITHOUT_LOG)
@@ -286,14 +285,14 @@ bool ComPort::setFlowControl(QSerialPort::FlowControl flowControl)
 
     if (m_port.setFlowControl(flowControl)) {
 #if !defined (WITHOUT_LOG)
-        emit toLog( tr("%1: Установлен контроль потока: %2")
+        emit toLog( tr("%1: Flowcontrol set: %2")
                     .arg(m_port.portName())
                     .arg(flowControlToStr(m_port.flowControl())), Log::LogDbg );
 #endif
         return true;
     }
 
-    m_lastError = tr("%1: Не удалось установить контроль потока: %2")
+    m_lastError = tr("%1: Failed to set flowcontrol: %2")
             .arg(m_port.portName())
             .arg(flowControlToStr(flowControl));
 #if !defined (WITHOUT_LOG)
@@ -346,23 +345,23 @@ bool ComPort::open(bool readOnly)
         m_dsr = isDsr();
 
 #if !defined (WITHOUT_LOG)
-        emit toLog( tr("%1: Порт открыт").arg(m_port.portName()), Log::LogInfo );
+        emit toLog( tr("%1: Port is open").arg(m_port.portName()), Log::LogInfo );
         emit toLog( tr("%1: %2")
                     .arg(m_port.portName())
                     .arg(portSettings())
                     , Log::LogDbg );
-        emit toLog( tr("%1: RTS сигнал %2")
+        emit toLog( tr("%1: RTS signal is %2")
                     .arg(m_port.portName())
-                    .arg(m_port.isRequestToSend() ? "ВКЛ." : "ВЫКЛ."), Log::LogDbg );
-        emit toLog( tr("%1: CTS сигнал %2")
+                    .arg(m_port.isRequestToSend() ? tr("ON") : tr("OFF")), Log::LogDbg );
+        emit toLog( tr("%1: CTS signal is %2")
                     .arg(m_port.portName())
-                    .arg(m_cts ? "ВКЛ." : "ВЫКЛ."), Log::LogDbg );
-        emit toLog( tr("%1: DTR сигнал %2")
+                    .arg(m_cts ? tr("ON") : tr("OFF")), Log::LogDbg );
+        emit toLog( tr("%1: DTR signal is %2")
                     .arg(m_port.portName())
-                    .arg(m_port.isDataTerminalReady() ? "ВКЛ." : "ВЫКЛ."), Log::LogDbg );
-        emit toLog( tr("%1: DSR сигнал %2")
+                    .arg(m_port.isDataTerminalReady() ? tr("ON") : tr("OFF")), Log::LogDbg );
+        emit toLog( tr("%1: DSR signal is %2")
                     .arg(m_port.portName())
-                    .arg(m_dsr ? "ВКЛ." : "ВЫКЛ."), Log::LogDbg );
+                    .arg(m_dsr ? tr("ON") : tr("OFF")), Log::LogDbg );
 #endif
 
         m_port.clear();
@@ -377,7 +376,7 @@ bool ComPort::open(bool readOnly)
     }
     else {
 
-        m_lastError = tr("%1: Не удалось открыть порт: %2")
+        m_lastError = tr("%1: Failed to open port: %2")
                         .arg(m_port.portName())
                         .arg(m_port.errorString());
 #if !defined (WITHOUT_LOG)
@@ -401,7 +400,7 @@ void ComPort::close()
     m_dsr = false;
 
 #if !defined (WITHOUT_LOG)
-    emit toLog( tr("%1: Порт закрыт").arg(m_port.portName()), Log::LogInfo );
+    emit toLog( tr("%1: Port is closed").arg(m_port.portName()), Log::LogInfo );
 #endif
     emit portClose();
 }
@@ -424,7 +423,7 @@ bool ComPort::isReady()
 qint64 ComPort::write(const QByteArray &bytes)
 {
     if (!isOpen()) {
-        m_lastError = tr("%1: Порт не открыт").arg(m_port.portName());
+        m_lastError = tr("%1: Port is not open").arg(m_port.portName());
 
 #if !defined (WITHOUT_LOG)
         emit toLog( m_lastError, Log::LogError);
@@ -437,7 +436,7 @@ qint64 ComPort::write(const QByteArray &bytes)
     qint64 count = m_port.write(bytes);
 
     if(count < 0) {
-        m_lastError = tr("%1: Ошибка записи: %2")
+        m_lastError = tr("%1: Write error: %2")
                 .arg(m_port.portName())
                 .arg(m_port.errorString());
 #if !defined (WITHOUT_LOG)
@@ -454,7 +453,7 @@ qint64 ComPort::write(const QByteArray &bytes)
                     .arg(convert::bytesToHex(
                              bytes.left( static_cast<int>(count)), " ")),
                     Log::LogOut );
-        emit toLog( tr("%1: Записано в буфер %2 байт")
+        emit toLog( tr("%1: %2 bytes written to buffer")
                     .arg(m_port.portName())
                     .arg(count), Log::LogDbg );
     }
@@ -468,7 +467,7 @@ QByteArray ComPort::read(qint64 count)
     m_buffer.clear();
 
     if (!isOpen()) {
-        m_lastError = tr("%1: Порт не открыт").arg(m_port.portName());
+        m_lastError = tr("%1: Port is not open").arg(m_port.portName());
 #if !defined (WITHOUT_LOG)
         emit toLog( m_lastError, Log::LogError);
 #endif
@@ -482,7 +481,7 @@ QByteArray ComPort::read(qint64 count)
         emit toLog( tr("%1: %2")
                     .arg(m_port.portName())
                     .arg(convert::bytesToHex(m_buffer), " "), Log::LogIn );
-        emit toLog( tr("%1: Прочитано %2 байт")
+        emit toLog( tr("%1: Read %2 bytes")
                     .arg(m_port.portName())
                     .arg(m_buffer.size()), Log::LogDbg );
 #endif
@@ -661,6 +660,25 @@ QSerialPort::FlowControl ComPort::strToFlowControl(const QString &value)
     }
 }
 //==============================================================================
+void ComPort::startInit()
+{
+    m_timer.setSingleShot(false);
+    m_timer.setInterval(100);
+
+    connect(&m_port, static_cast<void(QSerialPort::*)(QSerialPort::SerialPortError)>(&QSerialPort::error),
+            this, static_cast<void(ComPort::*)(QSerialPort::SerialPortError)>(&ComPort::serialPort_error));
+    connect(&m_port, &QSerialPort::requestToSendChanged,
+            this, &ComPort::serialPort_requestToSendChanged);
+    connect(&m_port, &QSerialPort::dataTerminalReadyChanged,
+            this, &ComPort::serialPort_dataTerminalReadyChanged);
+    connect(&m_port, &QSerialPort::readyRead,
+            this, &ComPort::serialPort_readyRead);
+    connect(&m_port, &QSerialPort::bytesWritten,
+            this, &ComPort::serialPort_bytesWriten);
+    connect(&m_timer, &QTimer::timeout,
+            this, &ComPort::on_timerTimeOut);
+}
+//==============================================================================
 void ComPort::serialPort_error(QSerialPort::SerialPortError error)
 {
     if (error == QSerialPort::NoError) return;
@@ -708,7 +726,7 @@ void ComPort::clearAllBuffers()
 {
     m_port.clear(QSerialPort::AllDirections);
 #if !defined (WITHOUT_LOG)
-    emit toLog( tr("%1: Очистка входящего и исходящего буферов")
+    emit toLog( tr("%1: Clear inbound and outbound buffers")
                 .arg(m_port.portName()), Log::LogDbg );
 #endif
 }
@@ -717,7 +735,7 @@ void ComPort::clearReadBuffer()
 {
     m_port.clear(QSerialPort::Input);
 #if !defined (WITHOUT_LOG)
-    emit toLog( tr("%1: Очистка входящего буфера")
+    emit toLog( tr("%1: Clear inbound buffer")
                 .arg(m_port.portName()), Log::LogDbg );
 #endif
 }
@@ -726,7 +744,7 @@ void ComPort::clearWriteBuffer()
 {
     m_port.clear(QSerialPort::Output);
 #if !defined (WITHOUT_LOG)
-    emit toLog( tr("%1: Очистка исходящего буфера")
+    emit toLog( tr("%1: Clear outbound buffer")
                 .arg(m_port.portName()), Log::LogDbg );
 #endif
 }
@@ -751,7 +769,7 @@ void ComPort::setBufferSize(qint64 bufferSize)
     m_port.setReadBufferSize(bufferSize);
 
 #if !defined (WITHOUT_LOG)
-    emit toLog( tr("%1: Установлен размер входящего буфера: %2")
+    emit toLog( tr("%1: Read buffer size set: %2")
                 .arg(m_port.portName())
                 .arg(m_port.readBufferSize()), Log::LogDbg );
 #endif
@@ -760,9 +778,9 @@ void ComPort::setBufferSize(qint64 bufferSize)
 void ComPort::serialPort_requestToSendChanged(bool set)
 {
 #if !defined (WITHOUT_LOG)
-    emit toLog( tr("%1: Сигнал RTS %2")
+    emit toLog( tr("%1: RTS signal is %2")
                 .arg(m_port.portName())
-                .arg(set ? tr("включен") : tr("выключен")), Log::LogDbg );
+                .arg(set ? tr("ON") : tr("OFF")), Log::LogDbg );
 #endif
     emit rts(set);
 }
@@ -770,9 +788,9 @@ void ComPort::serialPort_requestToSendChanged(bool set)
 void ComPort::serialPort_dataTerminalReadyChanged(bool set)
 {
 #if !defined (WITHOUT_LOG)
-    emit toLog( tr("%1: Сигнал DTR %2")
+    emit toLog( tr("%1: DTR signal is %2")
                 .arg(m_port.portName())
-                .arg(set ? tr("включен") : tr("выключен")), Log::LogDbg );
+                .arg(set ? tr("ON") : tr("OFF")), Log::LogDbg );
 #endif
     emit dtr(set);
 }
@@ -795,7 +813,7 @@ void ComPort::serialPort_readyRead()
 void ComPort::serialPort_bytesWriten(qint64 count)
 {
 #if !defined (WITHOUT_LOG)
-    emit toLog( tr("%1: Записано в порт из буфера %2 байт")
+    emit toLog( tr("%1: %2 bytes written to the port from the buffer")
                 .arg(m_port.portName())
                 .arg(count), Log::LogDbg );
 #endif
@@ -809,9 +827,9 @@ void ComPort::on_timerTimeOut()
     if(m_cts != on) {
         m_cts = on;
 #if !defined (WITHOUT_LOG)
-        emit toLog( tr("%1: Сигнал CTS %2")
+        emit toLog( tr("%1: CTS signal is %2")
                     .arg(m_port.portName())
-                    .arg(m_cts ? tr("включен") : tr("выключен")), Log::LogDbg );
+                    .arg(m_cts ? tr("ON") : tr("OFF")), Log::LogDbg );
 #endif
         emit cts(m_cts);
     }
@@ -821,9 +839,9 @@ void ComPort::on_timerTimeOut()
     if(m_dsr != on) {
         m_dsr = on;
 #if !defined (WITHOUT_LOG)
-        emit toLog( tr("%1: Сигнал DSR %2")
+        emit toLog( tr("%1: DSR signal is %2")
                     .arg(m_port.portName())
-                    .arg(m_dsr ? tr("включен") : tr("выключен")), Log::LogDbg );
+                    .arg(m_dsr ? tr("ON") : tr("OFF")), Log::LogDbg );
 #endif
         emit dsr(m_dsr);
     }

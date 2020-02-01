@@ -27,6 +27,7 @@
 
 #include <QObject>
 #include <QVariant>
+#include <QtSerialPort/QSerialPortInfo>
 #include <QtSerialPort/QSerialPort>
 #include <QByteArray>
 #include <QTimer>
@@ -59,6 +60,8 @@ public:
     Q_ENUM(PortProperty)
 #endif
     explicit ComPort(QObject *parent = nullptr);
+    explicit ComPort(const QString &portName, QObject *parent = nullptr);
+    explicit ComPort(const QSerialPortInfo &portInfo, QObject *parent = nullptr);
     virtual ~ComPort();
     QString lastError() const;
     bool setPortName(const QString &portName);
@@ -132,6 +135,8 @@ private:
     bool m_autoRead {true};
     QByteArray m_buffer;
     QTimer m_timer;
+
+    void startInit();
 
 private slots:
     void serialPort_error(QSerialPort::SerialPortError error);
