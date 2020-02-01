@@ -28,12 +28,12 @@
 #include "console.h"
 #include "convert.h"
 
-#ifdef Q_OS_WIN
-#include <windows.h>
+#ifdef Q_OS_WIN32
+#   include <windows.h>
 #else
-#include <sys/ioctl.h>
-#include <stdio.h>
-#include <unistd.h>
+#   include <sys/ioctl.h>
+#   include <stdio.h>
+#   include <unistd.h>
 #endif
 
 namespace console { //==========================================================
@@ -289,7 +289,7 @@ void rectangle(const QRect &rect, Color color)
 QSize getSize(const QSize &defaultSize)
 {
     int columns = 0, rows = 0;
-#ifdef Q_OS_WIN
+#ifdef Q_OS_WIN32
     CONSOLE_SCREEN_BUFFER_INFO csbi;
     GetConsoleScreenBufferInfo(GetStdHandle(STD_OUTPUT_HANDLE), &csbi);
     columns = csbi.srWindow.Right - csbi.srWindow.Left + 1;
