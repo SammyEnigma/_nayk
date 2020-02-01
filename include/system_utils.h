@@ -32,8 +32,8 @@ namespace system_utils { //=====================================================
 
 void pause(int ms = 1000);
 int dayOfWeek(int year, int month, int day);
-bool osCmd(const QString &cmd, QString &out, int timeout=5000);
-bool osCmd(const QString &cmd, QByteArray &out, int timeout=5000);
+bool osCmd(const QString &cmd, QString &out, int timeout = 5000);
+bool osCmd(const QString &cmd, QByteArray &out, int timeout = 5000);
 QString osName();
 QString osVersion();
 

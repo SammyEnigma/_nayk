@@ -26,6 +26,7 @@
 #include <QTimer>
 #include <QEventLoop>
 #include <QProcess>
+#include <QSysInfo>
 
 #if defined (Q_OS_WIN32)
 #   include <windows.h>
@@ -88,11 +89,11 @@ bool osCmd(const QString &cmd, QByteArray &out, int timeout)
 
     timeout = qBound(300, timeout, 300000);
     if (!process.waitForStarted(timeout)) {
-        out = QByteArray("Таймаут запуска процесса");
+        out = QObject::tr("Timeout wait for started").toUtf8();
         return false;
     }
     if (!process.waitForFinished(timeout)) {
-        out = QByteArray("Таймаут ожидания завершения процесса");
+        out = QObject::tr("Timeout wait for finished").toUtf8();
         return false;
     }
     out = process.readAllStandardOutput();
@@ -109,25 +110,27 @@ bool osCmd(const QString &cmd, QString &out, int timeout)
 //==============================================================================
 QString osName()
 {
-    QString res = "";
-
 #if defined (Q_OS_WIN32)
-    res = "Windows";
+    return "Windows";
+#elif defined (Q_OS_FREEBSD)
+    return "FreeBSD";
 #elif defined (Q_OS_LINUX)
-    res = "Linux";
+    return "Linux";
+#elif defined (Q_OS_IOS)
+    return "iOS";
 #elif defined (Q_OS_MACOS)
-    res = "MacOS";
+    return "MacOS";
+#elif defined (Q_OS_ANDROID)
+    return "Android"
 #elif defined (Q_OS_UNIX)
-    res = "Unix";
+    return "Unix";
+#else
+    return QString();
 #endif
-
-    return res;
 }
 //==============================================================================
 QString osVersion()
 {
-    QString res = "";
-
 #if defined (Q_OS_WIN32)
 
 #   if (QT_VERSION >= QT_VERSION_CHECK(5, 10, 0))
@@ -139,15 +142,17 @@ QString osVersion()
     if (IsWindows7OrGreater()) return "7";
     if (IsWindowsVistaOrGreater()) return "Vista";
     if (IsWindowsXPOrGreater()) return "XP";
+#   else
+    return QSysInfo::kernelVersion();
 #   endif
 
 #elif defined (Q_OS_LINUX)
     utsname kernelInfo;
     uname(&kernelInfo);
-    res = QString(kernelInfo.release);
+    return QString(kernelInfo.release);
+#else
+    return QSysInfo::kernelVersion();
 #endif
-
-    return res;
 }
 
 } // namespace system_utils //==================================================
