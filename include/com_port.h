@@ -31,19 +31,16 @@
 #include <QtSerialPort/QSerialPort>
 #include <QByteArray>
 #include <QTimer>
+#include "abstract_port.h"
 
 #if defined (QT_GUI_LIB)
 #    include <QComboBox>
 #endif
 
-#if !defined (WITHOUT_LOG)
-#    include "Log"
-#endif
-
 namespace nayk { //=============================================================
 
 //==============================================================================
-class ComPort : public QObject
+class ComPort : public AbstractPort
 {
     Q_OBJECT
 
@@ -63,7 +60,6 @@ public:
     explicit ComPort(const QString &portName, QObject *parent = nullptr);
     explicit ComPort(const QSerialPortInfo &portInfo, QObject *parent = nullptr);
     virtual ~ComPort();
-    QString lastError() const;
     bool setPortName(const QString &portName);
     bool setBaudRate(qint32 baudRate);
     bool setDataBits(QSerialPort::DataBits dataBits);
@@ -76,17 +72,16 @@ public:
     QSerialPort::StopBits stopBits() const;
     QSerialPort::Parity parity() const;
     QSerialPort::FlowControl flowControl() const;
-    bool open(bool readOnly = false);
-    void close();
-    bool isOpen() const;
-    bool isReady();
-    qint64 write(const QByteArray &bytes);
-    QByteArray read(qint64 count = -1);
-    QByteArray readBuffer() const;
+    bool open(bool readOnly = false) override;
+    void close() override;
+    bool isOpen() const override;
+    bool isReady() override;
+    qint64 write(const QByteArray &bytes) override;
+    qint64 write(const char *bytes, qint64 bytesCount) override;
+    QByteArray read(qint64 count = -1) override;
+    qint64 read(char *bytes, qint64 count) override;
     qint64 bufferSize() const;
     void setBufferSize(qint64 bufferSize);
-    bool autoRead() const;
-    void setAutoRead(bool autoRead);
     bool isRts();
     bool isDtr();
     bool isCts();
@@ -112,28 +107,16 @@ public:
     static QSerialPort::FlowControl strToFlowControl(const QString &value);
 
 signals:
-#if !defined (WITHOUT_LOG)
-    void toLog(const QString &text, Log::LogType logType = Log::LogInfo);
-#endif
-    void portError();
-    void portOpen();
-    void portClose();
-    void bytesRead(qint64 count);
-    void bytesWrite(qint64 count);
     void rts(bool on);
     void dtr(bool on);
     void cts(bool on);
     void dsr(bool on);
-    void readyRead();
 
 private:
     bool m_busy {true};
     bool m_cts {false};
     bool m_dsr {false};
     QSerialPort m_port;
-    QString m_lastError {""};
-    bool m_autoRead {true};
-    QByteArray m_buffer;
     QTimer m_timer;
 
     void startInit();

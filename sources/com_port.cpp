@@ -133,7 +133,7 @@ void fillComboBoxFlowControl(QComboBox *comboBox, QSerialPort::FlowControl defau
 //------------------------------------------------------------------------------
 #endif
 //==============================================================================
-ComPort::ComPort(QObject *parent) : QObject(parent)
+ComPort::ComPort(QObject *parent) : AbstractPort(parent)
 {
     if(!QSerialPortInfo::availablePorts().isEmpty()) {
         m_port.setPort(QSerialPortInfo::availablePorts().first());
@@ -142,14 +142,14 @@ ComPort::ComPort(QObject *parent) : QObject(parent)
     startInit();
 }
 //==============================================================================
-ComPort::ComPort(const QString &portName, QObject *parent) : QObject(parent)
+ComPort::ComPort(const QString &portName, QObject *parent) : AbstractPort(parent)
 {
     m_port.setPortName(portName);
 
     startInit();
 }
 //==============================================================================
-ComPort::ComPort(const QSerialPortInfo &portInfo, QObject *parent) : QObject(parent)
+ComPort::ComPort(const QSerialPortInfo &portInfo, QObject *parent) : AbstractPort(parent)
 {
     m_port.setPort(portInfo);
 
@@ -159,11 +159,6 @@ ComPort::ComPort(const QSerialPortInfo &portInfo, QObject *parent) : QObject(par
 ComPort::~ComPort()
 {
     close();
-}
-//==============================================================================
-QString ComPort::lastError() const
-{
-    return m_lastError;
 }
 //==============================================================================
 bool ComPort::setPortName(const QString &portName)
@@ -422,6 +417,11 @@ bool ComPort::isReady()
 //==============================================================================
 qint64 ComPort::write(const QByteArray &bytes)
 {
+    return write( bytes.constData(), bytes.size() );
+}
+//==============================================================================
+qint64 ComPort::write(const char *bytes, qint64 bytesCount)
+{
     if (!isOpen()) {
         m_lastError = tr("%1: Port is not open").arg(m_port.portName());
 
@@ -431,9 +431,9 @@ qint64 ComPort::write(const QByteArray &bytes)
         return 0;
     }
 
-    if(bytes.isEmpty()) return 0;
+    if(bytesCount < 1) return 0;
 
-    qint64 count = m_port.write(bytes);
+    qint64 count = m_port.write(bytes, bytesCount);
 
     if(count < 0) {
         m_lastError = tr("%1: Write error: %2")
@@ -450,8 +450,7 @@ qint64 ComPort::write(const QByteArray &bytes)
 
         emit toLog( tr("%1: %2")
                     .arg(m_port.portName())
-                    .arg(convert::bytesToHex(
-                             bytes.left( static_cast<int>(count)), " ")),
+                    .arg(convert::bytesToHex( bytes, count, " ")),
                     Log::LogOut );
         emit toLog( tr("%1: %2 bytes written to buffer")
                     .arg(m_port.portName())
@@ -464,6 +463,14 @@ qint64 ComPort::write(const QByteArray &bytes)
 //==============================================================================
 QByteArray ComPort::read(qint64 count)
 {
+    QByteArray buf(count, 0);
+    int n = read(buf.data(), count);
+
+    return (n > 0) ? buf.left(n) : QByteArray();
+}
+//==============================================================================
+qint64 ComPort::read(char *bytes, qint64 count)
+{
     m_buffer.clear();
 
     if (!isOpen()) {
@@ -471,11 +478,17 @@ QByteArray ComPort::read(qint64 count)
 #if !defined (WITHOUT_LOG)
         emit toLog( m_lastError, Log::LogError);
 #endif
-        return m_buffer;
+        return 0;
     }
 
     m_buffer = (count < 0) ? m_port.readAll() : m_port.read(count);
-    if(m_buffer.isEmpty()) return m_buffer;
+    if(m_buffer.isEmpty()) return 0;
+
+    for(auto i=0; i<m_buffer.size(); ++i)
+        *(bytes + i) = m_buffer.at(i);
+
+    for(auto i=m_buffer.size(); i<count; ++i)
+        *(bytes + i) = 0;
 
 #if !defined (WITHOUT_LOG)
         emit toLog( tr("%1: %2")
@@ -487,12 +500,7 @@ QByteArray ComPort::read(qint64 count)
 #endif
 
     emit bytesRead( m_buffer.size() );
-    return m_buffer;
-}
-//==============================================================================
-QByteArray ComPort::readBuffer() const
-{
-    return m_buffer;
+    return m_buffer.size();
 }
 //==============================================================================
 #if defined (QT_GUI_LIB)
@@ -688,16 +696,6 @@ void ComPort::serialPort_error(QSerialPort::SerialPortError error)
                 .arg(m_port.errorString()), Log::LogError );
 #endif
     emit portError();
-}
-//==============================================================================
-bool ComPort::autoRead() const
-{
-    return m_autoRead;
-}
-//==============================================================================
-void ComPort::setAutoRead(bool autoRead)
-{
-    m_autoRead = autoRead;
 }
 //==============================================================================
 bool ComPort::isRts()

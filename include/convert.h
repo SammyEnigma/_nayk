@@ -117,6 +117,7 @@ qint16 reverseBytes(qint16 val);
 qint32 reverseBytes(qint32 val);
 qint64 reverseBytes(qint64 val);
 QString bytesToHex(const QByteArray &data, const QString &splitter = QString(" "));
+QString bytesToHex(const char *data, qint64 count, const QString &splitter = QString(" "));
 
 } // namespace convert //=======================================================
 #endif // CONVERT_H

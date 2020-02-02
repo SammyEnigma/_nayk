@@ -502,9 +502,14 @@ QDateTime strToDateTime(const QString &str)
 //==============================================================================
 QString bytesToHex(const QByteArray &data, const QString &splitter)
 {
+    return bytesToHex( data.constData(), data.size(), splitter );
+}
+//==============================================================================
+QString bytesToHex(const char *data, qint64 count, const QString &splitter)
+{
     QString result {""};
-    for(int i=0; i<data.size(); ++i)
-        result += splitter + intToHex(static_cast<quint8>(data.at(i)), 2, false);
+    for(int i=0; i<count; ++i)
+        result += splitter + intToHex(static_cast<quint8>( *(data + i) ), 2, false);
     return result.trimmed();
 }
 //==============================================================================
