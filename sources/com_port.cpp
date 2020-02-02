@@ -341,7 +341,7 @@ bool ComPort::open(bool readOnly)
 
 #if !defined (WITHOUT_LOG)
         emit toLog( tr("%1: Port is open").arg(m_port.portName()), Log::LogInfo );
-        emit toLog( tr("%1: %2")
+        emit toLog( QString("%1: %2")
                     .arg(m_port.portName())
                     .arg(portSettings())
                     , Log::LogDbg );
@@ -448,7 +448,7 @@ qint64 ComPort::write(const char *bytes, qint64 bytesCount)
 #if !defined (WITHOUT_LOG)
     if (count > 0) {
 
-        emit toLog( tr("%1: %2")
+        emit toLog( QString("%1: %2")
                     .arg(m_port.portName())
                     .arg(convert::bytesToHex( bytes, count, " ")),
                     Log::LogOut );
@@ -491,7 +491,7 @@ qint64 ComPort::read(char *bytes, qint64 count)
         *(bytes + i) = 0;
 
 #if !defined (WITHOUT_LOG)
-        emit toLog( tr("%1: %2")
+        emit toLog( QString("%1: %2")
                     .arg(m_port.portName())
                     .arg(convert::bytesToHex(m_buffer), " "), Log::LogIn );
         emit toLog( tr("%1: Read %2 bytes")
@@ -749,7 +749,7 @@ void ComPort::clearWriteBuffer()
 //==============================================================================
 QString ComPort::portSettings()
 {
-    return tr("%1,%2,%3,%4,%5")
+    return QString("%1,%2,%3,%4,%5")
             .arg(m_port.baudRate())
             .arg(parityToStr(m_port.parity()))
             .arg(m_port.dataBits())

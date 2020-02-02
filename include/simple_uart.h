@@ -33,10 +33,6 @@
 #    include <QComboBox>
 #endif
 
-#if defined (Q_OS_WIN32)
-#   include <windows.h>
-#endif
-
 #include "abstract_port.h"
 
 namespace nayk { //=============================================================
@@ -70,8 +66,9 @@ public:
 #endif
 
 private:
-    QString m_portName;
+    bool m_readOnly {false};
     qint32 m_baudRate {9600};
+    QString m_portName;
 
 #if defined (Q_OS_WIN32)
     HANDLE m_handle {INVALID_HANDLE_VALUE};

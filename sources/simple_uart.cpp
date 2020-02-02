@@ -28,7 +28,9 @@
 #include "SystemUtils"
 #include "simple_uart.h"
 
-#if defined (Q_OS_LINUX)
+#if defined (Q_OS_WIN32)
+#   include <windows.h>
+#else
 #   include <unistd.h>
 #   include <termios.h>
 #   include <fcntl.h>
@@ -58,7 +60,26 @@ SimpleUart::~SimpleUart()
 //==============================================================================
 bool SimpleUart::setPortName(const QString &portName)
 {
+    if(portName == m_portName) return true;
 
+    if( isOpen() ) {
+
+        close();
+        QString savePortName = m_portName;
+        m_portName = portName;
+
+        if(!open(m_readOnly)) {
+
+            m_portName = savePortName;
+            return false;
+        }
+    }
+    else {
+
+        m_portName = portName;
+    }
+
+    return true;
 }
 //==============================================================================
 bool SimpleUart::setBaudRate(qint32 baudRate)
@@ -107,26 +128,28 @@ bool SimpleUart::setBaudRate(qint32 baudRate)
     }
 #endif // LINUX
 
-#ifdef WINDOWS
+#ifdef Q_OS_WIN32
     DCB dcb;
-    BOOL fSuccess;
 
-    fSuccess = GetCommState(m_handle, &dcb);
-    if (!fSuccess) {
-        if (logComFile) {
-            logComFile->write("ERROR - in GetCommState()\n");
-            logComFile->flush();
-        }
+    if (!GetCommState(m_handle, &dcb)) {
+
+        m_lastError = tr("%1: Failed to GetCommState")
+                        .arg(m_portName);
+#if !defined (WITHOUT_LOG)
+        emit toLog( m_lastError, Log::LogError);
+#endif
         return false;
     }
+
     dcb.BaudRate = baudRateConst(baudRate);	// current baud rate
 
-    fSuccess = SetCommState(m_handle, &dcb);
-    if (!fSuccess) {
-        if (logComFile) {
-            logComFile->write("ERROR - in SetCommState()\n");
-            logComFile->flush();
-        }
+    if (!SetCommState(m_handle, &dcb)) {
+
+        m_lastError = tr("%1: Failed to SetCommState")
+                        .arg(m_portName);
+#if !defined (WITHOUT_LOG)
+        emit toLog( m_lastError, Log::LogError);
+#endif
         return false;
     }
 #endif
@@ -137,12 +160,12 @@ bool SimpleUart::setBaudRate(qint32 baudRate)
 //==============================================================================
 QString SimpleUart::portName() const
 {
-
+    return m_portName;
 }
 //==============================================================================
 qint32 SimpleUart::baudRate() const
 {
-
+    return m_baudRate;
 }
 //==============================================================================
 bool SimpleUart::open(bool readOnly)
@@ -192,7 +215,12 @@ bool SimpleUart::open(bool readOnly)
 #if !defined (WITHOUT_LOG)
         emit toLog( m_lastError, Log::LogError);
 #endif
+
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wunused-result"
         lockf(fd, F_ULOCK, 0);
+#pragma GCC diagnostic pop
+
         ::close(fd);
         return false;
     }
@@ -206,7 +234,12 @@ bool SimpleUart::open(bool readOnly)
 #if !defined (WITHOUT_LOG)
         emit toLog( m_lastError, Log::LogError);
 #endif
+
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wunused-result"
         lockf(fd, F_ULOCK, 0);
+#pragma GCC diagnostic pop
+
         ::close(fd);
         return false;
     }
@@ -219,7 +252,12 @@ bool SimpleUart::open(bool readOnly)
 #if !defined (WITHOUT_LOG)
         emit toLog( m_lastError, Log::LogError);
 #endif
+
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wunused-result"
         lockf(fd, F_ULOCK, 0);
+#pragma GCC diagnostic pop
+
         ::close(fd);
         return false;
     }
@@ -231,7 +269,12 @@ bool SimpleUart::open(bool readOnly)
 #if !defined (WITHOUT_LOG)
         emit toLog( m_lastError, Log::LogError);
 #endif
+
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wunused-result"
         lockf(fd, F_ULOCK, 0);
+#pragma GCC diagnostic pop
+
         ::close(fd);
         return false;
     }
@@ -271,7 +314,12 @@ bool SimpleUart::open(bool readOnly)
 #if !defined (WITHOUT_LOG)
         emit toLog( m_lastError, Log::LogError);
 #endif
+
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wunused-result"
         lockf(fd, F_ULOCK, 0);
+#pragma GCC diagnostic pop
+
         ::close(fd);
         return false;
     }
@@ -281,7 +329,6 @@ bool SimpleUart::open(bool readOnly)
 
 #ifdef WINDOWS
     DCB dcb;
-    BOOL fSuccess;
     portName = "\\\\.\\" + m_portName;
 
     m_handle = CreateFileA(reinterpret_cast<LPCSTR>(portName.toLatin1().data()),
@@ -295,20 +342,22 @@ bool SimpleUart::open(bool readOnly)
 
 
     if ( m_handle == INVALID_HANDLE_VALUE) {
-        if (logComFile) {
-            logComFile->write("ERROR - INVALID_HANDLE_VALUE\n");
-            logComFile->flush();
-        }
+
+        m_lastError = tr("%1: Invalid Handle")
+                        .arg(m_portName);
+#if !defined (WITHOUT_LOG)
+        emit toLog( m_lastError, Log::LogError);
+#endif
         return false;
     }
 
-    fSuccess = GetCommState( m_handle, &dcb);
+    if (!GetCommState( m_handle, &dcb)) {
 
-    if (!fSuccess) {
-        if (logComFile) {
-            logComFile->write("ERROR - in GetCommState()\n");
-            logComFile->flush();
-        }
+        m_lastError = tr("%1: Failed to GetCommState")
+                        .arg(m_portName);
+#if !defined (WITHOUT_LOG)
+        emit toLog( m_lastError, Log::LogError);
+#endif
         return false;
     }
 
@@ -334,23 +383,23 @@ bool SimpleUart::open(bool readOnly)
     dcb.Parity = 0;             // 0-4=no,odd,even,mark,space
     dcb.StopBits = 0;           // 0,1,2 = 1, 1.5, 2
 
-    fSuccess = SetCommState( m_handle, &dcb);
+    if (!SetCommState( m_handle, &dcb)) {
 
-    if (!fSuccess) {
-        if (logComFile) {
-            logComFile->write("ERROR - in SetCommState()\n");
-            logComFile->flush();
-        }
+        m_lastError = tr("%1: Failed to SetCommState")
+                        .arg(m_portName);
+#if !defined (WITHOUT_LOG)
+        emit toLog( m_lastError, Log::LogError);
+#endif
         return false;
     }
 
-    fSuccess = SetupComm( m_handle, 4096, 4096);
+    if (!SetupComm( m_handle, 4096, 4096)) {
 
-    if (!fSuccess) {
-        if (logComFile) {
-            logComFile->write("ERROR - in SetupComm()\n");
-            logComFile->flush();
-        }
+        m_lastError = tr("%1: Failed to SetupComm")
+                        .arg(m_portName);
+#if !defined (WITHOUT_LOG)
+        emit toLog( m_lastError, Log::LogError);
+#endif
         return false;
     }
 
@@ -361,13 +410,13 @@ bool SimpleUart::open(bool readOnly)
     tOut.WriteTotalTimeoutMultiplier = 2;
     tOut.WriteTotalTimeoutConstant = 50;
 
-    fSuccess = SetCommTimeouts(m_handle, &tOut );
+    if(!SetCommTimeouts(m_handle, &tOut )) {
 
-    if(!fSuccess) {
-        if (logComFile) {
-            logComFile->write("ERROR - in SetCommTimeouts()\n");
-            logComFile->flush();
-        }
+        m_lastError = tr("%1: Failed to SetCommTimeouts")
+                        .arg(m_portName);
+#if !defined (WITHOUT_LOG)
+        emit toLog( m_lastError, Log::LogError);
+#endif
         return false;
     }
 
@@ -375,9 +424,11 @@ bool SimpleUart::open(bool readOnly)
 
 #endif //WINDOWS
 
+    m_readOnly = readOnly;
+
 #if !defined (WITHOUT_LOG)
     emit toLog( tr("%1: Port is open").arg(m_portName), Log::LogInfo );
-    emit toLog( tr("%1: %2")
+    emit toLog( QString("%1: %2")
                 .arg(m_portName)
                 .arg(portSettings())
                 , Log::LogDbg );
@@ -392,7 +443,12 @@ void SimpleUart::close()
     if(!isOpen()) return;
 
 #ifdef Q_OS_LINUX
-    lockf(m_handle, F_ULOCK, 0);
+
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wunused-result"
+        lockf(m_handle, F_ULOCK, 0);
+#pragma GCC diagnostic pop
+
     ::close(m_handle);
     m_handle = -1;
 #endif
@@ -410,12 +466,17 @@ void SimpleUart::close()
 //==============================================================================
 bool SimpleUart::isOpen() const
 {
-
+#ifdef Q_OS_LINUX
+    return (m_handle != -1);
+#endif
+#ifdef Q_OS_WIN32
+    return (m_handle != INVALID_HANDLE_VALUE);
+#endif
 }
 //==============================================================================
 bool SimpleUart::isReady()
 {
-
+    return isOpen();
 }
 //==============================================================================
 qint64 SimpleUart::write(const QByteArray &bytes)
@@ -457,7 +518,7 @@ qint64 SimpleUart::write(const char *bytes, qint64 bytesCount)
     if (result > 0) {
 #if !defined (WITHOUT_LOG)
 
-        emit toLog( tr("%1: %2")
+        emit toLog( QString("%1: %2")
                     .arg(m_portName)
                     .arg(convert::bytesToHex( bytes, result, " ")),
                     Log::LogOut );
@@ -537,7 +598,7 @@ qint64 SimpleUart::read(char *bytes, qint64 count)
         *(bytes + i) = 0;
 
 #if !defined (WITHOUT_LOG)
-        emit toLog( tr("%1: %2")
+        emit toLog( QString("%1: %2")
                     .arg(m_portName)
                     .arg(convert::bytesToHex(m_buffer), " "), Log::LogIn );
         emit toLog( tr("%1: Read %2 bytes")
@@ -551,7 +612,12 @@ qint64 SimpleUart::read(char *bytes, qint64 count)
 //==============================================================================
 QString SimpleUart::portSettings()
 {
-
+    return QString("%1,%2,%3,%4,%5")
+            .arg(m_baudRate)
+            .arg("NoParity")
+            .arg(8)
+            .arg(1)
+            .arg("NoFlowControl");
 }
 //==============================================================================
 QStringList SimpleUart::availablePorts()
@@ -705,7 +771,7 @@ int SimpleUart::baudRateConst(qint32 baudRate)
 #endif
     default:
 #ifdef Q_OS_WIN32
-        return CBR_0;
+        return 0;
 #else
         return B0;
 #endif
@@ -713,80 +779,4 @@ int SimpleUart::baudRateConst(qint32 baudRate)
 }
 //==============================================================================
 
-
-
-
-
-
-
-/*
-
-QString ComAPI::portSettings()
-{
-    if(!isOpen()) return QString();
-
-    int speed = 0;
-
-#ifdef LINUX
-    struct termios options;
-
-    if( tcgetattr(comId, &options) < 0) {
-
-        if (logComFile) {
-            logComFile->write("ERROR - tcgetattr(comId, &options)\n");
-            logComFile->flush();
-        }
-    }
-    else
-        speed = cfgetispeed(&options);
-#endif
-
-#ifdef WINDOWS
-    DCB dcb;
-    BOOL fSuccess;
-
-    fSuccess = GetCommState(comId, &dcb);
-    if (!fSuccess) {
-        if (logComFile) {
-            logComFile->write("ERROR - in GetCommState()\n");
-            logComFile->flush();
-        }
-    }
-    else
-        speed = dcb.BaudRate;
-#endif
-
-    for(int i=0; i<10; ++i) {
-
-        if(Baudrates[i] == speed) {
-            speed = BaudratesVal[i];
-            break;
-        }
-    }
-
-    return QString("%1, %2").arg(m_portName).arg(speed);
-}
-//==============================================================================
-bool ComAPI::isOpen()
-{
-#ifdef LINUX
-    return (comId != -1);
-#endif
-#ifdef WINDOWS
-    return (comId != INVALID_HANDLE_VALUE);
-#endif
-}
-//==============================================================================
-void ComAPI::pauseMsec(int msec)
-{
-    QTimer timer;
-    timer.setInterval(msec == 0 ? 1 : qAbs(msec));
-    timer.setSingleShot(true);
-    QEventLoop loop;
-    QObject::connect(&timer, &QTimer::timeout, &loop, &QEventLoop::quit);
-    timer.start();
-    loop.exec();
-}
-//==============================================================================
-*/
 } // namespace nayk //==========================================================
