@@ -23,7 +23,8 @@ SOURCES *= \
     $${PWD}/sources/system_utils.cpp \
     $${PWD}/sources/geo.cpp \
     $${PWD}/sources/http_server.cpp \
-    $${PWD}/sources/simple_uart.cpp
+    $${PWD}/sources/simple_uart.cpp \
+    $${PWD}/sources/lpt_port.cpp \
 
 HEADERS *= \
     $${PWD}/include/app_core.h \
@@ -35,7 +36,8 @@ HEADERS *= \
     $${PWD}/include/http_const.h \
     $${PWD}/include/http_server.h \
     $${PWD}/include/abstract_port.h \
-    $${PWD}/include/simple_uart.h
+    $${PWD}/include/simple_uart.h \
+    $${PWD}/include/lpt_port.h
 
 contains(QT, quick) | contains(QT, widgets) {
 
