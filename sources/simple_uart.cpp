@@ -38,6 +38,11 @@ namespace nayk { //=============================================================
 
 const int portWaitTimeout {5000};
 
+#ifdef Q_OS_WIN32
+const int bufferInSize {4096};
+const int bufferOutSize {4096};
+#endif
+
 //==============================================================================
 SimpleUart::SimpleUart(QObject *parent) : AbstractPort(parent)
 {
@@ -82,6 +87,12 @@ bool SimpleUart::setPortName(const QString &portName)
 //==============================================================================
 bool SimpleUart::setBaudRate(qint32 baudRate)
 {
+    if(m_baudRate == baudRate) return true;
+
+    if(!isOpen()) {
+        m_baudRate = baudRate;
+        return true;
+    }
 #ifdef Q_OS_LINUX
     struct termios options;
 
@@ -325,9 +336,9 @@ bool SimpleUart::open(bool readOnly)
     m_handle = fd;
 #endif //LINUX
 
-#ifdef WINDOWS
+#ifdef Q_OS_WIN32
     DCB dcb;
-    portName = "\\\\.\\" + m_portName;
+    QString portName = "\\\\.\\" + m_portName;
 
     m_handle = CreateFileA(reinterpret_cast<LPCSTR>(portName.toLatin1().data()),
                         GENERIC_READ | GENERIC_WRITE,
@@ -391,7 +402,7 @@ bool SimpleUart::open(bool readOnly)
         return false;
     }
 
-    if (!SetupComm( m_handle, 4096, 4096)) {
+    if (!SetupComm( m_handle, bufferInSize, bufferOutSize)) {
 
         m_lastError = tr("%1: Failed to SetupComm")
                         .arg(m_portName);
@@ -434,6 +445,18 @@ bool SimpleUart::open(bool readOnly)
 
     emit portOpen();
     return true;
+}
+//==============================================================================
+bool SimpleUart::open(const QString &portName, qint32 baudRate, bool readOnly)
+{
+    close();
+
+    return setPortName(portName) && setBaudRate(baudRate) && open(readOnly);
+}
+//==============================================================================
+bool SimpleUart::open(const QString &portName, bool readOnly)
+{
+    return open(portName, m_baudRate, readOnly);
 }
 //==============================================================================
 void SimpleUart::close()
@@ -598,7 +621,7 @@ qint64 SimpleUart::read(char *bytes, qint64 count)
 #if !defined (WITHOUT_LOG)
         emit toLog( QString("%1: %2")
                     .arg(m_portName)
-                    .arg(convert::bytesToHex(m_buffer), " "), Log::LogIn );
+                    .arg(convert::bytesToHex(m_buffer, " ")), Log::LogIn );
         emit toLog( tr("%1: Read %2 bytes")
                     .arg(m_portName)
                     .arg(realRead), Log::LogDbg );
@@ -641,8 +664,20 @@ QStringList SimpleUart::availablePorts()
 
             if (!deviceFilePaths.contains(deviceAbsoluteFilePath)) {
 
-                deviceFilePaths.append(deviceAbsoluteFilePath);
-                result.append(deviceAbsoluteFilePath.mid(5));
+                int res = ::open(deviceAbsoluteFilePath.toLatin1().constData(),
+                                 O_RDWR | O_NOCTTY | O_NDELAY);
+                if (res != -1) {
+
+                    struct termios t_port;
+
+                    if (tcgetattr(res, &t_port) >= 0) {
+
+                        deviceFilePaths.append(deviceAbsoluteFilePath);
+                        result.append(deviceAbsoluteFilePath.mid(5));
+                    }
+
+                    ::close(res);
+                }
             }
         }
     }

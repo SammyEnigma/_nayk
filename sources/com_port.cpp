@@ -493,7 +493,7 @@ qint64 ComPort::read(char *bytes, qint64 count)
 #if !defined (WITHOUT_LOG)
         emit toLog( QString("%1: %2")
                     .arg(m_port.portName())
-                    .arg(convert::bytesToHex(m_buffer), " "), Log::LogIn );
+                    .arg(convert::bytesToHex(m_buffer, " ")), Log::LogIn );
         emit toLog( tr("%1: Read %2 bytes")
                     .arg(m_port.portName())
                     .arg(m_buffer.size()), Log::LogDbg );

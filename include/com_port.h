@@ -31,11 +31,12 @@
 #include <QtSerialPort/QSerialPort>
 #include <QByteArray>
 #include <QTimer>
-#include "abstract_port.h"
 
 #if defined (QT_GUI_LIB)
 #    include <QComboBox>
 #endif
+
+#include "AbstractPort"
 
 namespace nayk { //=============================================================
 

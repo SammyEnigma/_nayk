@@ -31,6 +31,7 @@
 #include <QTextStream>
 
 #include "FileSys"
+#include "Log"
 #include "app_core.h"
 
 namespace app_core { //=========================================================
@@ -64,11 +65,13 @@ bool initializeApplication(const QString &applicationName,
 
     if (checkVersionQuery()) return false;
 
+    qRegisterMetaType<nayk::Log::LogType>();
+
     QString profilePath = applicationProfilePath();
     makePath(profilePath);
 
-    installTranslations(":/translations", "ru");
-    installTranslations(applicationRootPath() + "translations", "ru");
+    installTranslations(":/translations");
+    installTranslations(applicationRootPath() + "translations");
     return true;
 }
 //==============================================================================
@@ -77,14 +80,23 @@ void installTranslations(const QString &translationsDir, const QString &language
     QCoreApplication *application = QCoreApplication::instance();
     if(!application) return;
 
-    QString lang = language.isEmpty() ? QLocale::system().name() : language;
+    QString locale = language.isEmpty() ? QLocale::system().name() : language;
+    QStringList list = locale.split("_", QString::SkipEmptyParts);
+    QString lang = list.isEmpty() ? "ru" : list.first();
+
     QDir dir(translationsDir);
     QStringList filterList = QStringList()
+            << QString("*." + locale)
+            << QString("*_" + locale + ".qm")
+            << QString("*." + locale + ".qm")
+            << QString("*_" + locale + "_*.qm")
+            << QString("*." + locale + ".*.qm")
             << QString("*." + lang)
             << QString("*_" + lang + ".qm")
             << QString("*." + lang + ".qm")
             << QString("*_" + lang + "_*.qm")
             << QString("*." + lang + ".*.qm");
+    filterList.removeDuplicates();
     QStringList filesList;
 
     for(const QFileInfo &fileInfo: dir.entryInfoList()) {

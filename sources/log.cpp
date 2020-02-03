@@ -269,7 +269,10 @@ void Log::startLog(const QString &fileName)
 
     m_file.setFileName(m_logDir + m_fileName);
 
-    if (!m_file.open(QIODevice::WriteOnly | QIODevice::Text)) {
+    QIODevice::OpenMode mode = QIODevice::Text
+            | ( fileExists(m_file.fileName()) ? QIODevice::Append : QIODevice::WriteOnly );
+
+    if (!m_file.open(mode)) {
         m_lastError = tr("Failed to create file '%1'").arg(m_file.fileName());
         emit error(m_lastError);
         return;

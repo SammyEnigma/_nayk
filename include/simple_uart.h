@@ -37,7 +37,7 @@
 #   include <windows.h>
 #endif
 
-#include "abstract_port.h"
+#include "AbstractPort"
 
 namespace nayk { //=============================================================
 
@@ -55,6 +55,8 @@ public:
     QString portName() const;
     qint32 baudRate() const;
     bool open(bool readOnly = false) override;
+    bool open(const QString &portName, qint32 baudRate, bool readOnly = false);
+    bool open(const QString &portName, bool readOnly = false);
     void close() override;
     bool isOpen() const override;
     bool isReady() override;
