@@ -140,9 +140,7 @@ contains(QT, quick) {
 
 win32: BUILD_DATE = '$(shell echo %DATE:~6,4%-%DATE:~3,2%-%DATE:~0,2%)'
 else:  BUILD_DATE = '$(shell date +%Y-%m-%d)'
-!defined(VERSION) {
-    VERSION = 1.0
-}
+
 DEFINES += APP_VERSION=\\\"$$VERSION\\\"
 DEFINES += APP_BUILD_DATE=\\\"$$BUILD_DATE\\\"
 
