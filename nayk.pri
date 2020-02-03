@@ -160,16 +160,19 @@ CONFIG(debug, debug|release) {
 
 # translations =================================================================
 
-win32: TRANSLATIONS_DIR = $${DESTDIR}/translations
-else:  TRANSLATIONS_DIR = $${DESTDIR}/../translations
+win32: TRANSLATIONS_DIR = $$absolute_path( $${DESTDIR}/translations )
+else:  TRANSLATIONS_DIR = $$absolute_path( $${DESTDIR}/../translations )
 
-create_dir.commands = $(MKDIR) $$TRANSLATIONS_DIR
+!exists( $${TRANSLATIONS_DIR} ) {
 
-QMAKE_EXTRA_TARGETS += \
-    create_dir
+    translations_dir.commands = $${QMAKE_MKDIR} $$shell_path( $${TRANSLATIONS_DIR} )
 
-PRE_TARGETDEPS += \
-    create_dir
+    QMAKE_EXTRA_TARGETS += \
+        translations_dir
+
+    PRE_TARGETDEPS += \
+        translations_dir
+}
 
 TRANSLATIONS += \
     $${PWD}/resources/translations/nayk_common_ru.ts

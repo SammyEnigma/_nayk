@@ -33,6 +33,10 @@
 #    include <QComboBox>
 #endif
 
+#if defined (Q_OS_WIN32)
+#   include <windows.h>
+#endif
+
 #include "abstract_port.h"
 
 namespace nayk { //=============================================================

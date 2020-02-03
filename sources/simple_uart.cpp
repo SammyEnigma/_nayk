@@ -28,9 +28,7 @@
 #include "SystemUtils"
 #include "simple_uart.h"
 
-#if defined (Q_OS_WIN32)
-#   include <windows.h>
-#else
+#if defined (Q_OS_LINUX)
 #   include <unistd.h>
 #   include <termios.h>
 #   include <fcntl.h>
