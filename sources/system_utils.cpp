@@ -38,6 +38,7 @@
 #   include <sys/utsname.h>
 #endif
 
+#include "Convert"
 #include "system_utils.h"
 
 namespace system_utils { //=====================================================
@@ -131,6 +132,8 @@ QString osName()
 //==============================================================================
 QString osVersion()
 {
+    QString kernelVersion = QSysInfo::kernelVersion();
+
 #if defined (Q_OS_WIN32)
 
 #   if (QT_VERSION >= QT_VERSION_CHECK(5, 10, 0))
@@ -143,16 +146,41 @@ QString osVersion()
     if (IsWindowsVistaOrGreater()) return "Vista";
     if (IsWindowsXPOrGreater()) return "XP";
 #   else
-    return QSysInfo::kernelVersion();
+
+    QStringList verList = kernelVersion.split('.', QString::SkipEmptyParts);
+    qint64 ver {0};
+
+    for(int i=verList.size()-1; i >= 0; --i) {
+        ver = ver | ( static_cast<qint64>(convert::strToIntDef(verList.at(i), 0))
+                      << (16 * (verList.size()-1-i)));
+    }
+
+    if(ver >= 0x0A00000000)
+        return "10";
+    if(ver >= 0x0600030000)
+        return "8.1";
+    if(ver >= 0x0600020000)
+        return "8";
+    if(ver >= 0x0600011DB1)
+        return "7 SP1";
+    if(ver >= 0x0600010000)
+        return "7";
+    if(ver >= 0x0600000000)
+        return "Vista";
+    if(ver >= 0x0500010000)
+        return "XP";
+    if(ver >= 0x0500000000)
+        return "2k";
+
 #   endif
 
 #elif defined (Q_OS_LINUX)
     utsname kernelInfo;
     uname(&kernelInfo);
     return QString(kernelInfo.release);
-#else
-    return QSysInfo::kernelVersion();
 #endif
+
+    return kernelVersion;
 }
 //==============================================================================
 QString hostName()
