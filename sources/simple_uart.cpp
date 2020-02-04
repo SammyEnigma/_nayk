@@ -589,12 +589,13 @@ qint64 SimpleUart::readData(char *bytes, qint64 count)
 
     } while ((realRead < count) && (timeMs < portWaitTimeout) );
 
-
-    m_buffer = QByteArray(bytes, realRead);
+    if(realRead > 0)
+        m_buffer = QByteArray(bytes, realRead);
 
     for (int i = realRead; i < count; ++i)
         *(bytes + i) = 0;
 
+    if(realRead > 0) {
 #if !defined (WITHOUT_LOG)
         emit toLog( QString("%1: %2")
                     .arg(m_portName)
@@ -604,7 +605,9 @@ qint64 SimpleUart::readData(char *bytes, qint64 count)
                     .arg(realRead), Log::LogDbg );
 #endif
 
-    emit bytesRead( realRead );
+        emit bytesRead( realRead );
+    }
+
     return realRead;
 }
 //==============================================================================
