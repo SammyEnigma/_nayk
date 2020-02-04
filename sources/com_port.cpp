@@ -411,7 +411,7 @@ bool ComPort::isReady()
         return true;
 }
 //==============================================================================
-qint64 ComPort::write(const char *bytes, qint64 bytesCount)
+qint64 ComPort::writeData(const char *bytes, qint64 bytesCount)
 {
     if (!isOpen()) {
         m_lastError = tr("%1: Port is not open").arg(m_port.portName());
@@ -452,7 +452,7 @@ qint64 ComPort::write(const char *bytes, qint64 bytesCount)
     return count;
 }
 //==============================================================================
-qint64 ComPort::read(char *bytes, qint64 count)
+qint64 ComPort::readData(char *bytes, qint64 count)
 {
     m_buffer.clear();
 

@@ -44,23 +44,29 @@ public:
     virtual void close() = 0;
     virtual bool isOpen() const = 0;
     virtual bool isReady() { return true; }
-    virtual int write(char byte)
+    inline int write(char byte)
     {
         return write(&byte, 1);
     }
-    virtual qint64 write(const QByteArray &bytes)
+    inline qint64 write(const QByteArray &bytes)
     {
         return write( bytes.constData(), bytes.size() );
     }
-    virtual qint64 write(const char *bytes, qint64 bytesCount) = 0;
+    qint64 write(const char *bytes, qint64 bytesCount)
+    {
+        return writeData(bytes, bytesCount);
+    }
     QString lastError() const { return m_lastError; }
-    virtual QByteArray read(qint64 count = -1)
+    QByteArray read(qint64 count = -1)
     {
         QByteArray buf(count, 0);
         int n = read(buf.data(), count);
         return (n > 0) ? buf.left(n) : QByteArray();
     }
-    virtual qint64 read(char *bytes, qint64 count) = 0;
+    qint64 read(char *bytes, qint64 count)
+    {
+        return readData(bytes, count);
+    }
     QByteArray readBuffer() const { return m_buffer; }
     bool autoRead() const { return m_autoRead; }
     void setAutoRead(bool autoRead) { m_autoRead = autoRead; }
@@ -69,7 +75,7 @@ public:
         m_portName = portName;
         return true;
     }
-    virtual QString portName() const { return m_portName; }
+    QString portName() const { return m_portName; }
 
 signals:
 #if !defined (WITHOUT_LOG)
@@ -88,6 +94,9 @@ protected:
     QString m_lastError {""};
     QString m_portName {""};
     QByteArray m_buffer;
+
+    virtual qint64 readData(char *bytes, qint64 count) = 0;
+    virtual qint64 writeData(const char *bytes, qint64 bytesCount) = 0;
 };
 //==============================================================================
 

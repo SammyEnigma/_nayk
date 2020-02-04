@@ -139,7 +139,7 @@ bool LptPort::isOpen() const
 #endif
 }
 //==============================================================================
-qint64 LptPort::write(const char *bytes, qint64 bytesCount)
+qint64 LptPort::writeData(const char *bytes, qint64 bytesCount)
 {
     if (!isOpen()) {
         m_lastError = tr("Port is not open");
@@ -205,7 +205,7 @@ bool LptPort::setPortName(const QString &portName)
     return true;
 }
 //==============================================================================
-qint64 LptPort::read(char *bytes, qint64 count)
+qint64 LptPort::readData(char *bytes, qint64 count)
 {
     m_buffer.clear();
 

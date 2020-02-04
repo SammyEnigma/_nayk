@@ -59,8 +59,6 @@ public:
     void close() override;
     bool isOpen() const override;
     bool isReady() override;
-    qint64 write(const char *bytes, qint64 bytesCount) override;
-    qint64 read(char *bytes, qint64 count) override;
     QString portSettings();
     static QStringList availablePorts();
 #if defined (QT_GUI_LIB)
@@ -78,6 +76,8 @@ private:
 #endif
 
     int baudRateConst(qint32 baudRate);
+    qint64 writeData(const char *bytes, qint64 bytesCount) override;
+    qint64 readData(char *bytes, qint64 count) override;
 };
 //==============================================================================
 

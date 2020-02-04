@@ -30,8 +30,6 @@ public:
     bool open(bool readOnly = false) override;
     void close() override;
     bool isOpen() const override;
-    qint64 write(const char *bytes, qint64 bytesCount) override;
-    qint64 read(char *bytes, qint64 count) override;
     bool setPortName(const QString &portName) override;
     static QStringList availablePorts();
 #if defined (QT_GUI_LIB)
@@ -45,6 +43,8 @@ private:
 #else
     QFile m_deviceFile;
 #endif
+    qint64 writeData(const char *bytes, qint64 bytesCount) override;
+    qint64 readData(char *bytes, qint64 count) override;
 
 private slots:
     void port_error();

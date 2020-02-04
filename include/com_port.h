@@ -76,8 +76,6 @@ public:
     void close() override;
     bool isOpen() const override;
     bool isReady() override;
-    qint64 write(const char *bytes, qint64 bytesCount) override;
-    qint64 read(char *bytes, qint64 count) override;
     qint64 bufferSize() const;
     void setBufferSize(qint64 bufferSize);
     bool isRts();
@@ -118,6 +116,8 @@ private:
     QTimer m_timer;
 
     void startInit();
+    qint64 writeData(const char *bytes, qint64 bytesCount) override;
+    qint64 readData(char *bytes, qint64 count) override;
 
 private slots:
     void serialPort_error(QSerialPort::SerialPortError error);

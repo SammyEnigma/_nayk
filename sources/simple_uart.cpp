@@ -495,7 +495,7 @@ bool SimpleUart::isReady()
     return isOpen();
 }
 //==============================================================================
-qint64 SimpleUart::write(const char *bytes, qint64 bytesCount)
+qint64 SimpleUart::writeData(const char *bytes, qint64 bytesCount)
 {
     if (!isOpen()) {
         m_lastError = tr("%1: Port is not open").arg(m_portName);
@@ -544,7 +544,7 @@ qint64 SimpleUart::write(const char *bytes, qint64 bytesCount)
     return result;
 }
 //==============================================================================
-qint64 SimpleUart::read(char *bytes, qint64 count)
+qint64 SimpleUart::readData(char *bytes, qint64 count)
 {
     m_buffer.clear();
 
