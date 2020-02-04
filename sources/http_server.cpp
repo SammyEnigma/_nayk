@@ -68,7 +68,7 @@ bool HttpServer::readRequest()
             emit toLog(tr("HTTP headers:"), Log::LogDbg);
             for(auto itr = m_requestHeaders.begin(); itr != m_requestHeaders.end(); ++itr) {
                 if(!itr.value().toString().isNull())
-                    emit toLog(tr("%1: %2").arg(itr.key()).arg(itr.value().toString()), Log::LogDbg);
+                    emit toLog(QString("%1: %2").arg(itr.key()).arg(itr.value().toString()), Log::LogDbg);
             }
         }
 #endif
@@ -84,7 +84,7 @@ bool HttpServer::readRequest()
             emit toLog(tr("Cookies:"), Log::LogDbg);
             for(auto itr = m_cookies.begin(); itr != m_cookies.end(); ++itr) {
                 if(!itr.value().toString().isNull())
-                    emit toLog(tr("%1: %2").arg(itr.key()).arg(itr.value().toString()), Log::LogDbg);
+                    emit toLog(QString("%1: %2").arg(itr.key()).arg(itr.value().toString()), Log::LogDbg);
             }
         }
 #endif
@@ -100,7 +100,7 @@ bool HttpServer::readRequest()
             emit toLog(tr("GET parameters:"), Log::LogDbg);
             for(auto itr = m_getParameters.begin(); itr != m_getParameters.end(); ++itr) {
                 if(!itr.value().toString().isNull())
-                    emit toLog(tr("%1: %2").arg(itr.key()).arg(itr.value().toString()), Log::LogDbg);
+                    emit toLog(QString("%1: %2").arg(itr.key()).arg(itr.value().toString()), Log::LogDbg);
             }
         }
 #endif
@@ -116,7 +116,7 @@ bool HttpServer::readRequest()
             emit toLog(tr("POST parameters:"), Log::LogDbg);
             for(auto itr = m_postParameters.begin(); itr != m_postParameters.end(); ++itr) {
                 if(!itr.value().toString().isNull())
-                    emit toLog(tr("%1: %2").arg(itr.key()).arg(itr.value().toString()), Log::LogDbg);
+                    emit toLog(QString("%1: %2").arg(itr.key()).arg(itr.value().toString()), Log::LogDbg);
             }
         }
 #endif
@@ -143,7 +143,7 @@ bool HttpServer::writeResponse()
     for (auto itr = m_responseHeaders.begin(); itr != m_responseHeaders.end(); ++itr) {
         headers.append( QString(itr.key() + ": " + itr.value().toString() + "\r\n").toUtf8() );
 #if !defined(WITHOUT_LOG)
-        emit toLog(tr("%1: %2").arg(itr.key()).arg(itr.value().toString()), Log::LogDbg);
+        emit toLog(QString("%1: %2").arg(itr.key()).arg(itr.value().toString()), Log::LogDbg);
 #endif
     }
     headers.append( QString("\r\n").toUtf8() );

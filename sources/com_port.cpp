@@ -164,14 +164,14 @@ ComPort::~ComPort()
 bool ComPort::setPortName(const QString &portName)
 {
     if(m_port.portName() == portName) return true;
-    QString oldName = m_port.portName();
 
     m_port.setPortName(portName);
 
-    if(m_port.portName() == oldName) {
+    if(m_port.portName() != portName) {
 
+        m_port.setPortName(m_portName);
         m_lastError = tr("%1: Failed to set port name: %2")
-                    .arg(oldName)
+                    .arg(m_portName)
                     .arg(portName);
 #if !defined (WITHOUT_LOG)
         emit toLog( m_lastError, Log::LogError);
@@ -180,9 +180,10 @@ bool ComPort::setPortName(const QString &portName)
 
 #if !defined (WITHOUT_LOG)
         emit toLog( tr("%1: Port name set: %2")
-                    .arg(oldName)
+                    .arg(m_portName)
                     .arg(portName), Log::LogDbg );
 #endif
+    m_portName = m_port.portName();
     return true;
 }
 //==============================================================================
@@ -294,11 +295,6 @@ bool ComPort::setFlowControl(QSerialPort::FlowControl flowControl)
     emit toLog( m_lastError, Log::LogError);
 #endif
     return false;
-}
-//==============================================================================
-QString ComPort::portName() const
-{
-    return m_port.portName();
 }
 //==============================================================================
 qint32 ComPort::baudRate() const
@@ -415,11 +411,6 @@ bool ComPort::isReady()
         return true;
 }
 //==============================================================================
-qint64 ComPort::write(const QByteArray &bytes)
-{
-    return write( bytes.constData(), bytes.size() );
-}
-//==============================================================================
 qint64 ComPort::write(const char *bytes, qint64 bytesCount)
 {
     if (!isOpen()) {
@@ -459,14 +450,6 @@ qint64 ComPort::write(const char *bytes, qint64 bytesCount)
 #endif
 
     return count;
-}
-//==============================================================================
-QByteArray ComPort::read(qint64 count)
-{
-    QByteArray buf(count, 0);
-    int n = read(buf.data(), count);
-
-    return (n > 0) ? buf.left(n) : QByteArray();
 }
 //==============================================================================
 qint64 ComPort::read(char *bytes, qint64 count)
@@ -670,6 +653,7 @@ QSerialPort::FlowControl ComPort::strToFlowControl(const QString &value)
 //==============================================================================
 void ComPort::startInit()
 {
+    m_portName = m_port.portName();
     m_timer.setSingleShot(false);
     m_timer.setInterval(100);
 
@@ -801,7 +785,7 @@ void ComPort::serialPort_readyRead()
     }
 
     if(m_autoRead) {
-        read();
+        AbstractPort::read();
     }
     else {
         emit readyRead();

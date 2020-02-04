@@ -51,9 +51,9 @@ SimpleUart::SimpleUart(QObject *parent) : AbstractPort(parent)
 }
 //==============================================================================
 SimpleUart::SimpleUart(const QString &portName, QObject *parent)
-    : AbstractPort(parent), m_portName(portName)
+    : AbstractPort(parent)
 {
-
+    m_portName = portName;
 }
 //==============================================================================
 SimpleUart::~SimpleUart()
@@ -165,11 +165,6 @@ bool SimpleUart::setBaudRate(qint32 baudRate)
 
     m_baudRate = baudRate;
     return true;
-}
-//==============================================================================
-QString SimpleUart::portName() const
-{
-    return m_portName;
 }
 //==============================================================================
 qint32 SimpleUart::baudRate() const
@@ -500,11 +495,6 @@ bool SimpleUart::isReady()
     return isOpen();
 }
 //==============================================================================
-qint64 SimpleUart::write(const QByteArray &bytes)
-{
-    return write( bytes.constData(), bytes.size() );
-}
-//==============================================================================
 qint64 SimpleUart::write(const char *bytes, qint64 bytesCount)
 {
     if (!isOpen()) {
@@ -552,19 +542,6 @@ qint64 SimpleUart::write(const char *bytes, qint64 bytesCount)
     }
 
     return result;
-}
-//==============================================================================
-int SimpleUart::write(char byte)
-{
-    return write(&byte, 1);
-}
-//==============================================================================
-QByteArray SimpleUart::read(qint64 count)
-{
-    QByteArray buf(count, 0);
-    int n = read(buf.data(), count);
-
-    return (n > 0) ? buf.left(n) : QByteArray();
 }
 //==============================================================================
 qint64 SimpleUart::read(char *bytes, qint64 count)

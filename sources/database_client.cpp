@@ -324,7 +324,7 @@ bool DataBaseClient::getTableFields(const QString &tableName, QStringList &list)
 
         QString fieldName = rec.field(i).name();
 #if !defined(WITHOUT_LOG)
-        emit toLog(tr("'%1'").arg(fieldName), Log::LogDbg);
+        emit toLog(QString("'%1'").arg(fieldName), Log::LogDbg);
 #endif
         list.append(fieldName);
     }

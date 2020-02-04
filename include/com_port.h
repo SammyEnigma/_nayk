@@ -61,13 +61,12 @@ public:
     explicit ComPort(const QString &portName, QObject *parent = nullptr);
     explicit ComPort(const QSerialPortInfo &portInfo, QObject *parent = nullptr);
     virtual ~ComPort();
-    bool setPortName(const QString &portName);
+    bool setPortName(const QString &portName) override;
     bool setBaudRate(qint32 baudRate);
     bool setDataBits(QSerialPort::DataBits dataBits);
     bool setStopBits(QSerialPort::StopBits stopBits);
     bool setParity(QSerialPort::Parity parity);
     bool setFlowControl(QSerialPort::FlowControl flowControl);
-    QString portName() const;
     qint32 baudRate() const;
     QSerialPort::DataBits dataBits() const;
     QSerialPort::StopBits stopBits() const;
@@ -77,9 +76,7 @@ public:
     void close() override;
     bool isOpen() const override;
     bool isReady() override;
-    qint64 write(const QByteArray &bytes) override;
     qint64 write(const char *bytes, qint64 bytesCount) override;
-    QByteArray read(qint64 count = -1) override;
     qint64 read(char *bytes, qint64 count) override;
     qint64 bufferSize() const;
     void setBufferSize(qint64 bufferSize);

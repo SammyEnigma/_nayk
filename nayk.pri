@@ -8,6 +8,10 @@ CONFIG  += c++14
 
 DEFINES += QT_DEPRECATED_WARNINGS
 
+lessThan( QT_MAJOR_VERSION, 6 ):lessThan( QT_MINOR_VERSION, 14 ) {
+    QMAKE_CXXFLAGS += -Wno-deprecated-copy
+}
+
 # Includes =====================================================================
 
 INCLUDEPATH *= \

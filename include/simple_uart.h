@@ -50,9 +50,8 @@ public:
     explicit SimpleUart(QObject *parent = nullptr);
     explicit SimpleUart(const QString &portName, QObject *parent = nullptr);
     virtual ~SimpleUart();
-    bool setPortName(const QString &portName);
+    bool setPortName(const QString &portName) override;
     bool setBaudRate(qint32 baudRate);
-    QString portName() const;
     qint32 baudRate() const;
     bool open(bool readOnly = false) override;
     bool open(const QString &portName, qint32 baudRate, bool readOnly = false);
@@ -60,10 +59,7 @@ public:
     void close() override;
     bool isOpen() const override;
     bool isReady() override;
-    qint64 write(const QByteArray &bytes) override;
     qint64 write(const char *bytes, qint64 bytesCount) override;
-    int write(char byte);
-    QByteArray read(qint64 count = -1) override;
     qint64 read(char *bytes, qint64 count) override;
     QString portSettings();
     static QStringList availablePorts();
@@ -74,7 +70,6 @@ public:
 private:
     bool m_readOnly {false};
     qint32 m_baudRate {9600};
-    QString m_portName;
 
 #if defined (Q_OS_WIN32)
     HANDLE m_handle {INVALID_HANDLE_VALUE};

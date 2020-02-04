@@ -25,14 +25,14 @@ class LptPort : public AbstractPort
 
 public:
     explicit LptPort(QObject *parent = nullptr);
+    explicit LptPort(const QString &portName, QObject *parent = nullptr);
     virtual ~LptPort();
     bool open(bool readOnly = false) override;
     void close() override;
     bool isOpen() const override;
-    qint64 write(const QByteArray &bytes) override;
-    QByteArray read(qint64 count = -1) override;
-    QString portName() const;
-    void setPortName(const QString &portName);
+    qint64 write(const char *bytes, qint64 bytesCount) override;
+    qint64 read(char *bytes, qint64 count) override;
+    bool setPortName(const QString &portName) override;
     static QStringList availablePorts();
 #if defined (QT_GUI_LIB)
     static void fillComboBoxAvailablePorts(QComboBox *comboBox, const QVariant &defaultValue = QVariant());

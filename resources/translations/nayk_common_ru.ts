@@ -125,6 +125,49 @@
     </message>
 </context>
 <context>
+	<name>nayk::LptPort</name>
+	<message>
+        <source>Failed to open port: %1</source>
+        <translation>Не удалось открыть порт: %1</translation>
+    </message>
+    <message>
+        <source>%1: Port is closed</source>
+        <translation>%1: Порт закрыт</translation>
+    </message>
+    <message>
+        <source>Port is not open</source>
+        <translation>Порт не открыт</translation>
+    </message>
+    <message>
+        <source>Failed to set port name: %1</source>
+        <translation>Не удалось установить имя порта: %1</translation>
+    </message>
+    <message>
+        <source>%1: Port name set: %2</source>
+        <translation>%1: Установлено имя порта: %2</translation>
+    </message>
+    <message>
+        <source>Write error: %1</source>
+        <translation>Ошибка записи: %1</translation>
+    </message>
+    <message>
+        <source>Read error: %1</source>
+        <translation>Ошибка чтения: %1</translation>
+    </message>
+    <message>
+        <source>%1: %2 bytes written to buffer</source>
+        <translation>%1: %2 байт записано в буфер</translation>
+    </message>
+    <message>
+        <source>%1: Read %2 bytes</source>
+        <translation>%1: Прочитано %2 байт</translation>
+    </message>
+    <message>
+        <source>%1: %2 bytes written to the port from the buffer</source>
+        <translation>%1: %2 байт записано в порт из буфера</translation>
+    </message>
+</context>
+<context>
     <name>nayk::ComPort</name>
     <message>
         <source>%1: Failed to set port name: %2</source>
@@ -177,10 +220,6 @@
     <message>
         <source>%1: Port is open</source>
         <translation>%1: Порт открыт</translation>
-    </message>
-    <message>
-        <source>%1: %2</source>
-        <translation>%1: %2</translation>
     </message>
     <message>
         <source>%1: RTS signal is %2</source>
@@ -307,10 +346,6 @@
         <translation>%1: Очистка исходящего буфера</translation>
     </message>
     <message>
-        <source>%1,%2,%3,%4,%5</source>
-        <translation>%1,%2,%3,%4,%5</translation>
-    </message>
-    <message>
         <source>%1: Read buffer size set: %2</source>
         <translation>%1: Установлен размер буфера чтения: %2</translation>
     </message>
@@ -381,10 +416,6 @@
         <source>&apos;%1&apos; table fields:</source>
         <translation>Поля таблицы &apos;%1&apos;:</translation>
     </message>
-    <message>
-        <source>&apos;%1&apos;</source>
-        <translation>&apos;%1&apos;</translation>
-    </message>
 </context>
 <context>
     <name>nayk::HttpServer</name>
@@ -395,10 +426,6 @@
     <message>
         <source>HTTP headers:</source>
         <translation>Заголовки HTTP:</translation>
-    </message>
-    <message>
-        <source>%1: %2</source>
-        <translation>%1: %2</translation>
     </message>
     <message>
         <source>Cookies:</source>

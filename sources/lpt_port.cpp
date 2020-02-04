@@ -55,7 +55,13 @@ static QStringList portNamesFromHardwareDeviceMap()
 //==============================================================================
 LptPort::LptPort(QObject *parent) : AbstractPort(parent)
 {
-
+    QStringList portList = availablePorts();
+    if(!portList.isEmpty()) m_portName = portList.first();
+}
+//==============================================================================
+LptPort::LptPort(const QString &portName, QObject *parent) : AbstractPort(parent)
+{
+    m_portName = portName;
 }
 //==============================================================================
 LptPort::~LptPort()
@@ -75,8 +81,7 @@ bool LptPort::open(bool readOnly)
 
     if(m_handle == INVALID_HANDLE_VALUE) {
 
-        m_lastError = tr("Не удалось открыть порт: %1 %2")
-                .arg("Error CreateFile")
+        m_lastError = tr("Failed to open port: %1")
                 .arg(GetLastError());
         port_error();
         return false;
@@ -89,7 +94,7 @@ bool LptPort::open(bool readOnly)
 
     if(!m_deviceFile.open( readOnly ? QIODevice::ReadOnly : QIODevice::ReadWrite )) {
 
-        m_lastError = tr("Не удалось открыть порт: %1")
+        m_lastError = tr("Failed to open port: %1")
                 .arg(m_deviceFile.errorString());
         port_error();
         return false;
@@ -97,7 +102,7 @@ bool LptPort::open(bool readOnly)
 #endif
 
 #if !defined (WITHOUT_LOG)
-    emit toLog( tr("%1: Порт открыт").arg(m_portName), Log::LogInfo );
+    emit toLog( tr("%1: Port is open").arg(m_portName), Log::LogInfo );
 #endif
     emit portOpen();
     return true;
@@ -119,7 +124,7 @@ void LptPort::close()
 #endif
 
 #if !defined (WITHOUT_LOG)
-    emit toLog( tr("%1: Порт закрыт").arg(m_portName), Log::LogInfo );
+    emit toLog( tr("%1: Port is closed").arg(m_portName), Log::LogInfo );
 #endif
 
     emit portClose();
@@ -134,25 +139,24 @@ bool LptPort::isOpen() const
 #endif
 }
 //==============================================================================
-qint64 LptPort::write(const QByteArray &bytes)
+qint64 LptPort::write(const char *bytes, qint64 bytesCount)
 {
     if (!isOpen()) {
-        m_lastError = tr("Порт не открыт");
+        m_lastError = tr("Port is not open");
         port_error();
         return 0;
     }
 
+    if(bytesCount < 1) return 0;
     qint64 count = 0;
 
 #ifdef Q_OS_WIN32
     DWORD dw = 0;
-    //OVERLAPPED ov;
 
     if( !WriteFile(m_handle,
-                   reinterpret_cast<LPCVOID>( bytes.constData() ),
-                   bytes.size(), &dw, NULL) ) {
-        m_lastError = tr("Ошибка записи: %1 %2")
-                .arg("Error WriteFile")
+                   reinterpret_cast<LPCVOID>( bytes ),
+                   bytesCount, &dw, NULL) ) {
+        m_lastError = tr("Write error: %1")
                 .arg(GetLastError());
         port_error();
         return 0;
@@ -161,10 +165,10 @@ qint64 LptPort::write(const QByteArray &bytes)
     count = static_cast<qint64>( dw );
 
 #else
-    count = m_deviceFile.write(bytes);
+    count = m_deviceFile.write(bytes, bytesCount);
 
     if( (count < 0) || !m_deviceFile.flush()) {
-        m_lastError = tr("Ошибка записи: %1").arg(m_deviceFile.errorString());
+        m_lastError = tr("Write error: %1").arg(m_deviceFile.errorString());
         port_error();
         return 0;
     }
@@ -173,10 +177,10 @@ qint64 LptPort::write(const QByteArray &bytes)
 #if !defined (WITHOUT_LOG)
     if (count > 0) {
 
-        emit toLog( tr("%1: %2")
+        emit toLog( QString("%1: %2")
                     .arg(m_portName)
-                    .arg(convert::bytesToHex(bytes.left( static_cast<int>(count)))), Log::LogOut );
-        emit toLog( tr("%1: Записано в буфер %2 байт")
+                    .arg(convert::bytesToHex(bytes, count, " ")), Log::LogOut );
+        emit toLog( tr("%1: %2 bytes written to buffer")
                     .arg(m_portName)
                     .arg(count), Log::LogDbg );
     }
@@ -186,65 +190,64 @@ qint64 LptPort::write(const QByteArray &bytes)
     return count;
 }
 //==============================================================================
-QString LptPort::portName() const
+bool LptPort::setPortName(const QString &portName)
 {
-    return m_portName;
-}
-//==============================================================================
-void LptPort::setPortName(const QString &portName)
-{
-    if(m_portName == portName) return;
+    if(m_portName == portName) return true;
 
-    if(isOpen()) close();
+    close();
 #if !defined (WITHOUT_LOG)
-    emit toLog( tr("%1: Установлено имя порта: %2")
+    emit toLog( tr("%1: Port name set: %2")
                 .arg(m_portName)
                 .arg(portName), Log::LogDbg );
 #endif
 
     m_portName = portName;
+    return true;
 }
 //==============================================================================
-QByteArray LptPort::read(qint64 count)
+qint64 LptPort::read(char *bytes, qint64 count)
 {
     m_buffer.clear();
 
     if (!isOpen()) {
-        m_lastError = tr("Порт не открыт");
+        m_lastError = tr("Port is not open");
         port_error();
-        return m_buffer;
+        return 0;
     }
 
 #ifdef Q_OS_WIN32
     DWORD lpSize = (count < 0) ? MAXDWORD : static_cast<DWORD>(count);
+    DWORD rp;
 
-    if(!ReadFile(m_handle, reinterpret_cast<LPVOID>(m_buffer.data()),
-                 lpSize, NULL, NULL )) {
+    if(!ReadFile(m_handle, reinterpret_cast<LPVOID>(bytes),
+                 lpSize, &rp, NULL )) {
 
-        m_lastError = tr("Ошибка чтения: %1 %2")
-                .arg("Error ReadFile")
+        m_lastError = tr("Read error: %1")
                 .arg(GetLastError());
         port_error();
-        return m_buffer;
+        return 0;
     }
 
+    qint64 result = rp;
+
 #else
-    m_buffer = (count < 0) ? m_deviceFile.readAll() : m_deviceFile.read(count);
+    qint64 result = m_deviceFile.read(bytes, (count < 0) ? 0x7FFFFFFF : count);
 #endif
 
-    if(m_buffer.isEmpty()) return m_buffer;
+    if(result < 1) return 0;
+    m_buffer = QByteArray(bytes, result);
 
 #if !defined (WITHOUT_LOG)
-    emit toLog( tr("%1: %2")
+    emit toLog( QString("%1: %2")
                 .arg(m_portName)
-                .arg(convert::bytesToHex(m_buffer)), Log::LogIn );
-    emit toLog( tr("%1: Прочитано %2 байт")
+                .arg(convert::bytesToHex(m_buffer, " ")), Log::LogIn );
+    emit toLog( tr("%1: Read %2 bytes")
                 .arg(m_portName)
-                .arg(m_buffer.size()), Log::LogDbg );
+                .arg(result), Log::LogDbg );
 #endif
 
-    emit bytesRead( m_buffer.size() );
-    return m_buffer;
+    emit bytesRead( result );
+    return result;
 }
 //==============================================================================
 QStringList LptPort::availablePorts()
@@ -301,7 +304,7 @@ void LptPort::fillComboBoxAvailablePorts(QComboBox *comboBox, const QVariant &de
 void LptPort::port_error()
 {
 #if !defined (WITHOUT_LOG)
-    emit toLog( tr("%1: %2")
+    emit toLog( QString("%1: %2")
                 .arg(m_portName)
                 .arg(m_lastError), Log::LogError );
 #endif
@@ -312,7 +315,7 @@ void LptPort::port_error()
 void LptPort::port_bytesWriten(qint64 count)
 {
 #if !defined (WITHOUT_LOG)
-    emit toLog( tr("%1: Записано в порт из буфера %2 байт")
+    emit toLog( tr("%1: %2 bytes written to the port from the buffer")
                 .arg(m_portName)
                 .arg(count), Log::LogDbg );
 #endif

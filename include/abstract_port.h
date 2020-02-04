@@ -44,14 +44,32 @@ public:
     virtual void close() = 0;
     virtual bool isOpen() const = 0;
     virtual bool isReady() { return true; }
-    virtual qint64 write(const QByteArray &bytes) = 0;
+    virtual int write(char byte)
+    {
+        return write(&byte, 1);
+    }
+    virtual qint64 write(const QByteArray &bytes)
+    {
+        return write( bytes.constData(), bytes.size() );
+    }
     virtual qint64 write(const char *bytes, qint64 bytesCount) = 0;
     QString lastError() const { return m_lastError; }
-    virtual QByteArray read(qint64 count = -1) = 0;
+    virtual QByteArray read(qint64 count = -1)
+    {
+        QByteArray buf(count, 0);
+        int n = read(buf.data(), count);
+        return (n > 0) ? buf.left(n) : QByteArray();
+    }
     virtual qint64 read(char *bytes, qint64 count) = 0;
     QByteArray readBuffer() const { return m_buffer; }
     bool autoRead() const { return m_autoRead; }
     void setAutoRead(bool autoRead) { m_autoRead = autoRead; }
+    virtual bool setPortName(const QString &portName)
+    {
+        m_portName = portName;
+        return true;
+    }
+    virtual QString portName() const { return m_portName; }
 
 signals:
 #if !defined (WITHOUT_LOG)
@@ -68,6 +86,7 @@ signals:
 protected:
     bool m_autoRead {true};
     QString m_lastError {""};
+    QString m_portName {""};
     QByteArray m_buffer;
 };
 //==============================================================================
