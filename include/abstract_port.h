@@ -36,6 +36,7 @@ namespace nayk { //=============================================================
 class AbstractPort : public QObject
 {
     Q_OBJECT
+    const qint64 maxReadCount {10240};
 
 public:
     explicit AbstractPort(QObject *parent = nullptr) : QObject(parent) {}
@@ -44,31 +45,19 @@ public:
     virtual void close() = 0;
     virtual bool isOpen() const = 0;
     virtual bool isReady() { return true; }
-    inline int write(char byte)
-    {
-        return write(&byte, 1);
-    }
-    inline qint64 write(const QByteArray &bytes)
-    {
-        return write( bytes.constData(), bytes.size() );
-    }
-    qint64 write(const char *bytes, qint64 bytesCount)
-    {
-        return writeData(bytes, bytesCount);
-    }
+    inline int write(char byte) { return write(&byte, 1); }
+    inline qint64 write(const QByteArray &bytes) { return write( bytes.constData(), bytes.size() ); }
+    qint64 write(const char *bytes, qint64 bytesCount) { return writeData(bytes, bytesCount); }
     QString lastError() const { return m_lastError; }
     QByteArray read(qint64 count = -1)
     {
         if(count == 0) return QByteArray();
-        else if(count < 0) count = 10240;
+        else if(count < 0) count = maxReadCount;
         QByteArray buf(count, 0);
         int n = read(buf.data(), count);
         return (n > 0) ? buf.left(n) : QByteArray();
     }
-    qint64 read(char *bytes, qint64 count)
-    {
-        return readData(bytes, count);
-    }
+    qint64 read(char *bytes, qint64 count) { return readData(bytes, count); }
     QByteArray readBuffer() const { return m_buffer; }
     bool autoRead() const { return m_autoRead; }
     void setAutoRead(bool autoRead) { m_autoRead = autoRead; }

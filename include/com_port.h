@@ -116,6 +116,8 @@ private:
     QTimer m_timer;
 
     void startInit();
+
+protected:
     qint64 writeData(const char *bytes, qint64 bytesCount) override;
     qint64 readData(char *bytes, qint64 count) override;
 
