@@ -785,7 +785,7 @@ void ComPort::serialPort_readyRead()
     }
 
     if(m_autoRead) {
-        AbstractPort::read();
+        read();
     }
     else {
         emit readyRead();

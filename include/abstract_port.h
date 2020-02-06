@@ -60,7 +60,7 @@ public:
     QByteArray read(qint64 count = -1)
     {
         if(count == 0) return QByteArray();
-        else if(count < 0) count = 1024;
+        else if(count < 0) count = 10240;
         QByteArray buf(count, 0);
         int n = read(buf.data(), count);
         return (n > 0) ? buf.left(n) : QByteArray();
