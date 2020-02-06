@@ -361,7 +361,7 @@ bool HttpServer::processPost()
 
     QString boundary = "";
 
-    for(int i=1; i<sList.count(); i++) {
+    for(int i=1; i<sList.count(); ++i) {
 
         QString strVal = QString(sList.at(i)).trimmed();
 
@@ -548,7 +548,7 @@ bool HttpServer::readContent()
 
 #if !defined(WITHOUT_LOG)
         QString logStr = "";
-        for(int i=0; i<readBuf.size(); i++) {
+        for(int i=0; i<readBuf.size(); ++i) {
             logStr += " " + QString(readBuf.mid(i,1).toHex()).toUpper();
         }
         logStr = QString::number(blockCnt) + " =" + logStr;

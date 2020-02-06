@@ -337,7 +337,7 @@ void Log::saveToLog(const QString &text, LogType logType)
     QString prefix = getLogPrefix(logType, now);
     QStringList sl = text.split("\n");
 
-    for(int i=0; i < sl.size(); i++) {
+    for(int i=0; i < sl.size(); ++i) {
 
         QString str = prefix + sl.at(i);
         m_stream << str << "\n";
