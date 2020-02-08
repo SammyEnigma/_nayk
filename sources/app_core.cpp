@@ -46,6 +46,8 @@ bool initializeApplication(const QString &applicationName,
     QCoreApplication *application = QCoreApplication::instance();
     if(!application) return false;
 
+    QTextCodec::setCodecForLocale(QTextCodec::codecForName("UTF-8"));
+
     application->setApplicationName(applicationName);
     if(!organizationName.isEmpty()) application->setOrganizationName(organizationName);
     if(!organizationDomain.isEmpty()) application->setOrganizationDomain(organizationDomain);

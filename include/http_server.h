@@ -64,6 +64,7 @@ public:
     void setResponseHeader(const QString &headerName, const QVariant &headerValue);
     QByteArray responseContent() const;
     void setResponseContent(const QByteArray &responseContent);
+    QByteArray requestContent() const;
 
 signals:
 #if !defined (WITHOUT_LOG)

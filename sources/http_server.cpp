@@ -281,6 +281,11 @@ void HttpServer::setResponseContent(const QByteArray &responseContent)
     m_responseContent = responseContent;
 }
 //==============================================================================
+QByteArray HttpServer::requestContent() const
+{
+    return m_requestContent;
+}
+//==============================================================================
 bool HttpServer::processCookies()
 {
     QVariant cookies = m_requestHeaders.value(serverHeaderHttpCookie);

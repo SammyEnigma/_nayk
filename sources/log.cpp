@@ -280,6 +280,7 @@ void Log::startLog(const QString &fileName)
 
     emit openFile(m_file.fileName());
     m_stream.setDevice(&m_file);
+    m_stream.setCodec( QTextCodec::codecForName("UTF-8") );
 
     if(writeFirstLine()) {
         logger = this;

@@ -84,10 +84,14 @@ contains(QT, quick) {
 contains(QT, network) {
 
     SOURCES *= \
-        $${PWD}/sources/network_client.cpp
+        $${PWD}/sources/network_client.cpp \
+        $${PWD}/sources/http_client.cpp \
+        $${PWD}/sources/telegram.cpp
 
     HEADERS *= \
-        $${PWD}/include/network_client.h
+        $${PWD}/include/network_client.h \
+        $${PWD}/include/http_client.h \
+        $${PWD}/include/telegram.h
 }
 
 contains(QT, serialport) {
