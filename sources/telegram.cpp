@@ -704,8 +704,6 @@ bool Telegram::sendToTelegram(const QString &url, const QJsonObject &obj)
     emit toLog(QString("Отправка сообщения на сервер %1").arg(url), Log::LogDbg);
     emit toLog(QString(doc.toJson()), Log::LogDbg);
 
-
-
     m_http->setURL(url);
     m_http->setContentType(contentTypeJSON);
 
