@@ -173,8 +173,8 @@ bool Telegram::parseRequest()
         }
         if(message.contains("date")) {
 
-            m_msg.date = QDateTime::fromSecsSinceEpoch(
-                        message.value("date").toVariant().toLongLong(), QTimeZone(0) );
+            m_msg.date = QDateTime::fromMSecsSinceEpoch(
+                        1000 * message.value("date").toVariant().toLongLong(), QTimeZone(0) );
             emit toLog( "Message Date = "
                         + m_msg.date.toString("yyyy-MM-dd HH:mm:ss.zzz"), Log::LogDbg);
 
@@ -237,8 +237,8 @@ bool Telegram::parseRequest()
             }
             if(reply_message.contains("date")) {
 
-                m_reply_msg.date = QDateTime::fromSecsSinceEpoch(
-                            reply_message.value("date").toVariant().toLongLong(), QTimeZone(0) );
+                m_reply_msg.date = QDateTime::fromMSecsSinceEpoch(
+                            1000 * reply_message.value("date").toVariant().toLongLong(), QTimeZone(0) );
                 emit toLog("Reply Message Date = "
                            + m_reply_msg.date.toString("yyyy-MM-dd HH:mm:ss.zzz"), Log::LogDbg);
 

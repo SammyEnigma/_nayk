@@ -74,7 +74,7 @@ public:
     //
     typedef struct MsgStruct {
         qint64 id {0};
-        QDateTime date {QDateTime::fromSecsSinceEpoch(-1)};
+        QDateTime date {QDateTime::fromMSecsSinceEpoch(-1)};
         QString text {""};
         MsgType type {Msg_Unknown};
     } MsgStruct;
