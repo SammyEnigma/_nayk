@@ -271,6 +271,28 @@ QColor colorFromArray(const QVector<quint8> &arr)
 
     return QColor(r, g, b, a);
 }
+//==============================================================================
+QImage copyImagePolygon(const QImage &image, const QPolygon &polygon)
+{
+    QPainterPath path;
+    path.addPolygon(polygon);
+
+    return copyImagePolygon(image, path);
+}
+//==============================================================================
+QImage copyImagePolygon(const QImage &image, const QPainterPath &path)
+{
+    QRect r = path.boundingRect().toRect().intersected(image.rect());
+    QImage tmp(image.size(), QImage::Format_ARGB32);
+    tmp.fill(Qt::transparent);
+    QPainter painter(&tmp);
+    painter.setClipPath(path);
+    painter.drawImage(QPoint{}, image, image.rect());
+    painter.end();
+
+    return tmp.copy(r);
+}
+//==============================================================================
 
 } // namespace graph //=========================================================
 

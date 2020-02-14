@@ -28,6 +28,7 @@
 #include <QtCore>
 #include <QWidget>
 #include <QPainter>
+#include <QPainterPath>
 #include <QImage>
 #include <QColor>
 #include <QRgb>
@@ -78,6 +79,8 @@ bool drawText(QPainter* painter, QPointF pos, const QString &text,
               const QString &fontFace, qreal fontSize, qreal fontWeight, const QJsonArray &color,
               Qt::Alignment align = Qt::AlignLeft | Qt::AlignTop, const QJsonArray &shadowColor = QJsonArray(),
               int shadow_cx = 0, int shadow_cy = 0);
+QImage copyImagePolygon(const QImage &image, const QPolygon &polygon);
+QImage copyImagePolygon(const QImage &image, const QPainterPath &path);
 
 QColor colorFromArray(const QJsonArray &arr);
 QColor colorFromArray(const QByteArray &arr);
