@@ -157,66 +157,61 @@ DEFINES += APP_BUILD_DATE=\\\"$$BUILD_DATE\\\"
 # Output dir ===================================================================
 
 CONFIG(release, debug|release) {
-    win32: DESTDIR = $${_PRO_FILE_PWD_}/../_distrib/win_$${QMAKE_HOST.arch}
-    else: unix:!android: DESTDIR  = $${_PRO_FILE_PWD_}/../_distrib/linux_$${QMAKE_HOST.arch}/bin
-}
+#    win32: DESTDIR = $${_PRO_FILE_PWD_}/../_distrib/win_$${QMAKE_HOST.arch}/bin
+#    else: unix:!android: DESTDIR  = $${_PRO_FILE_PWD_}/../_distrib/linux_$${QMAKE_HOST.arch}/bin
+    DESTDIR = $${_PRO_FILE_PWD_}/../_distrib/$${QMAKE_HOST.os}-$${QMAKE_HOST.arch}/bin
 
-CONFIG(debug, debug|release) {
-    win32: DESTDIR = $${_PRO_FILE_PWD_}/../_distrib/win_$${QMAKE_HOST.arch}_debug
-    else: unix:!android: DESTDIR  = $${_PRO_FILE_PWD_}/../_distrib/linux_$${QMAKE_HOST.arch}_debug/bin
-}
+    # translations =============================================================
 
-# translations =================================================================
+    TRANSLATIONS_DIR = $$absolute_path( $${DESTDIR}/../translations )
 
-win32: TRANSLATIONS_DIR = $$absolute_path( $${DESTDIR}/translations )
-else:  TRANSLATIONS_DIR = $$absolute_path( $${DESTDIR}/../translations )
+    !exists( $${TRANSLATIONS_DIR} ) {
 
-!exists( $${TRANSLATIONS_DIR} ) {
+        translations_dir.commands = $${QMAKE_MKDIR} $$shell_path( $${TRANSLATIONS_DIR} )
 
-    translations_dir.commands = $${QMAKE_MKDIR} $$shell_path( $${TRANSLATIONS_DIR} )
+        QMAKE_EXTRA_TARGETS += \
+            translations_dir
 
-    QMAKE_EXTRA_TARGETS += \
-        translations_dir
-
-    PRE_TARGETDEPS += \
-        translations_dir
-}
-
-TRANSLATIONS += \
-    $${PWD}/resources/translations/nayk_common_ru.ts
-
-nayk_common_tr.commands = lrelease $${PWD}/resources/translations/nayk_common_ru.ts -qm $${TRANSLATIONS_DIR}/nayk_common_ru.qm
-
-POST_TARGETDEPS += \
-    nayk_common_tr
-
-QMAKE_EXTRA_TARGETS += \
-    nayk_common_tr
-
-contains(QT, widgets) {
+        PRE_TARGETDEPS += \
+            translations_dir
+    }
 
     TRANSLATIONS += \
-        $${PWD}/resources/translations/nayk_widget_ru.ts
+        $${PWD}/resources/translations/nayk_common_ru.ts
 
-    nayk_widget_tr.commands = lrelease $${PWD}/resources/translations/nayk_widget_ru.ts -qm $${TRANSLATIONS_DIR}/nayk_widget_ru.qm
-
-    POST_TARGETDEPS += \
-        nayk_widget_tr
-
-    QMAKE_EXTRA_TARGETS += \
-        nayk_widget_tr
-}
-
-contains(QT, quick) {
-
-    TRANSLATIONS += \
-        $${PWD}/resources/translations/nayk_qml_ru.ts
-
-    nayk_qml_tr.commands = lrelease $${PWD}/resources/translations/nayk_qml_ru.ts -qm $${TRANSLATIONS_DIR}/nayk_qml_ru.qm
+    nayk_common_tr.commands = lrelease $${PWD}/resources/translations/nayk_common_ru.ts -qm $${TRANSLATIONS_DIR}/nayk_common_ru.qm
 
     POST_TARGETDEPS += \
-        nayk_qml_tr
+        nayk_common_tr
 
     QMAKE_EXTRA_TARGETS += \
-        nayk_qml_tr
+        nayk_common_tr
+
+    contains(QT, widgets) {
+
+        TRANSLATIONS += \
+            $${PWD}/resources/translations/nayk_widget_ru.ts
+
+        nayk_widget_tr.commands = lrelease $${PWD}/resources/translations/nayk_widget_ru.ts -qm $${TRANSLATIONS_DIR}/nayk_widget_ru.qm
+
+        POST_TARGETDEPS += \
+            nayk_widget_tr
+
+        QMAKE_EXTRA_TARGETS += \
+            nayk_widget_tr
+    }
+
+    contains(QT, quick) {
+
+        TRANSLATIONS += \
+            $${PWD}/resources/translations/nayk_qml_ru.ts
+
+        nayk_qml_tr.commands = lrelease $${PWD}/resources/translations/nayk_qml_ru.ts -qm $${TRANSLATIONS_DIR}/nayk_qml_ru.qm
+
+        POST_TARGETDEPS += \
+            nayk_qml_tr
+
+        QMAKE_EXTRA_TARGETS += \
+            nayk_qml_tr
+    }
 }
