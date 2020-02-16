@@ -130,7 +130,7 @@ QString applicationBuildDate()
 #if defined (APP_BUILD_DATE)
     return QString(APP_BUILD_DATE);
 #else
-    return QObject::tr("Unknown");
+    return QCoreApplication::translate("app_core", "Unknown");
 #endif
 }
 //==============================================================================
@@ -228,9 +228,11 @@ bool checkVersionQuery()
 
     QTextStream standardOutput(stdout);
     standardOutput << QCoreApplication::applicationName() << endl;
-    standardOutput << QObject::tr("Version: %1").arg(QCoreApplication::applicationVersion()) << endl;
+    standardOutput << QCoreApplication::translate("app_core", "Version: %1")
+                      .arg(QCoreApplication::applicationVersion()) << endl;
 #if defined (APP_BUILD_DATE)
-    standardOutput << QObject::tr("Release Date: %1").arg(QString( APP_BUILD_DATE )) << endl;
+    standardOutput << QCoreApplication::translate("app_core", "Release Date: %1")
+                      .arg(QString( APP_BUILD_DATE )) << endl;
 #endif
     QCoreApplication::quit();
     return true;

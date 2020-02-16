@@ -69,17 +69,17 @@ bool HttpClient::sendRequestMultipart(QHttpMultiPart *multiPart)
 
     QNetworkAccessManager manager;
 
-    if(m_useProxy) { // настройки прокси если включен
+    if(m_useProxy) {
         manager.setProxy(m_proxy);
     }
 
     QNetworkReply* reply = manager.post(request, multiPart);
 
-    QObject::connect(reply, &QNetworkReply::finished, &loop, &QEventLoop::quit);
-    QObject::connect(&timer, &QTimer::timeout, reply, &QNetworkReply::abort);
-    QObject::connect(this, &HttpClient::abortRequest, reply, &QNetworkReply::abort);
-    QObject::connect(this, &HttpClient::abortRequest, &timer, &QTimer::stop);
-    QObject::connect(this, &HttpClient::abortRequest, &loop, &QEventLoop::quit);
+    connect(reply, &QNetworkReply::finished, &loop, &QEventLoop::quit);
+    connect(&timer, &QTimer::timeout, reply, &QNetworkReply::abort);
+    connect(this, &HttpClient::abortRequest, reply, &QNetworkReply::abort);
+    connect(this, &HttpClient::abortRequest, &timer, &QTimer::stop);
+    connect(this, &HttpClient::abortRequest, &loop, &QEventLoop::quit);
 
     timer.start();
     loop.exec();
@@ -126,17 +126,17 @@ bool HttpClient::sendRequest()
 
     QNetworkAccessManager manager;
 
-    if(m_useProxy) { // настройки прокси если включен
+    if(m_useProxy) {
         manager.setProxy(m_proxy);
     }
 
     QNetworkReply* reply = manager.post(request, m_requestData);
 
-    QObject::connect(reply, &QNetworkReply::finished, &loop, &QEventLoop::quit);
-    QObject::connect(&timer, &QTimer::timeout, reply, &QNetworkReply::abort);
-    QObject::connect(this, &HttpClient::abortRequest, reply, &QNetworkReply::abort);
-    QObject::connect(this, &HttpClient::abortRequest, &timer, &QTimer::stop);
-    QObject::connect(this, &HttpClient::abortRequest, &loop, &QEventLoop::quit);
+    connect(reply, &QNetworkReply::finished, &loop, &QEventLoop::quit);
+    connect(&timer, &QTimer::timeout, reply, &QNetworkReply::abort);
+    connect(this, &HttpClient::abortRequest, reply, &QNetworkReply::abort);
+    connect(this, &HttpClient::abortRequest, &timer, &QTimer::stop);
+    connect(this, &HttpClient::abortRequest, &loop, &QEventLoop::quit);
 
     timer.start();
     loop.exec();
@@ -213,11 +213,11 @@ bool HttpClient::sendRequestHttp(bool getRequest)
 
     QNetworkReply* reply = getRequest ? manager.get(request) : manager.post(request, requestParamsData());
 
-    QObject::connect(reply, &QNetworkReply::finished, &loop, &QEventLoop::quit);
-    QObject::connect(&timer, &QTimer::timeout, reply, &QNetworkReply::abort);
-    QObject::connect(this, &HttpClient::abortRequest, reply, &QNetworkReply::abort);
-    QObject::connect(this, &HttpClient::abortRequest, &timer, &QTimer::stop);
-    QObject::connect(this, &HttpClient::abortRequest, &loop, &QEventLoop::quit);
+    connect(reply, &QNetworkReply::finished, &loop, &QEventLoop::quit);
+    connect(&timer, &QTimer::timeout, reply, &QNetworkReply::abort);
+    connect(this, &HttpClient::abortRequest, reply, &QNetworkReply::abort);
+    connect(this, &HttpClient::abortRequest, &timer, &QTimer::stop);
+    connect(this, &HttpClient::abortRequest, &loop, &QEventLoop::quit);
 
     timer.start();
     loop.exec();
@@ -344,11 +344,11 @@ bool HttpClient::sendRequestAPI()
 
     QNetworkReply* reply = manager.post(request, m_requestData);
 
-    QObject::connect(reply, &QNetworkReply::finished, &loop, &QEventLoop::quit);
-    QObject::connect(&timer, &QTimer::timeout, reply, &QNetworkReply::abort);
-    QObject::connect(this, &HttpClient::abortRequest, reply, &QNetworkReply::abort);
-    QObject::connect(this, &HttpClient::abortRequest, &timer, &QTimer::stop);
-    QObject::connect(this, &HttpClient::abortRequest, &loop, &QEventLoop::quit);
+    connect(reply, &QNetworkReply::finished, &loop, &QEventLoop::quit);
+    connect(&timer, &QTimer::timeout, reply, &QNetworkReply::abort);
+    connect(this, &HttpClient::abortRequest, reply, &QNetworkReply::abort);
+    connect(this, &HttpClient::abortRequest, &timer, &QTimer::stop);
+    connect(this, &HttpClient::abortRequest, &loop, &QEventLoop::quit);
 
     timer.start();
     loop.exec();
@@ -360,7 +360,7 @@ bool HttpClient::sendRequestAPI()
     else
     {
         m_lastError = reply->errorString();
-        if(m_lastError.isEmpty()) m_lastError = QObject::tr("Неизвестная ошибка.");
+        if(m_lastError.isEmpty()) m_lastError = tr("Unknown error");
     }
 
     if(!m_fileName.isEmpty()) {
@@ -380,18 +380,19 @@ bool HttpClient::sendRequestAPI()
     if(m_lastError.isEmpty()) {
         QJsonDocument doc = QJsonDocument::fromJson( m_answer );
         if(doc.isNull() || doc.isEmpty() || !doc.isObject()) {
-            m_lastError = QObject::tr("Ошибка при разборе ответа JSON.");
+            m_lastError = tr("Error parsing JSON response");
             return false;
         }
         QJsonObject obj = doc.object();
-        if(!obj.contains("error") || !obj.contains("server") || !obj.value("error").isObject() || !obj.value("server").isObject()) {
-            m_lastError = QObject::tr("Некорректный ответ JSON.");
+        if(!obj.contains("error") || !obj.contains("server")
+                || !obj.value("error").isObject() || !obj.value("server").isObject()) {
+            m_lastError = tr("Invalid JSON response");
             return false;
         }
         QJsonObject err = obj.value("error").toObject();
         if(err.value("code").toInt(0) > 0) {
             m_lastError = err.value("text").toString();
-            if(m_lastError.isEmpty()) m_lastError = QObject::tr("Неизвестная ошибка.");
+            if(m_lastError.isEmpty()) m_lastError = tr("Unknown error");
             return false;
         }
     }
@@ -457,8 +458,8 @@ bool HttpClient::downloadData(const QString &url, QByteArray &data, qint64 maxWa
     QNetworkAccessManager manager;
 
     QNetworkReply* reply = post.isEmpty() ? manager.get(request) : manager.post(request, postData);
-    QObject::connect(reply, &QNetworkReply::finished, &loop, &QEventLoop::quit);
-    QObject::connect(&timer, &QTimer::timeout, reply, &QNetworkReply::abort);
+    connect(reply, &QNetworkReply::finished, &loop, &QEventLoop::quit);
+    connect(&timer, &QTimer::timeout, reply, &QNetworkReply::abort);
     timer.start();
     loop.exec();
     if (reply->isFinished() && reply->error() == QNetworkReply::NoError) {
@@ -492,8 +493,8 @@ bool HttpClient::downloadData(const QString &url, const QJsonObject &jsonRequest
     QNetworkAccessManager manager;
 
     QNetworkReply* reply = manager.post(request, postData);
-    QObject::connect(reply, &QNetworkReply::finished, &loop, &QEventLoop::quit);
-    QObject::connect(&timer, &QTimer::timeout, reply, &QNetworkReply::abort);
+    connect(reply, &QNetworkReply::finished, &loop, &QEventLoop::quit);
+    connect(&timer, &QTimer::timeout, reply, &QNetworkReply::abort);
     timer.start();
     loop.exec();
     if (reply->isFinished() && reply->error() == QNetworkReply::NoError) {

@@ -90,11 +90,11 @@ bool osCmd(const QString &cmd, QByteArray &out, int timeout)
 
     timeout = qBound(300, timeout, 300000);
     if (!process.waitForStarted(timeout)) {
-        out = QObject::tr("Timeout wait for started").toUtf8();
+        out = QCoreApplication::translate("system_utils", "Timeout wait for started").toUtf8();
         return false;
     }
     if (!process.waitForFinished(timeout)) {
-        out = QObject::tr("Timeout wait for finished").toUtf8();
+        out = QCoreApplication::translate("system_utils", "Timeout wait for finished").toUtf8();
         return false;
     }
     out = process.readAllStandardOutput();

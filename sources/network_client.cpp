@@ -294,7 +294,7 @@ bool hostSettings(TcpIp4Struct &host, QString &err)
         }
     }
 
-    err = QObject::tr("Interface not found");
+    err = QCoreApplication::translate("network_client", "Interface not found");
     return false;
 }
 //==============================================================================

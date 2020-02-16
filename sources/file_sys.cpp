@@ -121,7 +121,7 @@ bool readJsonFromFile(const QString &fileName, QJsonDocument &json, QString &err
         json = QJsonDocument::fromJson( data, &parseError );
 
         if(parseError.error != QJsonParseError::NoError) {
-            errorString = QObject::tr("File parsing error \"%1\":")
+            errorString = QCoreApplication::translate("file_sys", "File parsing error \"%1\":")
                     .arg( extractFileName( fileName ) ) + "\n" + parseError.errorString();
             return false;
         }
@@ -139,7 +139,7 @@ bool readJsonFromFile(const QString &fileName, QJsonArray &json, QString &errorS
     if(!readJsonFromFile(fileName, doc, errorString)) return false;
 
     if(!doc.isArray()) {
-        errorString = QObject::tr("File \"%1\" is not an JSON array")
+        errorString = QCoreApplication::translate("file_sys", "File \"%1\" is not an JSON array")
                 .arg( extractFileName( fileName ) );
         return false;
     }
@@ -154,7 +154,7 @@ bool readJsonFromFile(const QString &fileName, QJsonObject &json, QString &error
     if(!readJsonFromFile(fileName, doc, errorString)) return false;
 
     if(!doc.isObject()) {
-        errorString = QObject::tr("File \"%1\" is not an JSON object")
+        errorString = QCoreApplication::translate("file_sys", "File \"%1\" is not an JSON object")
                 .arg( extractFileName( fileName ) );
         return false;
     }
@@ -184,13 +184,13 @@ bool readFile(const QString &fileName, QByteArray &data, QString &errorString)
     QFile file( fileName );
 
     if(!file.exists()) {
-        errorString =  QObject::tr("File \"%1\" does not exist")
+        errorString =  QCoreApplication::translate("file_sys", "File \"%1\" does not exist")
                 .arg(extractFileName( fileName ));
         return false;
     }
 
     if(!file.open(QFile::ReadOnly)) {
-        errorString = QObject::tr("Failed to open file \"%1\" for reading")
+        errorString = QCoreApplication::translate("file_sys", "Failed to open file \"%1\" for reading")
                 .arg( extractFileName( fileName ) );
         return false;
     }
@@ -207,7 +207,7 @@ bool writeFile(const QString &fileName, const QByteArray &data, QString &errorSt
     QFile file( fileName );
 
     if(!file.open(QFile::WriteOnly)) {
-        errorString = QObject::tr("Failed to open file \"%1\" for write")
+        errorString = QCoreApplication::translate("file_sys", "Failed to open file \"%1\" for write")
                 .arg( extractFileName( fileName ) );
         return false;
     }
@@ -217,13 +217,13 @@ bool writeFile(const QString &fileName, const QByteArray &data, QString &errorSt
     file.close();
 
     if(res && (n < data.size())) {
-        errorString = QObject::tr("Failed to write all data to file \"%1\"")
+        errorString = QCoreApplication::translate("file_sys", "Failed to write all data to file \"%1\"")
                 .arg( extractFileName( fileName ) );
         return false;
     }
 
     if(!res) {
-        errorString = QObject::tr("Failed to save data to file \"%1\"")
+        errorString = QCoreApplication::translate("file_sys", "Failed to save data to file \"%1\"")
                 .arg( extractFileName( fileName ) );
         return false;
     }

@@ -43,23 +43,23 @@ void qtLogMessageOutput(QtMsgType type, const QMessageLogContext &context, const
     switch (type) {
     case QtDebugMsg:
         logType = nayk::Log::LogDbg;
-        text = QObject::tr("Debug");
+        text = nayk::Log::tr("Debug");
         break;
     case QtInfoMsg:
         logType = nayk::Log::LogInfo;
-        text = QObject::tr("Info");
+        text = nayk::Log::tr("Info");
         break;
     case QtWarningMsg:
         logType = nayk::Log::LogWarning;
-        text = QObject::tr("Warning");
+        text = nayk::Log::tr("Warning");
         break;
     case QtCriticalMsg:
         logType = nayk::Log::LogError;
-        text = QObject::tr("Critical");
+        text = nayk::Log::tr("Critical");
         break;
     case QtFatalMsg:
         logType = nayk::Log::LogError;
-        text = QObject::tr("Fatal");
+        text = nayk::Log::tr("Fatal");
         break;
     }
 
@@ -78,7 +78,7 @@ namespace nayk { //=============================================================
 
 using namespace file_sys;
 
-const QString errorStr_LogFileNotOpen = QObject::tr("Log file does not open for write");
+const QString errorStr_LogFileNotOpen = nayk::Log::tr("Log file does not open for write");
 
 //==============================================================================
 QString generateLogFileName(const QString &logDir, QDateTime &dateTime)

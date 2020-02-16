@@ -54,13 +54,13 @@ Telegram::~Telegram()
 void Telegram::setToken(const QString &token)
 {
     m_token = token;
-    emit toLog(tr("Установка токена: %1").arg(m_token), Log::LogDbg);
+    emit toLog(tr("Set token: %1").arg(m_token), Log::LogDbg);
 }
 //==============================================================================
 void Telegram::setName(const QString &name)
 {
     m_name = name;
-    emit toLog(tr("Установка имени: %1").arg(m_name), Log::LogDbg);
+    emit toLog(tr("Set name: %1").arg(m_name), Log::LogDbg);
 }
 //==============================================================================
 bool Telegram::readRequest()
@@ -123,7 +123,7 @@ bool Telegram::readRequest()
 //==============================================================================
 bool Telegram::parseRequest()
 {
-    emit toLog(tr("Parse Json request."), Log::LogDbg);
+    emit toLog(tr("Parse Json request"), Log::LogDbg);
 
     m_update_id = m_requestObj.value("update_id").toVariant().toLongLong();
 
@@ -372,7 +372,7 @@ bool Telegram::sendMessage(qint64 chatId, const QString &text,
 {
     if(chatId == 0) {
 
-        emit toLog(tr("Не определен chatId"), Log::LogError);
+        emit toLog(tr("ChatId is undefined"), Log::LogError);
         return false;
     }
 
@@ -391,7 +391,7 @@ bool Telegram::sendReplyMessage(qint64 chatId, qint64 reply_message_id,
 {
     if(chatId == 0) {
 
-        emit toLog(tr("Не определен chatId"), Log::LogError);
+        emit toLog(tr("ChatId is undefined"), Log::LogError);
         return false;
     }
 
@@ -427,7 +427,7 @@ bool Telegram::sendSticker(qint64 chat_id, const QString &file_id)
 {
     if(chat_id == 0) {
 
-        emit toLog(tr("Не определен chatId"), Log::LogError);
+        emit toLog(tr("ChatId is undefined"), Log::LogError);
         return false;
     }
 
@@ -448,7 +448,7 @@ bool Telegram::sendChatAction(qint64 chat_id, const QString &action)
 {
     if(chat_id == 0) {
 
-        emit toLog(tr("Не определен chatId"), Log::LogError);
+        emit toLog(tr("ChatId is undefined"), Log::LogError);
         return false;
     }
 
@@ -548,7 +548,7 @@ bool Telegram::sendPhotoFile(qint64 chatId, const QByteArray &data,
 {
     if(chatId == 0) {
 
-        emit toLog(tr("Не определен chatId"), Log::LogError);
+        emit toLog(tr("ChatId is undefined"), Log::LogError);
         return false;
     }
 
@@ -644,7 +644,7 @@ bool Telegram::sendDocument(qint64 chatId, const QString &file_id,
 {
     if(chatId == 0) {
 
-        emit toLog(tr("Не определен chatId"), Log::LogError);
+        emit toLog(tr("ChatId is undefined"), Log::LogError);
         return false;
     }
 
@@ -701,7 +701,7 @@ bool Telegram::sendDocumentHTML(const QString &file_id, const QString &caption,
 bool Telegram::sendToTelegram(const QString &url, const QJsonObject &obj)
 {
     QJsonDocument doc(obj);
-    emit toLog(QString("Отправка сообщения на сервер %1").arg(url), Log::LogDbg);
+    emit toLog(QString("Send message to server %1").arg(url), Log::LogDbg);
     emit toLog(QString(doc.toJson()), Log::LogDbg);
 
     m_http->setURL(url);
@@ -724,11 +724,11 @@ bool Telegram::sendToTelegram(const QString &url, const QJsonObject &obj)
 
     if(doc.isNull() || !doc.isObject()) {
 
-        emit toLog(tr("Ответ не объект Json"), Log::LogError);
+        emit toLog(tr("Response is not Json"), Log::LogError);
         return false;
     }
     else {
-        emit toLog( "Ответ:", Log::LogDbg);
+        emit toLog( "Response:", Log::LogDbg);
         emit toLog( QString(doc.toJson()), Log::LogDbg);
     }
     return true;
@@ -736,7 +736,7 @@ bool Telegram::sendToTelegram(const QString &url, const QJsonObject &obj)
 //==============================================================================
 bool Telegram::sendToTelegram(const QString &url, QHttpMultiPart *multiPart)
 {
-    emit toLog(tr("Отправка сообщения."), Log::LogDbg);
+    emit toLog(tr("Send message"), Log::LogDbg);
 
     m_http->setURL(url);
     if(!m_http->sendRequestMultipart( multiPart )) {
@@ -759,11 +759,11 @@ bool Telegram::sendToTelegram(const QString &url, QHttpMultiPart *multiPart)
 
     if(doc.isNull() || !doc.isObject()) {
 
-        emit toLog(tr("Ответ не объект Json"), Log::LogError);
+        emit toLog(tr("Response is not Json"), Log::LogError);
         return false;
     }
     else {
-        emit toLog( "Ответ:", Log::LogDbg);
+        emit toLog( tr("Response:"), Log::LogDbg);
         emit toLog( QString(doc.toJson()), Log::LogDbg);
     }
     return true;
@@ -799,7 +799,7 @@ bool Telegram::deleteMessage(qint64 chat_id, qint64 message_id)
 {
     if(chat_id == 0) {
 
-        emit toLog(tr("Не определен chat_id"), Log::LogError);
+        emit toLog(tr("ChatId is undefined"), Log::LogError);
         return false;
     }
 
@@ -815,7 +815,7 @@ bool Telegram::deleteMessage(const QString &user_name, qint64 message_id)
 {
     if(user_name.isEmpty()) {
 
-        emit toLog(tr("Не определен user_name"), Log::LogError);
+        emit toLog(tr("User_name is undefined"), Log::LogError);
         return false;
     }
 

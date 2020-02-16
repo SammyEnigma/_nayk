@@ -675,7 +675,7 @@ void ComPort::serialPort_error(QSerialPort::SerialPortError error)
 {
     if (error == QSerialPort::NoError) return;
 #if !defined (WITHOUT_LOG)
-    emit toLog( tr("%1: %2")
+    emit toLog( QString("%1: %2")
                 .arg(m_port.portName())
                 .arg(m_port.errorString()), Log::LogError );
 #endif

@@ -25,10 +25,7 @@ SOURCES *= \
     $${PWD}/sources/convert.cpp \
     $${PWD}/sources/file_sys.cpp \
     $${PWD}/sources/system_utils.cpp \
-    $${PWD}/sources/geo.cpp \
-    $${PWD}/sources/http_server.cpp \
-    $${PWD}/sources/simple_uart.cpp \
-    $${PWD}/sources/lpt_port.cpp \
+    $${PWD}/sources/geo.cpp
 
 HEADERS *= \
     $${PWD}/include/app_core.h \
@@ -36,12 +33,7 @@ HEADERS *= \
     $${PWD}/include/convert.h \
     $${PWD}/include/file_sys.h \
     $${PWD}/include/system_utils.h \
-    $${PWD}/include/geo.h \
-    $${PWD}/include/http_const.h \
-    $${PWD}/include/http_server.h \
-    $${PWD}/include/abstract_port.h \
-    $${PWD}/include/simple_uart.h \
-    $${PWD}/include/lpt_port.h
+    $${PWD}/include/geo.h
 
 contains(QT, quick) | contains(QT, widgets) {
 
@@ -84,11 +76,14 @@ contains(QT, quick) {
 contains(QT, network) {
 
     SOURCES *= \
+        $${PWD}/sources/http_server.cpp \
         $${PWD}/sources/network_client.cpp \
         $${PWD}/sources/http_client.cpp \
         $${PWD}/sources/telegram.cpp
 
     HEADERS *= \
+        $${PWD}/include/http_const.h \
+        $${PWD}/include/http_server.h \
         $${PWD}/include/network_client.h \
         $${PWD}/include/http_client.h \
         $${PWD}/include/telegram.h
@@ -97,10 +92,23 @@ contains(QT, network) {
 contains(QT, serialport) {
 
     SOURCES *= \
+        $${PWD}/sources/simple_uart.cpp \
         $${PWD}/sources/com_port.cpp
 
     HEADERS *= \
+        $${PWD}/include/abstract_port.h \
+        $${PWD}/include/simple_uart.h \
         $${PWD}/include/com_port.h
+}
+
+contains(QT, parallelport) {
+
+    SOURCES *= \
+        $${PWD}/include/lpt_port.cpp
+
+    HEADERS *= \
+        $${PWD}/include/abstract_port.h \
+        $${PWD}/include/lpt_port.h
 }
 
 contains(QT, sql) {
@@ -157,8 +165,7 @@ DEFINES += APP_BUILD_DATE=\\\"$$BUILD_DATE\\\"
 # Output dir ===================================================================
 
 CONFIG(release, debug|release) {
-#    win32: DESTDIR = $${_PRO_FILE_PWD_}/../_distrib/win_$${QMAKE_HOST.arch}/bin
-#    else: unix:!android: DESTDIR  = $${_PRO_FILE_PWD_}/../_distrib/linux_$${QMAKE_HOST.arch}/bin
+
     DESTDIR = $${_PRO_FILE_PWD_}/../_distrib/$${QMAKE_HOST.os}-$${QMAKE_HOST.arch}/bin
 
     # translations =============================================================
@@ -213,5 +220,33 @@ CONFIG(release, debug|release) {
 
         QMAKE_EXTRA_TARGETS += \
             nayk_qml_tr
+    }
+
+    contains(QT, network) {
+
+        TRANSLATIONS += \
+            $${PWD}/resources/translations/nayk_network_ru.ts
+
+        nayk_network_tr.commands = lrelease $${PWD}/resources/translations/nayk_network_ru.ts -qm $${TRANSLATIONS_DIR}/nayk_network_ru.qm
+
+        POST_TARGETDEPS += \
+            nayk_network_tr
+
+        QMAKE_EXTRA_TARGETS += \
+            nayk_network_tr
+    }
+
+    contains(QT, serialport) | contains(QT, parallelport) {
+
+        TRANSLATIONS += \
+            $${PWD}/resources/translations/nayk_port_ru.ts
+
+        nayk_port_tr.commands = lrelease $${PWD}/resources/translations/nayk_port_ru.ts -qm $${TRANSLATIONS_DIR}/nayk_port_ru.qm
+
+        POST_TARGETDEPS += \
+            nayk_port_tr
+
+        QMAKE_EXTRA_TARGETS += \
+            nayk_port_tr
     }
 }

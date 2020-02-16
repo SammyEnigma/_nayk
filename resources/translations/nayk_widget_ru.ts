@@ -1,28 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS version="2.1">
-	<context>
-    <name>QObject</name>
-    <message>
-        <source>About</source>
-        <translation>О программе</translation>
-    </message>
-    <message>
-        <source>Version</source>
-        <translation>Версия</translation>
-    </message>
-    <message>
-        <source>Release date</source>
-        <translation>Дата релиза</translation>
-    </message>
-    <message>
-        <source>Company</source>
-        <translation>Организация</translation>
-    </message>
-    <message>
-        <source>Developer</source>
-        <translation>Разработчик</translation>
-    </message>    
+<TS version="2.1" language="ru_RU">
+<context>
+    <name>gui_utils</name>
     <message>
         <source>Error</source>
         <translation>Ошибка</translation>
@@ -42,6 +22,26 @@
     <message>
         <source>Question</source>
         <translation>Вопрос</translation>
+    </message>
+    <message>
+        <source>About</source>
+        <translation>О программе</translation>
+    </message>
+    <message>
+        <source>Version</source>
+        <translation>Версия</translation>
+    </message>
+    <message>
+        <source>Release date</source>
+        <translation>Дата релиза</translation>
+    </message>
+    <message>
+        <source>Company</source>
+        <translation>Организация</translation>
+    </message>
+    <message>
+        <source>Developer</source>
+        <translation>Разработчик</translation>
     </message>
 </context>
 <context>

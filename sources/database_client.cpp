@@ -30,7 +30,7 @@
 
 namespace nayk { //=============================================================
 
-const QString sqlErrorString = QObject::tr("SQL error: %1");
+const QString sqlErrorString = DataBaseClient::tr("SQL error: %1");
 
 //==============================================================================
 DataBaseClient::DataBaseClient(QObject *parent) : QObject(parent)
