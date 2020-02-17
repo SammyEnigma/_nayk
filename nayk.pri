@@ -50,6 +50,7 @@ contains(QT, widgets) {
     SOURCES *= \
         $${PWD}/sources/gui_utils.cpp \
         $${PWD}/sources/dialog_log.cpp \
+        $${PWD}/sources/dialog_busy.cpp \
         $${PWD}/sources/ex_controls.cpp \
         $${PWD}/sources/graph.cpp \
         $${PWD}/sources/highlighter.cpp
@@ -57,6 +58,7 @@ contains(QT, widgets) {
     HEADERS *= \
         $${PWD}/include/gui_utils.h \
         $${PWD}/include/dialog_log.h \
+        $${PWD}/include/dialog_busy.h \
         $${PWD}/include/ex_controls.h \
         $${PWD}/include/graph.h \
         $${PWD}/include/highlighter.h

@@ -50,6 +50,7 @@ const QString iconPrev                  = ":/icons/prev_48px.png";
 const QString iconNext                  = ":/icons/next_48px.png";
 const QString iconPrinter               = ":/icons/printer_48px.png";
 const QString iconPrinterOk             = ":/icons/printer_ok_48px.png";
+const QString iconHourglass             = ":/icons/hourglass_48px.png";
 
 // led images:
 const QString ledBlue                   = ":/led/led-blue.png";

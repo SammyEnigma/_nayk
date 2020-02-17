@@ -1,4 +1,4 @@
-<!DOCTYPE RCC><RCC>
+<RCC>
     <qresource prefix="/">
         <file>icons/broom_48px.png</file>
         <file>icons/cancel_48px.png</file>
@@ -15,5 +15,6 @@
         <file>icons/printer_ok_48px.png</file>
         <file>icons/next_48px.png</file>
         <file>icons/prev_48px.png</file>
+        <file>icons/hourglass_48px.png</file>
     </qresource>
 </RCC>
