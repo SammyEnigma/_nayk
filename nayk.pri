@@ -4,251 +4,34 @@
 #
 #===============================================================================
 
-CONFIG  += c++14
-
-DEFINES += QT_DEPRECATED_WARNINGS
-
-lessThan( QT_MAJOR_VERSION, 6 ):lessThan( QT_MINOR_VERSION, 14 ) {
-    QMAKE_CXXFLAGS += -Wno-deprecated-copy
-}
-
-# Includes =====================================================================
-
-INCLUDEPATH *= \
-    $${PWD}/include
-
-# Sources and Headers ==========================================================
-
-SOURCES *= \
-    $${PWD}/sources/app_core.cpp \
-    $${PWD}/sources/log.cpp \
-    $${PWD}/sources/convert.cpp \
-    $${PWD}/sources/file_sys.cpp \
-    $${PWD}/sources/system_utils.cpp \
-    $${PWD}/sources/geo.cpp
-
-HEADERS *= \
-    $${PWD}/include/app_core.h \
-    $${PWD}/include/log.h \
-    $${PWD}/include/convert.h \
-    $${PWD}/include/file_sys.h \
-    $${PWD}/include/system_utils.h \
-    $${PWD}/include/geo.h
-
-contains(QT, quick) | contains(QT, widgets) {
-
-    SOURCES *= \
-        $${PWD}/sources/gui_app_core.cpp
-
-    HEADERS *= \
-        $${PWD}/include/gui_app_core.h \
-        $${PWD}/include/images_const.h
-}
-
-contains(QT, widgets) {
-
-    SOURCES *= \
-        $${PWD}/sources/gui_utils.cpp \
-        $${PWD}/sources/dialog_log.cpp \
-        $${PWD}/sources/dialog_busy.cpp \
-        $${PWD}/sources/ex_controls.cpp \
-        $${PWD}/sources/graph.cpp \
-        $${PWD}/sources/highlighter.cpp
-
-    HEADERS *= \
-        $${PWD}/include/gui_utils.h \
-        $${PWD}/include/dialog_log.h \
-        $${PWD}/include/dialog_busy.h \
-        $${PWD}/include/ex_controls.h \
-        $${PWD}/include/graph.h \
-        $${PWD}/include/highlighter.h
-}
+include( $${PWD}/nayk_common.pri )
 
 contains(QT, quick) {
 
-} else {
+    include( $${PWD}/nayk_qml.pri )
+} 
 
-    SOURCES *= \
-        $${PWD}/sources/console.cpp
+contains(QT, widgets) {
 
-    HEADERS *= \
-        $${PWD}/include/console.h
+    include( $${PWD}/nayk_widgets.pri )
 }
 
 contains(QT, network) {
 
-    SOURCES *= \
-        $${PWD}/sources/http_server.cpp \
-        $${PWD}/sources/network_client.cpp \
-        $${PWD}/sources/http_client.cpp \
-        $${PWD}/sources/telegram.cpp
-
-    HEADERS *= \
-        $${PWD}/include/http_const.h \
-        $${PWD}/include/http_server.h \
-        $${PWD}/include/network_client.h \
-        $${PWD}/include/http_client.h \
-        $${PWD}/include/telegram.h
+    include( $${PWD}/nayk_network.pri )
 }
 
-contains(QT, serialport) {
+contains(QT, serialport) | contains(CONFIG, parallelport) {
 
-    SOURCES *= \
-        $${PWD}/sources/simple_uart.cpp \
-        $${PWD}/sources/com_port.cpp
-
-    HEADERS *= \
-        $${PWD}/include/abstract_port.h \
-        $${PWD}/include/simple_uart.h \
-        $${PWD}/include/com_port.h
-}
-
-contains(QT, parallelport) {
-
-    SOURCES *= \
-        $${PWD}/include/lpt_port.cpp
-
-    HEADERS *= \
-        $${PWD}/include/abstract_port.h \
-        $${PWD}/include/lpt_port.h
+    include( $${PWD}/nayk_port.pri )
 }
 
 contains(QT, sql) {
 
-    SOURCES *= \
-        $${PWD}/sources/database_client.cpp
-
-    HEADERS *= \
-        $${PWD}/include/database_client.h
+    include( $${PWD}/nayk_sql.pri )
 }
 
 contains(CONFIG, hardware) {
 
-    SOURCES *= \
-        $${PWD}/sources/hardware_utils.cpp
-
-    HEADERS *= \
-        $${PWD}/include/hardware_utils.h
-
-    win32:LIBS += -lKernel32 -lPsapi
-}
-
-# Resources files ==============================================================
-
-contains(QT, widgets) {
-
-    RESOURCES *= \
-        $${PWD}/resources/icons.qrc \
-        $${PWD}/resources/led_images.qrc
-}
-
-contains(QT, quick) {
-
-    RESOURCES *= \
-        $${PWD}/qml/qml_resources.qrc
-
-    # Additional import path used to resolve QML modules in Qt Creator's code model
-    QML_IMPORT_PATH *= \
-        $${PWD}/qml/
-
-    # Additional import path used to resolve QML modules just for Qt Quick Designer
-    QML_DESIGNER_IMPORT_PATH *= \
-        $${PWD}/qml/
-}
-
-# Version and Build date =======================================================
-
-win32: BUILD_DATE = '$(shell echo %DATE:~6,4%-%DATE:~3,2%-%DATE:~0,2%)'
-else:  BUILD_DATE = '$(shell date +%Y-%m-%d)'
-
-DEFINES += APP_VERSION=\\\"$$VERSION\\\"
-DEFINES += APP_BUILD_DATE=\\\"$$BUILD_DATE\\\"
-
-# Output dir ===================================================================
-
-CONFIG(release, debug|release) {
-
-    DESTDIR = $${_PRO_FILE_PWD_}/../_distrib/$${QMAKE_HOST.os}-$${QMAKE_HOST.arch}/bin
-
-    # translations =============================================================
-
-    TRANSLATIONS_DIR = $$absolute_path( $${DESTDIR}/../translations )
-
-    !exists( $${TRANSLATIONS_DIR} ) {
-
-        translations_dir.commands = $${QMAKE_MKDIR} $$shell_path( $${TRANSLATIONS_DIR} )
-
-        QMAKE_EXTRA_TARGETS += \
-            translations_dir
-
-        PRE_TARGETDEPS += \
-            translations_dir
-    }
-
-    TRANSLATIONS += \
-        $${PWD}/resources/translations/nayk_common_ru.ts
-
-    nayk_common_tr.commands = lrelease $${PWD}/resources/translations/nayk_common_ru.ts -qm $${TRANSLATIONS_DIR}/nayk_common_ru.qm
-
-    POST_TARGETDEPS += \
-        nayk_common_tr
-
-    QMAKE_EXTRA_TARGETS += \
-        nayk_common_tr
-
-    contains(QT, widgets) {
-
-        TRANSLATIONS += \
-            $${PWD}/resources/translations/nayk_widget_ru.ts
-
-        nayk_widget_tr.commands = lrelease $${PWD}/resources/translations/nayk_widget_ru.ts -qm $${TRANSLATIONS_DIR}/nayk_widget_ru.qm
-
-        POST_TARGETDEPS += \
-            nayk_widget_tr
-
-        QMAKE_EXTRA_TARGETS += \
-            nayk_widget_tr
-    }
-
-    contains(QT, quick) {
-
-        TRANSLATIONS += \
-            $${PWD}/resources/translations/nayk_qml_ru.ts
-
-        nayk_qml_tr.commands = lrelease $${PWD}/resources/translations/nayk_qml_ru.ts -qm $${TRANSLATIONS_DIR}/nayk_qml_ru.qm
-
-        POST_TARGETDEPS += \
-            nayk_qml_tr
-
-        QMAKE_EXTRA_TARGETS += \
-            nayk_qml_tr
-    }
-
-    contains(QT, network) {
-
-        TRANSLATIONS += \
-            $${PWD}/resources/translations/nayk_network_ru.ts
-
-        nayk_network_tr.commands = lrelease $${PWD}/resources/translations/nayk_network_ru.ts -qm $${TRANSLATIONS_DIR}/nayk_network_ru.qm
-
-        POST_TARGETDEPS += \
-            nayk_network_tr
-
-        QMAKE_EXTRA_TARGETS += \
-            nayk_network_tr
-    }
-
-    contains(QT, serialport) | contains(QT, parallelport) {
-
-        TRANSLATIONS += \
-            $${PWD}/resources/translations/nayk_port_ru.ts
-
-        nayk_port_tr.commands = lrelease $${PWD}/resources/translations/nayk_port_ru.ts -qm $${TRANSLATIONS_DIR}/nayk_port_ru.qm
-
-        POST_TARGETDEPS += \
-            nayk_port_tr
-
-        QMAKE_EXTRA_TARGETS += \
-            nayk_port_tr
-    }
+    include( $${PWD}/nayk_hardware.pri )
 }

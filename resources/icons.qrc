@@ -16,5 +16,19 @@
         <file>icons/next_48px.png</file>
         <file>icons/prev_48px.png</file>
         <file>icons/hourglass_48px.png</file>
+        <file>icons/add_file_48px.png</file>
+        <file>icons/check_file_48px.png</file>
+        <file>icons/copy_48px.png</file>
+        <file>icons/delete_file_48px.png</file>
+        <file>icons/document_48px.png</file>
+        <file>icons/edit_file_48px.png</file>
+        <file>icons/file_48px.png</file>
+        <file>icons/low_high_temp_48px.png</file>
+        <file>icons/new_copy_48px.png</file>
+        <file>icons/open_document_48px.png</file>
+        <file>icons/save_48px.png</file>
+        <file>icons/save_as_48px.png</file>
+        <file>icons/send_file_48px.png</file>
+        <file>icons/view_48px.png</file>
     </qresource>
 </RCC>

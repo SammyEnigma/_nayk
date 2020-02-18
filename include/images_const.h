@@ -27,7 +27,7 @@
 
 #include <QString>
 
-namespace nayk { //=================================================================================
+namespace nayk { //=============================================================
 
 // main images:
 const QString imageMainTopBanner        = ":/images/main_title.png";
@@ -35,22 +35,41 @@ const QString imageMainIcon             = ":/images/main_icon.png";
 const QString imageMainSplash           = ":/images/main_splash.png";
 
 // icons:
-const QString iconConsole               = ":/icons/console_48px.png";
-const QString iconCancel                = ":/icons/cancel_48px.png";
+const QString iconAddFile               = ":/icons/add_file_48px.png";
+const QString iconAddDocument           = ":/icons/new_copy_48px.png";
 const QString iconClear                 = ":/icons/broom_48px.png";
-const QString iconOpen                  = ":/icons/open_48px.png";
-const QString iconOk                    = ":/icons/ok_48px.png";
+const QString iconBroom                 = ":/icons/broom_48px.png";
+const QString iconCancel                = ":/icons/cancel_48px.png";
+const QString iconCheckFile             = ":/icons/check_file_48px.png";
+const QString iconConsole               = ":/icons/console_48px.png";
+const QString iconCopy                  = ":/icons/copy_48px.png";
+const QString iconCopyDocument          = ":/icons/copy_48px.png";
+const QString iconDeleteFile            = ":/icons/delete_file_48px.png";
+const QString iconDocument              = ":/icons/document_48px.png";
+const QString iconEditFile              = ":/icons/edit_file_48px.png";
 const QString iconExit                  = ":/icons/exit_48px.png";
+const QString iconFile                  = ":/icons/file_48px.png";
+const QString iconHourglass             = ":/icons/hourglass_48px.png";
 const QString iconInfo                  = ":/icons/info_48px.png";
+const QString iconLowHighTemp           = ":/icons/low_high_temp_48px.png";
+const QString iconNewCopy               = ":/icons/new_copy_48px.png";
+const QString iconNext                  = ":/icons/next_48px.png";
+const QString iconOk                    = ":/icons/ok_48px.png";
+const QString iconOpen                  = ":/icons/open_48px.png";
+const QString iconOpenFolder            = ":/icons/open_48px.png";
+const QString iconOpenDocument          = ":/icons/open_document_48px.png";
+const QString iconPrev                  = ":/icons/prev_48px.png";
+const QString iconPrinter               = ":/icons/printer_48px.png";
+const QString iconPrinterOk             = ":/icons/printer_ok_48px.png";
 const QString iconReload                = ":/icons/reload_48px.png";
+const QString iconSave                  = ":/icons/save_48px.png";
+const QString iconSaveAs                = ":/icons/save_as_48px.png";
+const QString iconSendFile              = ":/icons/send_file_48px.png";
 const QString iconSettings              = ":/icons/settings_48px.png";
 const QString iconStart                 = ":/icons/start_48px.png";
 const QString iconStop                  = ":/icons/stop_48px.png";
-const QString iconPrev                  = ":/icons/prev_48px.png";
-const QString iconNext                  = ":/icons/next_48px.png";
-const QString iconPrinter               = ":/icons/printer_48px.png";
-const QString iconPrinterOk             = ":/icons/printer_ok_48px.png";
-const QString iconHourglass             = ":/icons/hourglass_48px.png";
+const QString iconView                  = ":/icons/view_48px.png";
+const QString iconViewFile              = ":/icons/view_48px.png";
 
 // led images:
 const QString ledBlue                   = ":/led/led-blue.png";
@@ -63,5 +82,5 @@ const QString ledViolet                 = ":/led/led-violet.png";
 const QString ledWhite                  = ":/led/led-white.png";
 const QString ledYellow                 = ":/led/led-yellow.png";
 
-} // namespace nayk //==============================================================================
+} // namespace nayk //==========================================================
 #endif // IMAGES_CONST_H
