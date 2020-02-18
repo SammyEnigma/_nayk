@@ -280,6 +280,14 @@ QImage copyImagePolygon(const QImage &image, const QPolygon &polygon)
     return copyImagePolygon(image, path);
 }
 //==============================================================================
+QImage copyImagePolygon(const QImage &image, const QPolygonF &polygon)
+{
+    QPainterPath path;
+    path.addPolygon(polygon);
+
+    return copyImagePolygon(image, path);
+}
+//==============================================================================
 QImage copyImagePolygon(const QImage &image, const QPainterPath &path)
 {
     QRect r = path.boundingRect().toRect().intersected(image.rect());

@@ -80,6 +80,7 @@ bool drawText(QPainter* painter, QPointF pos, const QString &text,
               Qt::Alignment align = Qt::AlignLeft | Qt::AlignTop, const QJsonArray &shadowColor = QJsonArray(),
               int shadow_cx = 0, int shadow_cy = 0);
 QImage copyImagePolygon(const QImage &image, const QPolygon &polygon);
+QImage copyImagePolygon(const QImage &image, const QPolygonF &polygon);
 QImage copyImagePolygon(const QImage &image, const QPainterPath &path);
 
 QColor colorFromArray(const QJsonArray &arr);
