@@ -301,6 +301,13 @@ QImage copyImagePolygon(const QImage &image, const QPainterPath &path)
     return tmp.copy(r);
 }
 //==============================================================================
+QImage rotateImage(const QImage &image, qreal angle)
+{
+    QMatrix rotateMatrix;
+    rotateMatrix.rotate(angle);
+    return image.transformed(rotateMatrix);
+}
+//==============================================================================
 
 } // namespace graph //=========================================================
 

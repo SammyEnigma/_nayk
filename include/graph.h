@@ -82,6 +82,7 @@ bool drawText(QPainter* painter, QPointF pos, const QString &text,
 QImage copyImagePolygon(const QImage &image, const QPolygon &polygon);
 QImage copyImagePolygon(const QImage &image, const QPolygonF &polygon);
 QImage copyImagePolygon(const QImage &image, const QPainterPath &path);
+QImage rotateImage(const QImage &image, qreal angle);
 
 QColor colorFromArray(const QJsonArray &arr);
 QColor colorFromArray(const QByteArray &arr);
