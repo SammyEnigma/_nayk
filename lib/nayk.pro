@@ -1,6 +1,6 @@
 #=========================================================
 #
-# nayk library project for build .lib and .dll
+# nayk library project for build .lib and .dll 
 #
 #=========================================================
 
