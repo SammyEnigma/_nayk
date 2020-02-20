@@ -25,6 +25,8 @@
 #ifndef ABSTRACT_PORT_H
 #define ABSTRACT_PORT_H
 
+#include "NaykGlobal"
+
 #include <QObject>
 #if !defined (WITHOUT_LOG)
 #    include "Log"
@@ -33,7 +35,7 @@
 namespace nayk { //=============================================================
 
 //==============================================================================
-class AbstractPort : public QObject
+class NAYK_EXPORT AbstractPort : public QObject
 {
     Q_OBJECT
     const qint64 maxReadCount {10240};

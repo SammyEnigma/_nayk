@@ -25,6 +25,7 @@
 #ifndef GRAPH_H
 #define GRAPH_H
 
+#include "NaykGlobal"
 #include <QtCore>
 #include <QWidget>
 #include <QPainter>
@@ -35,58 +36,58 @@
 
 namespace graph { //============================================================
 
-bool drawImage(QPainter* painter, const QString &fileName, qreal x, qreal y, qreal width, qreal height);
-bool drawImage(QPainter* painter, const QString &fileName, const QRectF &rectF);
-bool drawImage(QPainter* painter, const QImage &image, qreal x, qreal y, qreal width, qreal height);
-bool drawImage(QPainter* painter, const QImage &image, const QRectF &rectF);
-bool drawRectangle(QPainter* painter, qreal x, qreal y, qreal width, qreal height,
+NAYK_EXPORT bool drawImage(QPainter* painter, const QString &fileName, qreal x, qreal y, qreal width, qreal height);
+NAYK_EXPORT bool drawImage(QPainter* painter, const QString &fileName, const QRectF &rectF);
+NAYK_EXPORT bool drawImage(QPainter* painter, const QImage &image, qreal x, qreal y, qreal width, qreal height);
+NAYK_EXPORT bool drawImage(QPainter* painter, const QImage &image, const QRectF &rectF);
+NAYK_EXPORT bool drawRectangle(QPainter* painter, qreal x, qreal y, qreal width, qreal height,
                    const QColor &bgColor, const QColor &borderColor, qreal borderWidth,
                    qreal topRadius, qreal bottomRadius);
-bool drawRectangle(QPainter* painter, const QRectF &rect,
+NAYK_EXPORT bool drawRectangle(QPainter* painter, const QRectF &rect,
                    const QColor &bgColor, const QColor &borderColor, qreal borderWidth,
                    qreal topRadius, qreal bottomRadius);
-bool drawRectangle(QPainter* painter, qreal x, qreal y, qreal width, qreal height,
+NAYK_EXPORT bool drawRectangle(QPainter* painter, qreal x, qreal y, qreal width, qreal height,
                    const QJsonArray &bgColor, const QJsonArray &borderColor, qreal borderWidth,
                    qreal topRadius, qreal bottomRadius);
-bool drawRectangle(QPainter* painter, const QRectF &rect,
+NAYK_EXPORT bool drawRectangle(QPainter* painter, const QRectF &rect,
                    const QJsonArray &bgColor, const QJsonArray &borderColor, qreal borderWidth,
                    qreal topRadius, qreal bottomRadius);
-bool drawCircle(QPainter* painter, qreal x, qreal y, qreal radius,
+NAYK_EXPORT bool drawCircle(QPainter* painter, qreal x, qreal y, qreal radius,
                 const QColor &bgColor, const QColor &borderColor, qreal borderWidth );
-bool drawCircle(QPainter* painter, qreal x, qreal y, qreal radius,
+NAYK_EXPORT bool drawCircle(QPainter* painter, qreal x, qreal y, qreal radius,
                 const QJsonArray &bgColor, const QJsonArray &borderColor, qreal borderWidth );
-bool drawCircle(QPainter* painter, const QPointF &centerPoint, qreal radius,
+NAYK_EXPORT bool drawCircle(QPainter* painter, const QPointF &centerPoint, qreal radius,
                 const QColor &bgColor, const QColor &borderColor, qreal borderWidth );
-bool drawCircle(QPainter* painter, const QPointF &centerPoint, qreal radius,
+NAYK_EXPORT bool drawCircle(QPainter* painter, const QPointF &centerPoint, qreal radius,
                 const QJsonArray &bgColor, const QJsonArray &borderColor, qreal borderWidth );
-bool drawCircle(QPainter* painter, const QPoint &centerPoint, qreal radius,
+NAYK_EXPORT bool drawCircle(QPainter* painter, const QPoint &centerPoint, qreal radius,
                 const QJsonArray &bgColor, const QJsonArray &borderColor, qreal borderWidth );
-bool drawCircle(QPainter* painter, const QPoint &centerPoint, qreal radius,
+NAYK_EXPORT bool drawCircle(QPainter* painter, const QPoint &centerPoint, qreal radius,
                 const QColor &bgColor, const QColor &borderColor, qreal borderWidth );
-bool drawText(QPainter* painter, qreal x, qreal y, const QString &text,
+NAYK_EXPORT bool drawText(QPainter* painter, qreal x, qreal y, const QString &text,
               const QString &fontFace, qreal fontSize, qreal fontWeight, const QColor &color,
               Qt::Alignment align = Qt::AlignLeft | Qt::AlignTop, const QColor &shadowColor = QColor(0,0,0,0),
               int shadow_cx = 0, int shadow_cy = 0);
-bool drawText(QPainter* painter, qreal x, qreal y, const QString &text,
+NAYK_EXPORT bool drawText(QPainter* painter, qreal x, qreal y, const QString &text,
               const QString &fontFace, qreal fontSize, qreal fontWeight, const QJsonArray &color,
               Qt::Alignment align = Qt::AlignLeft | Qt::AlignTop, const QJsonArray &shadowColor = QJsonArray(),
               int shadow_cx = 0, int shadow_cy = 0);
-bool drawText(QPainter* painter, QPointF pos, const QString &text,
+NAYK_EXPORT bool drawText(QPainter* painter, QPointF pos, const QString &text,
               const QString &fontFace, qreal fontSize, qreal fontWeight, const QColor &color,
               Qt::Alignment align = Qt::AlignLeft | Qt::AlignTop, const QColor &shadowColor = QColor(0,0,0,0),
               int shadow_cx = 0, int shadow_cy = 0);
-bool drawText(QPainter* painter, QPointF pos, const QString &text,
+NAYK_EXPORT bool drawText(QPainter* painter, QPointF pos, const QString &text,
               const QString &fontFace, qreal fontSize, qreal fontWeight, const QJsonArray &color,
               Qt::Alignment align = Qt::AlignLeft | Qt::AlignTop, const QJsonArray &shadowColor = QJsonArray(),
               int shadow_cx = 0, int shadow_cy = 0);
-QImage copyImagePolygon(const QImage &image, const QPolygon &polygon);
-QImage copyImagePolygon(const QImage &image, const QPolygonF &polygon);
-QImage copyImagePolygon(const QImage &image, const QPainterPath &path);
-QImage rotateImage(const QImage &image, qreal angle);
+NAYK_EXPORT QImage copyImagePolygon(const QImage &image, const QPolygon &polygon);
+NAYK_EXPORT QImage copyImagePolygon(const QImage &image, const QPolygonF &polygon);
+NAYK_EXPORT QImage copyImagePolygon(const QImage &image, const QPainterPath &path);
+NAYK_EXPORT QImage rotateImage(const QImage &image, qreal angle);
 
-QColor colorFromArray(const QJsonArray &arr);
-QColor colorFromArray(const QByteArray &arr);
-QColor colorFromArray(const QVector<quint8> &arr);
+NAYK_EXPORT QColor colorFromArray(const QJsonArray &arr);
+NAYK_EXPORT QColor colorFromArray(const QByteArray &arr);
+NAYK_EXPORT QColor colorFromArray(const QVector<quint8> &arr);
 
 } // namespace graph //=========================================================
 #endif // GRAPH_H

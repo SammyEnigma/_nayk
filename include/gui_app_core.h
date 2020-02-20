@@ -25,11 +25,12 @@
 #ifndef GUI_APP_CORE_H
 #define GUI_APP_CORE_H
 
+#include "NaykGlobal"
 #include <QtCore>
 
 namespace gui_app_core { //=====================================================
 
-bool initializeApplication(const QString &applicationName,
+NAYK_EXPORT bool initializeApplication(const QString &applicationName,
                            const QString &applicationDisplayName = QString(),
                            const QString &organizationName = QString(),
                            const QString &organizationDomain = QString());

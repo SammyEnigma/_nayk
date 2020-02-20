@@ -1,6 +1,7 @@
 #ifndef LPT_PORT_H
 #define LPT_PORT_H
 
+#include "NaykGlobal"
 #include <QObject>
 #include <QStringList>
 
@@ -19,7 +20,7 @@
 namespace nayk { //=============================================================
 
 //==============================================================================
-class LptPort : public AbstractPort
+class NAYK_EXPORT LptPort : public AbstractPort
 {
     Q_OBJECT
 

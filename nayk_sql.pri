@@ -1,8 +1,12 @@
 #===============================================================================
 #
-# Projects Settings sql - nayk library
+# nayk library - sql
 #
 #===============================================================================
+
+!contains(QT, sql) {
+	QT += sql
+}
 
 # Sources and Headers ==========================================================
 
@@ -10,6 +14,7 @@ SOURCES *= \
     $${PWD}/sources/database_client.cpp
 
 HEADERS *= \
+	$${PWD}/include/nayk_global.h \
     $${PWD}/include/database_client.h
 
 # Release ======================================================================

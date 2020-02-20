@@ -25,6 +25,7 @@
 #ifndef DIALOG_LOG_H
 #define DIALOG_LOG_H
 
+#include "NaykGlobal"
 #include <QObject>
 #include <QDialog>
 #include <QTextEdit>
@@ -49,7 +50,7 @@ const QString clLogDbg[2]    { "#00ddc6", "#006766" };
 const QString clLogOther[2]  { "#8f8f8f", "#888888" };
 
 //==============================================================================
-class DialogLog: public QDialog
+class NAYK_EXPORT DialogLog: public QDialog
 {
     Q_OBJECT
     static const int defaultMaximumBlockCount {5000};

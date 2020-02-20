@@ -25,18 +25,19 @@
 #ifndef SYSTEM_UTILS_H
 #define SYSTEM_UTILS_H
 
+#include "NaykGlobal"
 #include <QObject>
 #include <QDateTime>
 
 namespace system_utils { //=====================================================
 
-void pause(int ms = 1000);
-int dayOfWeek(int year, int month, int day);
-bool osCmd(const QString &cmd, QString &out, int timeout = 5000);
-bool osCmd(const QString &cmd, QByteArray &out, int timeout = 5000);
-QString osName();
-QString osVersion();
-QString hostName();
+NAYK_EXPORT void pause(int ms = 1000);
+NAYK_EXPORT int dayOfWeek(int year, int month, int day);
+NAYK_EXPORT bool osCmd(const QString &cmd, QString &out, int timeout = 5000);
+NAYK_EXPORT bool osCmd(const QString &cmd, QByteArray &out, int timeout = 5000);
+NAYK_EXPORT QString osName();
+NAYK_EXPORT QString osVersion();
+NAYK_EXPORT QString hostName();
 
 } // namespace system_utils //==================================================
 #endif // SYSTEM_UTILS_H

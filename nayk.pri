@@ -6,32 +6,34 @@
 
 include( $${PWD}/nayk_common.pri )
 
-contains(QT, quick) {
+nayk_core {
+	include( $${PWD}/nayk_core.pri )
+}
 
+nayk_qml {
     include( $${PWD}/nayk_qml.pri )
 } 
 
-contains(QT, widgets) {
-
+nayk_widgets {
     include( $${PWD}/nayk_widgets.pri )
 }
 
-contains(QT, network) {
+nayk_graph {
+    include( $${PWD}/nayk_graph.pri )
+}
 
+nayk_network {
     include( $${PWD}/nayk_network.pri )
 }
 
-contains(QT, serialport) | contains(CONFIG, parallelport) {
-
+nayk_port {
     include( $${PWD}/nayk_port.pri )
 }
 
-contains(QT, sql) {
-
+nayk_sql {
     include( $${PWD}/nayk_sql.pri )
 }
 
-contains(CONFIG, hardware) {
-
+nayk_hardware {
     include( $${PWD}/nayk_hardware.pri )
 }

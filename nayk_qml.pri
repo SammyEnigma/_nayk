@@ -1,8 +1,12 @@
 #===============================================================================
 #
-# nayk library - Projects Settings for QML
+# nayk library - qml
 #
 #===============================================================================
+
+!contains(QT, quick) {
+	QT += quick
+}
 
 # Sources and Headers ==========================================================
 
@@ -10,6 +14,7 @@ SOURCES *= \
     $${PWD}/sources/gui_app_core.cpp
 
 HEADERS *= \
+	$${PWD}/include/nayk_global.h \
     $${PWD}/include/gui_app_core.h \
     $${PWD}/include/images_const.h
 

@@ -25,6 +25,7 @@
 #ifndef COM_PORT_H
 #define COM_PORT_H
 
+#include "NaykGlobal"
 #include <QObject>
 #include <QVariant>
 #include <QtSerialPort/QSerialPortInfo>
@@ -41,7 +42,7 @@
 namespace nayk { //=============================================================
 
 //==============================================================================
-class ComPort : public AbstractPort
+class NAYK_EXPORT ComPort : public AbstractPort
 {
     Q_OBJECT
 

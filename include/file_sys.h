@@ -25,6 +25,7 @@
 #ifndef FILE_SYS_H
 #define FILE_SYS_H
 
+#include "NaykGlobal"
 #include <QString>
 #include <QJsonDocument>
 #include <QJsonArray>
@@ -36,22 +37,22 @@ const QChar directorySeparator = '/';
 
 //==============================================================================
 
-bool directoryExists(const QString &dirName);
-bool fileExists(const QString &fileName);
-bool makePath(const QString &path);
-QString changeFileExt(const QString &fileName, const QString &newExt);
-QString extractFileExt(const QString &fileName, bool withDot = true);
-QString extractFileName(const QString &fileName);
-QString extractFilePath(const QString &fileName);
-bool readJsonFromFile(const QString &fileName, QJsonDocument &json, QString &errorString);
-bool readJsonFromFile(const QString &fileName, QJsonArray &json, QString &errorString);
-bool readJsonFromFile(const QString &fileName, QJsonObject &json, QString &errorString);
-bool writeJsonToFile(const QString &fileName, const QJsonDocument &json, QString &errorString);
-bool writeJsonToFile(const QString &fileName, const QJsonArray &json, QString &errorString);
-bool writeJsonToFile(const QString &fileName, const QJsonObject &json, QString &errorString);
-bool readFile(const QString &fileName, QByteArray &data, QString &errorString);
-bool writeFile(const QString &fileName, const QByteArray &data, QString &errorString);
-qint64 fileSize(const QString &fileName);
+NAYK_EXPORT bool directoryExists(const QString &dirName);
+NAYK_EXPORT bool fileExists(const QString &fileName);
+NAYK_EXPORT bool makePath(const QString &path);
+NAYK_EXPORT QString changeFileExt(const QString &fileName, const QString &newExt);
+NAYK_EXPORT QString extractFileExt(const QString &fileName, bool withDot = true);
+NAYK_EXPORT QString extractFileName(const QString &fileName);
+NAYK_EXPORT QString extractFilePath(const QString &fileName);
+NAYK_EXPORT bool readJsonFromFile(const QString &fileName, QJsonDocument &json, QString &errorString);
+NAYK_EXPORT bool readJsonFromFile(const QString &fileName, QJsonArray &json, QString &errorString);
+NAYK_EXPORT bool readJsonFromFile(const QString &fileName, QJsonObject &json, QString &errorString);
+NAYK_EXPORT bool writeJsonToFile(const QString &fileName, const QJsonDocument &json, QString &errorString);
+NAYK_EXPORT bool writeJsonToFile(const QString &fileName, const QJsonArray &json, QString &errorString);
+NAYK_EXPORT bool writeJsonToFile(const QString &fileName, const QJsonObject &json, QString &errorString);
+NAYK_EXPORT bool readFile(const QString &fileName, QByteArray &data, QString &errorString);
+NAYK_EXPORT bool writeFile(const QString &fileName, const QByteArray &data, QString &errorString);
+NAYK_EXPORT qint64 fileSize(const QString &fileName);
 
 } // namespace file_sys //======================================================
 #endif // FILE_SYS_H

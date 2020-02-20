@@ -25,6 +25,7 @@
 #ifndef NAYK_HTTP_CLIENT_H
 #define NAYK_HTTP_CLIENT_H
 
+#include "NaykGlobal"
 #include <QObject>
 #include <QtNetwork/QtNetwork>
 #include <QtNetwork/QHttpMultiPart>
@@ -37,7 +38,7 @@ namespace nayk { //=============================================================
 
 
 //==============================================================================
-class HttpClient : public QObject
+class NAYK_EXPORT HttpClient : public QObject
 {
     Q_OBJECT
 

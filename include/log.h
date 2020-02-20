@@ -25,6 +25,7 @@
 #ifndef LOGSAVER_H
 #define LOGSAVER_H
 
+#include "NaykGlobal"
 #include <QObject>
 #include <QDateTime>
 #include <QFile>
@@ -33,7 +34,7 @@
 namespace nayk { //=============================================================
 
 //==============================================================================
-class Log : public QObject
+class NAYK_EXPORT Log : public QObject
 {
     Q_OBJECT
     Q_PROPERTY(bool debugSave READ debugSave WRITE setDebugSave NOTIFY debugSaveChanged)

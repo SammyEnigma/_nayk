@@ -25,6 +25,7 @@
 #ifndef DATABASE_CLIENT_H
 #define DATABASE_CLIENT_H
 
+#include "NaykGlobal"
 #include <QObject>
 #include <QtSql/QSqlDatabase>
 #include <QtSql/QSqlQuery>
@@ -35,7 +36,7 @@
 
 namespace nayk { //=============================================================
 
-class DataBaseClient : public QObject
+class NAYK_EXPORT DataBaseClient : public QObject
 {
     Q_OBJECT
 public:

@@ -1,8 +1,12 @@
 #===============================================================================
 #
-# Projects Settings for network - nayk library
+# nayk library - network
 #
 #===============================================================================
+
+!contains(QT, network) {
+	QT += network
+}
 
 # Sources and Headers ==========================================================
 
@@ -13,6 +17,7 @@ SOURCES *= \
     $${PWD}/sources/telegram.cpp
 
 HEADERS *= \
+	$${PWD}/include/nayk_global.h \
     $${PWD}/include/http_const.h \
     $${PWD}/include/http_server.h \
     $${PWD}/include/network_client.h \

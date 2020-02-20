@@ -25,6 +25,8 @@
 #ifndef NAYK_TELEGRAM_H
 #define NAYK_TELEGRAM_H
 //==============================================================================
+
+#include "NaykGlobal"
 #include <QObject>
 #include <QtNetwork/QNetworkAccessManager>
 #include <QtNetwork/QHttpMultiPart>
@@ -39,7 +41,7 @@
 namespace nayk {
 
 //==============================================================================
-class Telegram : public QObject
+class NAYK_EXPORT Telegram : public QObject
 {
     Q_OBJECT
 public:

@@ -25,13 +25,14 @@
 #ifndef EX_CONTROLS_H
 #define EX_CONTROLS_H
 
+#include "NaykGlobal"
 #include <QSpinBox>
 #include <QKeyEvent>
 
 namespace nayk { //=============================================================
 
 //==============================================================================
-class ExSpinBox: public QSpinBox
+class NAYK_EXPORT ExSpinBox: public QSpinBox
 {
     Q_OBJECT
     Q_PROPERTY(int leadingZero READ leadingZero WRITE setLeadingZero NOTIFY leadingZeroChanged)

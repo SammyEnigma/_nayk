@@ -1,5 +1,5 @@
 /****************************************************************************
-** Copyright (c) 2020 Evgeny Teterin (nayk) <sutcedortal@gmail.com>
+** Copyright (c) 2019 Evgeny Teterin (nayk) <sutcedortal@gmail.com>
 ** All right reserved.
 **
 ** Permission is hereby granted, free of charge, to any person obtaining
@@ -22,42 +22,16 @@
 ** WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 **
 ****************************************************************************/
-#ifndef DIALOG_BUSY_H
-#define DIALOG_BUSY_H
 
-#include "NaykGlobal"
-#include <QObject>
-#include <QDialog>
+#ifndef NAYK_GLOBAL_H
+#define NAYK_GLOBAL_H
 
-namespace nayk { //=============================================================
+#include <QtCore/QtGlobal>
 
-NAYK_EXPORT void showDialogBusy(const QString &text = QString(), QWidget *parent = nullptr);
-NAYK_EXPORT void hideDialogBusy();
+#if defined(NAYK_LIBRARY)
+#  define NAYK_EXPORT Q_DECL_EXPORT
+#else
+#  define NAYK_EXPORT Q_DECL_IMPORT
+#endif
 
-//==============================================================================
-class NAYK_EXPORT DialogBusy: public QDialog
-{
-    Q_OBJECT
-
-public:
-    explicit DialogBusy(QWidget *parent = nullptr);
-    ~DialogBusy();
-    void setProgressMaximum(int value = 0);
-    void setProgressVisible(bool visible = true);
-    void setCancelButtonVisible(bool visible = false);
-
-signals:
-    void cancelButtonClicked();
-
-private:
-    void initializeDialog();
-
-public slots:
-    void setProgressValue(int value);
-    void addProgressValue(int value);
-    void setText(const QString &text);
-};
-//==============================================================================
-
-} // namespace nayk //==========================================================
-#endif // DIALOG_BUSY_H
+#endif  //NAYK_GLOBAL_H

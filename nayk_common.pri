@@ -4,7 +4,11 @@
 #
 #===============================================================================
 
-CONFIG  += c++14
+!contains(QT, core) {
+	QT += core
+}
+
+CONFIG  += qt warn_on c++14
 
 DEFINES += QT_DEPRECATED_WARNINGS
 
@@ -16,26 +20,6 @@ lessThan( QT_MAJOR_VERSION, 6 ):lessThan( QT_MINOR_VERSION, 14 ) {
 
 INCLUDEPATH *= \
     $${PWD}/include
-
-# Sources and Headers ==========================================================
-
-SOURCES *= \
-    $${PWD}/include/console.h \
-    $${PWD}/sources/app_core.cpp \
-    $${PWD}/sources/log.cpp \
-    $${PWD}/sources/convert.cpp \
-    $${PWD}/sources/file_sys.cpp \
-    $${PWD}/sources/system_utils.cpp \
-    $${PWD}/sources/geo.cpp
-
-HEADERS *= \
-    $${PWD}/sources/console.cpp \
-    $${PWD}/include/app_core.h \
-    $${PWD}/include/log.h \
-    $${PWD}/include/convert.h \
-    $${PWD}/include/file_sys.h \
-    $${PWD}/include/system_utils.h \
-    $${PWD}/include/geo.h
 
 # Version and Build date =======================================================
 
@@ -67,15 +51,4 @@ CONFIG(release, debug|release) {
         PRE_TARGETDEPS += \
             translations_dir
     }
-
-    TRANSLATIONS += \
-        $${PWD}/resources/translations/nayk_common_ru.ts
-
-    nayk_common_tr.commands = lrelease $${PWD}/resources/translations/nayk_common_ru.ts -qm $${TRANSLATIONS_DIR}/nayk_common_ru.qm
-
-    POST_TARGETDEPS += \
-        nayk_common_tr
-
-    QMAKE_EXTRA_TARGETS += \
-        nayk_common_tr
 }

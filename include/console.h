@@ -25,6 +25,7 @@
 #ifndef CONSOLE_H
 #define CONSOLE_H
 
+#include "NaykGlobal"
 #include <QtCore>
 #include <QVariant>
 #include <QRect>
@@ -53,39 +54,39 @@ enum Color {
 };
 
 //==============================================================================
-void clear();
-void clearUp();
-void clearDown();
-void setPos(int row, int col);
-void setPosUp(int step = 1);
-void setPosDown(int step = 1);
-void setPosForward(int step = 1);
-void setPosBack(int step = 1);
-void toNextLine(int col = 1);
-void toPrevLine(int col = 1);
-void eraseLine();
-void eraseLineLeft();
-void eraseLineRight();
-void savePos();
-void restorePos();
-void hideCursor();
-void showCursor();
-void setCursorVisible(bool visible = true);
-void write(int row, int col, const QString &text);
-void write(const QString &text);
-QVariant read(const QVariant &defaultValue = QVariant());
-void resetAttributes();
-void setColors(Color textColor = ColorWhite, Color bgColor = ColorBlack);
-void setTextColor(Color color = ColorWhite);
-void setBgColor(Color color = ColorBlack);
-void blink(bool on = true);
-void frame(int row, int col, int width, int height, bool doubleBorder = false, Color color = ColorNone);
-void rectangle(int row, int col, int width, int height, Color color = ColorNone);
-void frame(const QRect &rect, bool doubleBorder = false, Color color = ColorNone);
-void rectangle(const QRect &rect, Color color = ColorNone);
-QSize getSize(const QSize &defaultSize = QSize(80, 25));
-int width();
-int height();
+NAYK_EXPORT void clear();
+NAYK_EXPORT void clearUp();
+NAYK_EXPORT void clearDown();
+NAYK_EXPORT void setPos(int row, int col);
+NAYK_EXPORT void setPosUp(int step = 1);
+NAYK_EXPORT void setPosDown(int step = 1);
+NAYK_EXPORT void setPosForward(int step = 1);
+NAYK_EXPORT void setPosBack(int step = 1);
+NAYK_EXPORT void toNextLine(int col = 1);
+NAYK_EXPORT void toPrevLine(int col = 1);
+NAYK_EXPORT void eraseLine();
+NAYK_EXPORT void eraseLineLeft();
+NAYK_EXPORT void eraseLineRight();
+NAYK_EXPORT void savePos();
+NAYK_EXPORT void restorePos();
+NAYK_EXPORT void hideCursor();
+NAYK_EXPORT void showCursor();
+NAYK_EXPORT void setCursorVisible(bool visible = true);
+NAYK_EXPORT void write(int row, int col, const QString &text);
+NAYK_EXPORT void write(const QString &text);
+NAYK_EXPORT QVariant read(const QVariant &defaultValue = QVariant());
+NAYK_EXPORT void resetAttributes();
+NAYK_EXPORT void setColors(Color textColor = ColorWhite, Color bgColor = ColorBlack);
+NAYK_EXPORT void setTextColor(Color color = ColorWhite);
+NAYK_EXPORT void setBgColor(Color color = ColorBlack);
+NAYK_EXPORT void blink(bool on = true);
+NAYK_EXPORT void frame(int row, int col, int width, int height, bool doubleBorder = false, Color color = ColorNone);
+NAYK_EXPORT void rectangle(int row, int col, int width, int height, Color color = ColorNone);
+NAYK_EXPORT void frame(const QRect &rect, bool doubleBorder = false, Color color = ColorNone);
+NAYK_EXPORT void rectangle(const QRect &rect, Color color = ColorNone);
+NAYK_EXPORT QSize getSize(const QSize &defaultSize = QSize(80, 25));
+NAYK_EXPORT int width();
+NAYK_EXPORT int height();
 
 } // namespace console //=======================================================
 #endif // CONSOLE_H

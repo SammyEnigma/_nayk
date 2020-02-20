@@ -25,23 +25,24 @@
 #ifndef APP_CORE_H
 #define APP_CORE_H
 
+#include "NaykGlobal"
 #include <QtCore>
 
 namespace app_core { //=========================================================
 
-bool initializeApplication(const QString &applicationName,
+NAYK_EXPORT bool initializeApplication(const QString &applicationName,
                            const QString &organizationName = QString(),
                            const QString &organizationDomain = QString());
-void installTranslations(const QString &translationsDir = QString("translations"),
+NAYK_EXPORT void installTranslations(const QString &translationsDir = QString("translations"),
                          const QString &language = QString());
-QString applicationVersion();
-QString applicationBuildDate();
-QString applicationFullPath();
-QString applicationRootPath();
-QString applicationProfilePath();
-bool parameterExists(const QString &name, const QString &shortName = QString(),
+NAYK_EXPORT QString applicationVersion();
+NAYK_EXPORT QString applicationBuildDate();
+NAYK_EXPORT QString applicationFullPath();
+NAYK_EXPORT QString applicationRootPath();
+NAYK_EXPORT QString applicationProfilePath();
+NAYK_EXPORT bool parameterExists(const QString &name, const QString &shortName = QString(),
                      QString *value = nullptr);
-bool checkVersionQuery();
+NAYK_EXPORT bool checkVersionQuery();
 
 } // namespace app_core //======================================================
 #endif // APP_CORE_H

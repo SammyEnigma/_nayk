@@ -1,18 +1,22 @@
 #===============================================================================
 #
-# nayk library - hardware
+# nayk library - graph
 #
 #===============================================================================
+
+!contains(QT, gui) {
+	QT += gui
+}
+
+!contains(QT, widgets) {
+	QT += widgets
+}
 
 # Sources and Headers ==========================================================
 
 SOURCES *= \
-    $${PWD}/sources/hardware_utils.cpp
+    $${PWD}/sources/graph.cpp
 
 HEADERS *= \
 	$${PWD}/include/nayk_global.h \
-    $${PWD}/include/hardware_utils.h
-
-# Libs =========================================================================
-
-win32:LIBS += -lKernel32 -lPsapi
+    $${PWD}/include/graph.h

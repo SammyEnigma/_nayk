@@ -1,8 +1,16 @@
 #===============================================================================
 #
-# Projects Settings widgets - nayk library
+# nayk library - widgets
 #
 #===============================================================================
+
+!contains(QT, gui) {
+	QT += gui
+}
+
+!contains(QT, widgets) {
+	QT += widgets
+}
 
 # Sources and Headers ==========================================================
 
@@ -12,17 +20,16 @@ SOURCES *= \
     $${PWD}/sources/dialog_log.cpp \
     $${PWD}/sources/dialog_busy.cpp \
     $${PWD}/sources/ex_controls.cpp \
-    $${PWD}/sources/graph.cpp \
     $${PWD}/sources/highlighter.cpp
 
 HEADERS *= \
+	$${PWD}/include/nayk_global.h \
     $${PWD}/include/gui_app_core.h \
     $${PWD}/include/images_const.h \
     $${PWD}/include/gui_utils.h \
     $${PWD}/include/dialog_log.h \
     $${PWD}/include/dialog_busy.h \
     $${PWD}/include/ex_controls.h \
-    $${PWD}/include/graph.h \
     $${PWD}/include/highlighter.h
 
 # Resources files ==============================================================
@@ -36,13 +43,13 @@ RESOURCES *= \
 CONFIG(release, debug|release) {
 
     TRANSLATIONS += \
-        $${PWD}/resources/translations/nayk_widget_ru.ts
+        $${PWD}/resources/translations/nayk_widgets_ru.ts
 
-    nayk_widget_tr.commands = lrelease $${PWD}/resources/translations/nayk_widget_ru.ts -qm $${TRANSLATIONS_DIR}/nayk_widget_ru.qm
+    nayk_widgets_tr.commands = lrelease $${PWD}/resources/translations/nayk_widgets_ru.ts -qm $${TRANSLATIONS_DIR}/nayk_widgets_ru.qm
 
     POST_TARGETDEPS += \
-        nayk_widget_tr
+        nayk_widgets_tr
 
     QMAKE_EXTRA_TARGETS += \
-        nayk_widget_tr
+        nayk_widgets_tr
 }

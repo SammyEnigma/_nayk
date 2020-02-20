@@ -25,20 +25,21 @@
 #ifndef HARDWARE_UTILS_H
 #define HARDWARE_UTILS_H
 
+#include "NaykGlobal"
 #include <QtCore>
 
 namespace hardware_utils { //===================================================
 
-int cpuCount();
-bool cpuLoadPercent(QVector<qreal> &vecLoad, quint8 intervalMS=0);
-bool memInfo(quint64 &memTotalKB, quint64 &memFreeKB, quint64 &memAvailableKB,
+NAYK_EXPORT int cpuCount();
+NAYK_EXPORT bool cpuLoadPercent(QVector<qreal> &vecLoad, quint8 intervalMS=0);
+NAYK_EXPORT bool memInfo(quint64 &memTotalKB, quint64 &memFreeKB, quint64 &memAvailableKB,
              quint64 &swapTotalKB, quint64 &swapFreeKB);
-bool diskInfo(const QString &dev, quint64 &sizeKB, quint64 &freeKB);
-bool diskIOKB(const QString &dev, qreal &ioKB);
-bool netInfo(const QString &iface, qreal &rxKB, qreal &txKB);
-bool getMeMemoryUsage(qint64 &pageFileUsage, qint64 &ramUsage);
-bool getMeMemoryUsage(qreal &pageFileUsageKB, qreal &ramUsageKB);
-bool getMeMemoryUsage(QString &infoStr);
+NAYK_EXPORT bool diskInfo(const QString &dev, quint64 &sizeKB, quint64 &freeKB);
+NAYK_EXPORT bool diskIOKB(const QString &dev, qreal &ioKB);
+NAYK_EXPORT bool netInfo(const QString &iface, qreal &rxKB, qreal &txKB);
+NAYK_EXPORT bool getMeMemoryUsage(qint64 &pageFileUsage, qint64 &ramUsage);
+NAYK_EXPORT bool getMeMemoryUsage(qreal &pageFileUsageKB, qreal &ramUsageKB);
+NAYK_EXPORT bool getMeMemoryUsage(QString &infoStr);
 
 
 } // namespace hardware_utils //================================================

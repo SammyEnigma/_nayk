@@ -1,37 +1,31 @@
 #===============================================================================
 #
-# Projects Settings for port use - nayk library
+# nayk library - port
 #
 #===============================================================================
 
+!contains(QT, serialport) {
+    QT += serialport
+}
+
 # Sources and Headers ==========================================================
 
-contains(QT, serialport) {
+SOURCES *= \
+    $${PWD}/sources/simple_uart.cpp \
+    $${PWD}/sources/com_port.cpp \
+    $${PWD}/sources/lpt_port.cpp
 
-    SOURCES *= \
-        $${PWD}/sources/simple_uart.cpp \
-        $${PWD}/sources/com_port.cpp
-
-    HEADERS *= \
-        $${PWD}/include/abstract_port.h \
-        $${PWD}/include/simple_uart.h \
-        $${PWD}/include/com_port.h
-}
-
-contains(CONFIG, parallelport) {
-
-    SOURCES *= \
-        $${PWD}/include/lpt_port.cpp
-
-    HEADERS *= \
-        $${PWD}/include/abstract_port.h \
-        $${PWD}/include/lpt_port.h
-}
+HEADERS *= \
+	$${PWD}/include/nayk_global.h \
+    $${PWD}/include/abstract_port.h \
+    $${PWD}/include/simple_uart.h \
+    $${PWD}/include/com_port.h \
+    $${PWD}/include/lpt_port.h
 
 # Release ======================================================================
 
 CONFIG(release, debug|release) {
-    
+
     TRANSLATIONS += \
         $${PWD}/resources/translations/nayk_port_ru.ts
 

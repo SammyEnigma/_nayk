@@ -25,6 +25,7 @@
 #ifndef HIGHLIGHTER_H
 #define HIGHLIGHTER_H
 
+#include "NaykGlobal"
 #include <QSyntaxHighlighter>
 #include <QRegularExpression>
 
@@ -38,7 +39,7 @@ namespace nayk { //=============================================================
 enum HighlightSyntax { SyntaxSQL, SyntaxHTML, SyntaxCPP };
 
 //==============================================================================
-class Highlighter : public QSyntaxHighlighter
+class NAYK_EXPORT Highlighter : public QSyntaxHighlighter
 {
     Q_OBJECT
 

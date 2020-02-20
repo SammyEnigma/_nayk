@@ -25,6 +25,7 @@
 #ifndef SIMPLE_UART_H
 #define SIMPLE_UART_H
 
+#include "NaykGlobal"
 #include <QObject>
 #include <QString>
 #include <QStringList>
@@ -42,7 +43,7 @@
 namespace nayk { //=============================================================
 
 //==============================================================================
-class SimpleUart: public AbstractPort
+class NAYK_EXPORT SimpleUart: public AbstractPort
 {
     Q_OBJECT
 

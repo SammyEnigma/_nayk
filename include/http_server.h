@@ -25,6 +25,7 @@
 #ifndef HTTP_SERVER_H
 #define HTTP_SERVER_H
 
+#include "NaykGlobal"
 #include <QObject>
 #include <QJsonArray>
 #include <QJsonDocument>
@@ -43,7 +44,7 @@
 
 namespace nayk { //=============================================================
 
-class HttpServer : public QObject
+class NAYK_EXPORT HttpServer : public QObject
 {
     Q_OBJECT
 public:

@@ -25,6 +25,7 @@
 #ifndef NETWORK_CLIENT_H
 #define NETWORK_CLIENT_H
 
+#include "NaykGlobal"
 #include <QObject>
 #include <QtNetwork/QNetworkAddressEntry>
 
@@ -44,15 +45,15 @@ typedef struct TcpIp4Struct {
     QString dns2 {""};
 } TcpIp4Struct;
 
-bool simpleGet(const QString &url, QString &resultString);
-bool externalIP(QString &ip);
-QString hostAddress();
-QString connectionName(const QString &ip);
-bool addressEntry(const QString &ip, QNetworkAddressEntry &addressEntry);
-bool isCorrectIp(const QString &ip);
-bool hostSettings(TcpIp4Struct &host, QString &err);
-bool setHostSettings(const TcpIp4Struct &host, QString &err);
-QString localHostName();
+NAYK_EXPORT bool simpleGet(const QString &url, QString &resultString);
+NAYK_EXPORT bool externalIP(QString &ip);
+NAYK_EXPORT QString hostAddress();
+NAYK_EXPORT QString connectionName(const QString &ip);
+NAYK_EXPORT bool addressEntry(const QString &ip, QNetworkAddressEntry &addressEntry);
+NAYK_EXPORT bool isCorrectIp(const QString &ip);
+NAYK_EXPORT bool hostSettings(TcpIp4Struct &host, QString &err);
+NAYK_EXPORT bool setHostSettings(const TcpIp4Struct &host, QString &err);
+NAYK_EXPORT QString localHostName();
 
 }; // namespace //==============================================================
 #endif // NETWORK_CLIENT_H

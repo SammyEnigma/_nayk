@@ -25,6 +25,7 @@
 #ifndef GEO_H
 #define GEO_H
 
+#include "NaykGlobal"
 #include <QtCore>
 
 namespace geo { //==============================================================
@@ -36,8 +37,8 @@ const qreal earth_equator      = 40075016.685578488;  // Длина эквато
 const qreal earth_half_equator = earth_equator / 2.0; // половина экватора
 
 //==============================================================================
-QPointF coordGeoToMap(qreal latitude, qreal longitude, qreal map_width, qreal cx=0, qreal cy=0);
-QPointF coordMapToGeo(qreal x, qreal y, qreal map_width, qreal cx=0, qreal cy=0);
+NAYK_EXPORT QPointF coordGeoToMap(qreal latitude, qreal longitude, qreal map_width, qreal cx=0, qreal cy=0);
+NAYK_EXPORT QPointF coordMapToGeo(qreal x, qreal y, qreal map_width, qreal cx=0, qreal cy=0);
 
 } // namespace geo //===========================================================
 #endif // GEO_H
