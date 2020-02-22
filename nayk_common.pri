@@ -5,7 +5,7 @@
 #===============================================================================
 
 !contains(QT, core) {
-	QT += core
+    QT += core
 }
 
 CONFIG  += qt warn_on c++14
@@ -16,10 +16,21 @@ lessThan( QT_MAJOR_VERSION, 6 ):lessThan( QT_MINOR_VERSION, 14 ) {
     QMAKE_CXXFLAGS += -Wno-deprecated-copy
 }
 
+# Variables ====================================================================
+
+NAYK_DIR = $$absolute_path( $${PWD} )
+COMMON_DIR = $$absolute_path( $${PWD}/../_common )
+
+win32 {
+    COMMON_LIBS_DIR = C:/Qt/Tools/lib_$${QT_VERSION}_$${QMAKE_HOST.arch}
+} else {
+    COMMON_LIBS_DIR = /opt/Qt/Tools/lib_$${QT_VERSION}_$${QMAKE_HOST.arch}
+}
+
 # Includes =====================================================================
 
 INCLUDEPATH *= \
-    $${PWD}/include
+    $${NAYK_DIR}/include
 
 # Version and Build date =======================================================
 

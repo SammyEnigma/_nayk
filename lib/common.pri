@@ -6,7 +6,7 @@
 
 TEMPLATE = lib
 
-CONFIG += staticlib
+#CONFIG += staticlib
 
 DEFINES += NAYK_LIBRARY
 
