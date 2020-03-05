@@ -30,5 +30,35 @@
         <file>icons/save_as_48px.png</file>
         <file>icons/send_file_48px.png</file>
         <file>icons/view_48px.png</file>
+        <file>icons/analyze_48px.png</file>
+        <file>icons/area_chart_48px.png</file>
+        <file>icons/bank_card_missing_48px.png</file>
+        <file>icons/bar_chart_48px.png</file>
+        <file>icons/barcode_48px.png</file>
+        <file>icons/barcode_scanner_48px.png</file>
+        <file>icons/card_security_48px.png</file>
+        <file>icons/combo_chart_48px.png</file>
+        <file>icons/database_48px.png</file>
+        <file>icons/data_sheet_48px.png</file>
+        <file>icons/debit_card_48px.png</file>
+        <file>icons/doughnut_chart_48px.png</file>
+        <file>icons/ecg_48px.png</file>
+        <file>icons/graph_48px.png</file>
+        <file>icons/identification_documents_48px.png</file>
+        <file>icons/normal_distribution_histogram_48px.png</file>
+        <file>icons/pie_chart_48px.png</file>
+        <file>icons/plot_48px.png</file>
+        <file>icons/qr_code_48px.png</file>
+        <file>icons/refresh_barcode_48px.png</file>
+        <file>icons/report_card_48px.png</file>
+        <file>icons/rescan_document_48px.png</file>
+        <file>icons/search_48px.png</file>
+        <file>icons/show_property_48px.png</file>
+        <file>icons/spreadsheet_48px.png</file>
+        <file>icons/sql_48px.png</file>
+        <file>icons/timeline_48px.png</file>
+        <file>icons/view_details_48px.png</file>
+        <file>icons/watch_48px.png</file>
+        <file>icons/web_camera_48px.png</file>
     </qresource>
 </RCC>
