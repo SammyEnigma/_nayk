@@ -34,6 +34,14 @@
 #include <QVBoxLayout>
 #include <QPlainTextEdit>
 #include <QSpacerItem>
+#include <QComboBox>
+#include <QCheckBox>
+#include <QRadioButton>
+#include <QLineEdit>
+#include <QSpinBox>
+#include <QDoubleSpinBox>
+#include <QDateTimeEdit>
+#include <QSettings>
 
 #include "AppCore"
 #include "FileSys"
@@ -301,6 +309,139 @@ void updateApplicationStyle()
 
     if(mainWnd) mainWnd->setStyleSheet("");
     qApp->setStyleSheet(qss);
+}
+//==============================================================================
+void saveWidgetValue(QWidget *widget, const QString &fileName)
+{
+    if(!widget || widget->objectName().isEmpty()) return;
+
+    QSettings ini( fileName.isEmpty()
+                   ? app_core::applicationProfilePath() + "parameters.save"
+                   : fileName,
+                   QSettings::IniFormat);
+    ini.setIniCodec("UTF-8");
+
+    QString className = QString( widget->metaObject()->className() );
+    QString keyName = widget->parent() ? widget->parent()->objectName() : "";
+
+    if(keyName.isEmpty()) keyName = "save";
+    keyName += "/" + widget->objectName();
+
+    if(className == "QComboBox") {
+
+        QComboBox *comboBox = qobject_cast<QComboBox*>(widget);
+        if(comboBox && (comboBox->currentIndex() >= 0))
+            ini.setValue(keyName, comboBox->currentText());
+    }
+    else if(className == "QLineEdit") {
+
+        QLineEdit *lineEdit = qobject_cast<QLineEdit*>(widget);
+        if(lineEdit)
+            ini.setValue(keyName, lineEdit->text());
+    }
+    else if(className == "QCheckBox") {
+
+        QCheckBox *checkBox = qobject_cast<QCheckBox*>(widget);
+        if(checkBox)
+            ini.setValue(keyName, checkBox->isChecked());
+    }
+    else if(className == "QRadioButton") {
+
+        QRadioButton *radioButton = qobject_cast<QRadioButton*>(widget);
+        if(radioButton)
+            ini.setValue(keyName, radioButton->isChecked());
+    }
+    else if((className == "QDateEdit")
+            || (className == "QTimeEdit") || (className == "QDateTimeEdit")) {
+
+        QDateTimeEdit *dateEdit = qobject_cast<QDateTimeEdit*>(widget);
+        if(dateEdit)
+            ini.setValue(keyName, dateEdit->dateTime());
+    }
+    else if(className == "QSpinBox") {
+
+        QSpinBox *spinBox = qobject_cast<QSpinBox*>(widget);
+        if(spinBox)
+            ini.setValue(keyName, spinBox->value());
+    }
+    else if(className == "QDoubleSpinBox") {
+
+        QDoubleSpinBox *spinBox = qobject_cast<QDoubleSpinBox*>(widget);
+        if(spinBox)
+            ini.setValue(keyName, spinBox->value());
+    }
+
+    ini.sync();
+}
+//==============================================================================
+void readWidgetValue(QWidget *widget, const QString &fileName)
+{
+    if(!widget || widget->objectName().isEmpty()) return;
+
+    QSettings ini( fileName.isEmpty()
+                   ? app_core::applicationProfilePath() + "parameters.save"
+                   : fileName,
+                   QSettings::IniFormat);
+    ini.setIniCodec("UTF-8");
+
+    QString className = QString( widget->metaObject()->className() );
+    QString keyName = widget->parent() ? widget->parent()->objectName() : "";
+
+    if(keyName.isEmpty()) keyName = "save";
+    keyName += "/" + widget->objectName();
+
+    if(className == "QComboBox") {
+
+        QComboBox *comboBox = qobject_cast<QComboBox*>(widget);
+
+        if(comboBox && (comboBox->count() > 0)) {
+
+            QString value = ini.value(keyName, comboBox->currentText()).toString();
+            for(int i=0; i<comboBox->count(); ++i) {
+                if(comboBox->itemText(i) == value) {
+                    comboBox->setCurrentIndex(i);
+                    return;
+                }
+            }
+        }
+    }
+    else if(className == "QLineEdit") {
+
+        QLineEdit *lineEdit = qobject_cast<QLineEdit*>(widget);
+        if(lineEdit)
+            lineEdit->setText( ini.value(keyName, lineEdit->text()).toString());
+    }
+    else if(className == "QCheckBox") {
+
+        QCheckBox *checkBox = qobject_cast<QCheckBox*>(widget);
+        if(checkBox)
+            checkBox->setChecked( ini.value(keyName, checkBox->isChecked()).toBool());
+    }
+    else if(className == "QRadioButton") {
+
+        QRadioButton *radioButton = qobject_cast<QRadioButton*>(widget);
+        if(radioButton)
+            radioButton->setChecked( ini.value(keyName, radioButton->isChecked()).toBool());
+    }
+    else if((className == "QDateEdit")
+            || (className == "QTimeEdit") || (className == "QDateTimeEdit")) {
+
+        QDateTimeEdit *dateEdit = qobject_cast<QDateTimeEdit*>(widget);
+        if(dateEdit)
+           dateEdit->setDateTime( ini.value(keyName, dateEdit->dateTime()).toDateTime());
+    }
+    else if(className == "QSpinBox") {
+
+        QSpinBox *spinBox = qobject_cast<QSpinBox*>(widget);
+        if(spinBox)
+            spinBox->setValue( ini.value(keyName, spinBox->value()).toInt());
+    }
+    else if(className == "QDoubleSpinBox") {
+
+        QDoubleSpinBox *spinBox = qobject_cast<QDoubleSpinBox*>(widget);
+        if(spinBox)
+            spinBox->setValue( ini.value(keyName, spinBox->value()).toDouble());
+    }
 }
 //==============================================================================
 

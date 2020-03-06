@@ -47,6 +47,8 @@ NAYK_EXPORT void showAboutDialog(const QString &title = QString(),
                      const QString &description = QString(),
                      bool showOrganization = false);
 NAYK_EXPORT void updateApplicationStyle();
+NAYK_EXPORT void saveWidgetValue(QWidget *widget, const QString &fileName = QString());
+NAYK_EXPORT void readWidgetValue(QWidget *widget, const QString &fileName = QString());
 
 } // namespace gui_utils =======================================================
 #endif // GUI_UTILS_H
