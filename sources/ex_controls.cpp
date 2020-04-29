@@ -65,4 +65,55 @@ void ExSpinBox::keyPressEvent(QKeyEvent *event)
 }
 //==============================================================================
 
+
+
+//==============================================================================
+// HexSpinBox
+//==============================================================================
+HexSpinBox::HexSpinBox( QWidget *parent) : QSpinBox(parent)
+{
+    setPrefix("0x");
+    setDisplayIntegerBase(16);
+    setRange(INT_MIN, INT_MAX);
+}
+//==============================================================================
+unsigned int HexSpinBox::hexValue() const
+{
+    return u(value());
+}
+//==============================================================================
+void HexSpinBox::setHexValue(unsigned int value)
+{
+    setValue(i(value));
+}
+//==============================================================================
+QString HexSpinBox::textFromValue(int value) const
+{
+    QString s = QString::number(u(value), 16).toUpper();
+    return s.rightJustified(8, '0', true);
+}
+//==============================================================================
+int HexSpinBox::valueFromText(const QString &text) const
+{
+    return i(text.toUInt(0, 16));
+}
+//==============================================================================
+QValidator::State HexSpinBox::validate(QString &input, int &pos) const
+{
+    QString copy(input);
+    if (copy.startsWith("0x")) copy.remove(0, 2);
+    pos -= copy.size() - copy.trimmed().size();
+    copy = copy.trimmed();
+    if (copy.isEmpty())
+        return QValidator::Intermediate;
+    if (copy.length() > 8) copy = copy.left(8);
+    input = QString("0x") + copy.toUpper();
+    bool okay;
+    unsigned int val = copy.toUInt(&okay, 16);
+    Q_UNUSED(val)
+    if (!okay) return QValidator::Invalid;
+    return QValidator::Acceptable;
+}
+//==============================================================================
+
 } // namespace nayk //==========================================================

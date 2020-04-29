@@ -55,6 +55,30 @@ private:
     bool m_leadingZero {false};
 };
 //==============================================================================
+class NAYK_EXPORT HexSpinBox : public QSpinBox
+{
+public:
+    HexSpinBox( QWidget *parent = 0);
+    unsigned int hexValue() const;
+    void setHexValue(unsigned int value);
+
+protected:
+    QString textFromValue(int value) const;
+    int valueFromText(const QString &text) const;
+    QValidator::State validate(QString &input, int &pos) const;
+
+private:
+
+    inline unsigned int u(int i) const
+    {
+        return *reinterpret_cast<unsigned int *>(&i);
+    }
+    inline int i(unsigned int u) const
+    {
+        return *reinterpret_cast<int *>(&u);
+    }
+};
+//==============================================================================
 
 } // namespace nayk //==========================================================
 #endif // EX_CONTROLS_H
